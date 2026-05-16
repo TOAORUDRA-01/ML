@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ML Portfolio Tracker</title>
+    <meta
+      name="description"
+      content="A focused hub for ML study artifacts, notes, and a 3-month learning plan."
+    />
+    <meta property="og:title" content="ML Portfolio Tracker" />
+    <meta
+      property="og:description"
+      content="Explore ML notes, track learning progress, and follow a 3-month plan."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://your-domain.com/" />
+    <meta property="og:image" content="https://your-domain.com/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ML Portfolio Tracker" />
+    <meta
+      name="twitter:description"
+      content="Explore ML notes, track learning progress, and follow a 3-month plan."
+    />
+    <meta name="twitter:image" content="https://your-domain.com/og-image.svg" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div class="hero__content">
+          <p class="eyebrow">Machine Learning</p>
+          <h1 class="hero__title">Portfolio Tracker</h1>
+          <p class="hero__subtitle">
+            A focused hub for my ML study artifacts, experiments, and notes.
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="3month_ml_plan.pdf">
+              Open ML Plan
+            </a>
+            <a class="button button--ghost" href="#artifacts">Browse Artifacts</a>
+          </div>
+        </div>
+        <div class="hero__stats">
+          <div class="stat">
+            <span class="stat__label">Tracks</span>
+            <span class="stat__value">5</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Sections</span>
+            <span class="stat__value">48</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Plan</span>
+            <span class="stat__value">3 Months</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="section" id="artifacts">
+          <div class="section__heading">
+            <h2>Learning Artifacts</h2>
+            <p>Structured notes and deep dives across ML foundations.</p>
+          </div>
+
+          <div class="grid">
+            <article class="card">
+              <div class="card__top">
+                <h3>Classical ML Algorithms</h3>
+                <span class="chip">Core</span>
+              </div>
+              <p>Models, metrics, and intuition for classical ML workflows.</p>
+              <div class="card__meta">
+                <span>Coverage: 10 topics</span>
+                <span class="dot"></span>
+                <span>Status: Ongoing</span>
+              </div>
+              <a class="card__link" href="classical-ml/">Open Notes</a>
+            </article>
+
+            <article class="card">
+              <div class="card__top">
+                <h3>Deep Learning Notes</h3>
+                <span class="chip chip--accent">Advanced</span>
+              </div>
+              <p>Neural networks, architectures, and training intuition.</p>
+              <div class="card__meta">
+                <span>Coverage: 10 modules</span>
+                <span class="dot"></span>
+                <span>Status: Building</span>
+              </div>
+              <a class="card__link" href="deep-learning/">Open Notes</a>
+            </article>
+
+            <article class="card">
+              <div class="card__top">
+                <h3>Linear Algebra + Probability</h3>
+                <span class="chip">Foundation</span>
+              </div>
+              <p>Core math refreshers powering ML and DL understanding.</p>
+              <div class="card__meta">
+                <span>Coverage: 9 units</span>
+                <span class="dot"></span>
+                <span>Status: Solidifying</span>
+              </div>
+              <a class="card__link" href="linear-algebra/">Open Notes</a>
+            </article>
+
+            <article class="card">
+              <div class="card__top">
+                <h3>Pandas + EDA Notes</h3>
+                <span class="chip">Workflow</span>
+              </div>
+              <p>Data cleaning, visualization, and exploratory playbooks.</p>
+              <div class="card__meta">
+                <span>Coverage: 10 recipes</span>
+                <span class="dot"></span>
+                <span>Status: Iterating</span>
+              </div>
+              <a class="card__link" href="pandas-eda/">Open Notes</a>
+            </article>
+
+            <article class="card">
+              <div class="card__top">
+                <h3>Python + NumPy Notes</h3>
+                <span class="chip">Baseline</span>
+              </div>
+              <p>Core Python tools, arrays, and performance tips.</p>
+              <div class="card__meta">
+                <span>Coverage: 9 lessons</span>
+                <span class="dot"></span>
+                <span>Status: Maintained</span>
+              </div>
+              <a class="card__link" href="python-numpy/">Open Notes</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="section section--plan" id="plan">
+          <div class="section__heading">
+            <h2>ML Plan</h2>
+            <p>A tactical roadmap to pace the next 90 days of learning.</p>
+          </div>
+          <div class="plan">
+            <div class="plan__text">
+              <h3>3-Month ML Plan</h3>
+              <p>
+                Use this plan to track milestones, weekly goals, and review
+                checkpoints. Keep it open while you study to stay aligned.
+              </p>
+              <div class="plan__actions">
+                <a class="button button--primary" href="3month_ml_plan.pdf">
+                  Open PDF
+                </a>
+              </div>
+            </div>
+            <div class="plan__card">
+              <div class="plan__badge">Updated</div>
+              <p class="plan__date">May 2026</p>
+              <p class="plan__detail">Weekly checkpoints</p>
+              <p class="plan__detail">Monthly review prompts</p>
+              <p class="plan__detail">Skill consolidation map</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>Built for focus. Updated as the portfolio evolves.</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/ml-plan", "destination": "/3month_ml_plan.pdf" }
+  ]
+}

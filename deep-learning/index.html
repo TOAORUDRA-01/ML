@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Learning & Neural Networks — Comprehensive Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Azeret+Mono:wght@400;500;600&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:       #060b14;
+  --bg2:      #0a1020;
+  --bg3:      #0f1829;
+  --bg4:      #141f35;
+  --border:   #1a2840;
+  --cyan:     #00d4ff;
+  --cyan-dk:  #0090b8;
+  --cyan-lt:  rgba(0,212,255,.08);
+  --violet:   #7c3aed;
+  --violet-lt:rgba(124,58,237,.12);
+  --amber:    #f59e0b;
+  --amber-lt: rgba(245,158,11,.1);
+  --rose:     #f43f5e;
+  --rose-lt:  rgba(244,63,94,.1);
+  --green:    #10b981;
+  --green-lt: rgba(16,185,129,.1);
+  --text:     #e2e8f0;
+  --muted:    #4a6080;
+  --code-bg:  #04080f;
+  --node-0:   #00d4ff;
+  --node-1:   #7c3aed;
+  --node-2:   #f59e0b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:16px;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+
+/* ── GRID LINES BACKGROUND ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(6,11,20,.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 1.5rem;
+  height:52px;overflow-x:auto;gap:0;
+}
+nav::-webkit-scrollbar{height:2px;}
+nav::-webkit-scrollbar-thumb{background:var(--border);}
+nav a{
+  font-family:'Azeret Mono',monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  padding:0 13px;height:52px;display:flex;align-items:center;
+  border-bottom:2px solid transparent;white-space:nowrap;
+  transition:color .2s,border-color .2s;
+}
+nav a:hover{color:var(--text);}
+nav a.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+
+/* ── LAYOUT ── */
+.wrap{max-width:900px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:100px 0 80px;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;top:-200px;right:-200px;
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(0,212,255,.06) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-glow2{
+  position:absolute;bottom:-200px;left:-100px;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(124,58,237,.05) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+@media(max-width:700px){.hero-grid{grid-template-columns:1fr;}}
+.hero-tag{
+  font-family:'Azeret Mono',monospace;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:14px;
+}
+.hero h1{
+  font-family:'Fraunces',serif;font-size:clamp(2.2rem,5vw,3.8rem);
+  font-weight:900;line-height:1.05;color:#fff;margin-bottom:14px;
+}
+.hero h1 em{color:var(--cyan);font-style:italic;}
+.hero-sub{font-size:.95rem;color:var(--muted);margin-bottom:28px;line-height:1.8;}
+.badges{display:flex;flex-wrap:wrap;gap:8px;}
+.badge{
+  font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:.06em;
+  padding:4px 11px;border-radius:3px;border:1px solid;
+}
+.ba{color:var(--cyan);border-color:rgba(0,212,255,.3);background:var(--cyan-lt);}
+.bb{color:var(--violet);border-color:rgba(124,58,237,.3);background:var(--violet-lt);}
+.bc{color:var(--amber);border-color:rgba(245,158,11,.3);background:var(--amber-lt);}
+.bd{color:var(--green);border-color:rgba(16,185,129,.3);background:var(--green-lt);}
+
+/* ── TOC ── */
+.toc{
+  background:var(--bg2);border:1px solid var(--border);
+  border-left:3px solid var(--cyan);padding:20px 24px;margin-top:28px;
+}
+.toc-title{font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:14px;}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;}
+@media(max-width:500px){.toc-grid{grid-template-columns:1fr;}}
+.toc a{font-size:.84rem;color:var(--muted);text-decoration:none;
+  padding:3px 0;display:flex;align-items:center;gap:8px;transition:color .15s;}
+.toc a:hover{color:var(--cyan);}
+.tn{font-family:'Azeret Mono',monospace;font-size:9px;color:var(--border);width:16px;}
+
+/* ── SECTIONS ── */
+section{padding:64px 0 52px;border-bottom:1px solid var(--border);position:relative;z-index:1;}
+.sec-label{font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+section h2{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;
+  color:#fff;margin-bottom:6px;line-height:1.2;}
+section h2 .acc{color:var(--cyan);}
+.sec-lead{font-size:.93rem;color:var(--muted);margin-bottom:36px;max-width:640px;font-style:italic;}
+h3{
+  font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;
+  color:var(--cyan);margin:36px 0 12px;
+  display:flex;align-items:center;gap:10px;
+}
+h3::before{content:'';width:16px;height:2px;background:var(--cyan);display:inline-block;border-radius:2px;}
+h4{font-size:.9rem;font-weight:600;color:var(--amber);margin:20px 0 8px;}
+p{margin-bottom:14px;color:#8fa8c8;font-size:.93rem;}
+
+/* ── MATH ── */
+.math{
+  background:var(--bg3);border-left:3px solid var(--cyan);
+  padding:16px 22px;margin:18px 0;border-radius:0 6px 6px 0;
+  font-family:'Azeret Mono',monospace;font-size:.9rem;line-height:2;
+  color:var(--text);
+}
+.math-lbl{font-family:'Space Grotesk',sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px;}
+.math-eq{text-align:center;padding:4px 0;}
+
+/* ── CODE ── */
+.code-wrap{
+  background:var(--code-bg);border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;margin:16px 0;
+  box-shadow:0 0 40px rgba(0,212,255,.03);
+}
+.code-bar{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.cdots{display:flex;gap:5px;}
+.cdots span{width:9px;height:9px;border-radius:50%;}
+.cdr{background:#ff5f57;}.cdy{background:#febc2e;}.cdg{background:#28c840;}
+.clang{font-family:'Azeret Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;}
+pre{padding:18px 20px;overflow-x:auto;font-family:'Azeret Mono',monospace;
+  font-size:12px;line-height:1.75;color:#8fa8c8;}
+.kw{color:#c084fc;}.fn{color:#60a5fa;}.st{color:#86efac;}
+.nm{color:#fbbf24;}.cm{color:#2a3f5f;font-style:italic;}
+.op{color:#38bdf8;}.tp{color:#fb923c;}.at{color:#34d399;}
+.ic{font-family:'Azeret Mono',monospace;font-size:.78em;
+  background:var(--cyan-lt);color:var(--cyan);
+  padding:1px 6px;border-radius:3px;border:1px solid rgba(0,212,255,.2);}
+
+/* ── BOXES ── */
+.box{border-radius:6px;padding:15px 19px;margin:18px 0;border:1px solid;}
+.box-info{background:var(--cyan-lt);border-color:rgba(0,212,255,.2);}
+.box-tip {background:var(--green-lt);border-color:rgba(16,185,129,.2);}
+.box-warn{background:var(--rose-lt);border-color:rgba(244,63,94,.2);}
+.box-math{background:var(--amber-lt);border-color:rgba(245,158,11,.2);}
+.box-v   {background:var(--violet-lt);border-color:rgba(124,58,237,.2);}
+.box-title{font-family:'Azeret Mono',monospace;font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.box-info .box-title{color:var(--cyan);}
+.box-tip  .box-title{color:var(--green);}
+.box-warn .box-title{color:var(--rose);}
+.box-math .box-title{color:var(--amber);}
+.box-v    .box-title{color:#a78bfa;}
+.box p{margin:0;font-size:.87rem;}
+
+/* ── TABLES ── */
+.tbl{overflow-x:auto;margin:18px 0;}
+table.t{width:100%;border-collapse:collapse;font-size:.84rem;}
+table.t th{background:var(--bg4);color:var(--cyan);
+  font-family:'Azeret Mono',monospace;font-size:.73rem;letter-spacing:.07em;text-transform:uppercase;
+  padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+table.t td{padding:9px 14px;border-bottom:1px solid rgba(26,40,64,.5);color:#8fa8c8;}
+table.t tr:hover td{background:rgba(0,212,255,.03);}
+.mono{font-family:'Azeret Mono',monospace;font-size:.78rem;color:var(--cyan);}
+.gd{color:var(--green);font-weight:600;}
+.bd{color:var(--rose);}
+
+/* ── DIAGRAM ── */
+.diagram{background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:20px;margin:18px 0;text-align:center;overflow-x:auto;}
+.diagram svg{display:inline-block;}
+.diag-cap{font-family:'Space Grotesk',sans-serif;font-size:.78rem;
+  color:var(--muted);margin-top:10px;font-style:italic;}
+
+/* ── CANVAS DEMOS ── */
+.demo{background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:18px;margin:18px 0;}
+.demo-title{font-family:'Azeret Mono',monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--cyan);margin-bottom:12px;}
+.demo-ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.dbtn{font-family:'Azeret Mono',monospace;font-size:10px;
+  padding:5px 12px;border-radius:4px;border:1px solid var(--border);
+  background:var(--bg3);color:var(--text);cursor:pointer;transition:all .15s;}
+.dbtn.active,.dbtn:hover{background:var(--cyan);color:var(--bg);border-color:var(--cyan);}
+.dslider{display:flex;align-items:center;gap:10px;}
+.dslider label{font-family:'Azeret Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;}
+input[type=range]{flex:1;min-width:80px;accent-color:var(--cyan);}
+.dval{font-family:'Azeret Mono',monospace;font-size:10px;color:var(--cyan);width:40px;}
+.demo-canvas{display:block;width:100%;border-radius:4px;border:1px solid var(--border);}
+.demo-info{font-family:'Azeret Mono',monospace;font-size:.78rem;color:var(--cyan);margin-top:8px;}
+
+/* ── ACTIVATION CARD GRID ── */
+.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0;}
+.act-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+  padding:14px;transition:border-color .2s;}
+.act-card:hover{border-color:var(--cyan);}
+.act-name{font-family:'Azeret Mono',monospace;font-size:.82rem;color:var(--cyan);
+  font-weight:600;margin-bottom:6px;}
+.act-formula{font-family:'Azeret Mono',monospace;font-size:.74rem;color:var(--amber);
+  margin-bottom:8px;}
+.act-card svg{display:block;width:100%;}
+.act-desc{font-size:.78rem;color:var(--muted);margin-top:6px;}
+
+/* ── OPTIMIZER CARDS ── */
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0;}
+.opt-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;}
+.opt-name{font-family:'Space Grotesk',sans-serif;font-size:.88rem;font-weight:700;
+  color:#fff;margin-bottom:4px;}
+.opt-eq{font-family:'Azeret Mono',monospace;font-size:.72rem;color:var(--cyan);margin-bottom:6px;}
+.opt-desc{font-size:.78rem;color:var(--muted);}
+
+/* ── ARCH TIMELINE ── */
+.arch-timeline{position:relative;padding-left:24px;margin:18px 0;}
+.arch-timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border);}
+.arch-item{position:relative;margin-bottom:22px;}
+.arch-item::before{content:'';position:absolute;left:-20px;top:6px;width:10px;height:10px;
+  border-radius:50%;background:var(--cyan);border:2px solid var(--bg);}
+.arch-year{font-family:'Azeret Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:.08em;}
+.arch-name{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:600;color:#fff;}
+.arch-desc{font-size:.82rem;color:var(--muted);}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ── FOOTER ── */
+footer{padding:44px 0;text-align:center;font-family:'Azeret Mono',monospace;
+  font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);
+  position:relative;z-index:1;}
+footer a{color:var(--cyan);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav id="topnav">
+  <a href="#intro"    class="active">Intro</a>
+  <a href="#perceptron">Perceptron</a>
+  <a href="#mlp"      >MLP</a>
+  <a href="#activations">Activations</a>
+  <a href="#backprop" >Backprop</a>
+  <a href="#optim"    >Optimisers</a>
+  <a href="#reg"      >Regularisation</a>
+  <a href="#pytorch"  >PyTorch</a>
+  <a href="#training" >Training</a>
+  <a href="#arch"     >Architectures</a>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div class="hero" id="intro">
+  <div class="hero-glow"></div><div class="hero-glow2"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">// Module 05 — Deep Learning</div>
+        <h1>Deep Learning<br>&amp; <em>Neural Nets</em></h1>
+        <p class="hero-sub">From single neurons to multi-layer networks — theory, mathematics, backpropagation, optimisers, and production PyTorch code.</p>
+        <div class="badges">
+          <span class="badge ba">Perceptrons</span>
+          <span class="badge bb">Backprop</span>
+          <span class="badge bc">Activations</span>
+          <span class="badge bd">Optimisers</span>
+          <span class="badge ba">Regularisation</span>
+          <span class="badge bb">PyTorch</span>
+          <span class="badge bc">Training loops</span>
+          <span class="badge bd">Architectures</span>
+        </div>
+        <div class="toc" style="margin-top:28px;">
+          <div class="toc-title">// Contents</div>
+          <div class="toc-grid">
+            <a href="#perceptron"><span class="tn">01</span>The Perceptron</a>
+            <a href="#optim"><span class="tn">06</span>Optimisers</a>
+            <a href="#mlp"><span class="tn">02</span>Multi-Layer Networks</a>
+            <a href="#reg"><span class="tn">07</span>Regularisation</a>
+            <a href="#activations"><span class="tn">03</span>Activation Functions</a>
+            <a href="#pytorch"><span class="tn">08</span>PyTorch Deep Dive</a>
+            <a href="#backprop"><span class="tn">04</span>Backpropagation</a>
+            <a href="#training"><span class="tn">09</span>Training Pipeline</a>
+            <a href="#loss"><span class="tn">05</span>Loss Functions</a>
+            <a href="#arch"><span class="tn">10</span>Architecture Zoo</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Animated Neural Network Canvas -->
+      <div>
+        <div class="demo" style="padding:12px;">
+          <div class="demo-title">// Live Neural Network</div>
+          <canvas class="demo-canvas" id="heroNet" height="280"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S1: PERCEPTRON ══════════════ -->
+<section id="perceptron">
+<div class="wrap reveal">
+  <div class="sec-label">Section 01</div>
+  <h2>The <span class="acc">Perceptron</span></h2>
+  <p class="sec-lead">The atom of all neural networks. A perceptron takes weighted inputs, sums them, adds a bias, and passes through an activation. Everything else is just scaling this up.</p>
+
+  <h3>Single Neuron</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 520 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>Single perceptron diagram: inputs x1 x2 x3 with weights w1 w2 w3, summed with bias b, passed through activation σ to output ŷ</title>
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        </marker>
+      </defs>
+      <!-- Inputs -->
+      <g font-family="Azeret Mono,monospace" font-size="13">
+        <circle cx="55" cy="50" r="18" fill="#0f1829" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="55" y="55" text-anchor="middle" fill="#00d4ff">x₁</text>
+        <circle cx="55" cy="90" r="18" fill="#0f1829" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="55" y="95" text-anchor="middle" fill="#00d4ff">x₂</text>
+        <circle cx="55" cy="130" r="18" fill="#0f1829" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="55" y="135" text-anchor="middle" fill="#00d4ff">x₃</text>
+      </g>
+      <!-- Weight lines -->
+      <line x1="73" y1="55" x2="195" y2="87" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#a)"/>
+      <line x1="73" y1="90" x2="195" y2="90" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#a)"/>
+      <line x1="73" y1="125" x2="195" y2="93" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#a)"/>
+      <!-- Weight labels -->
+      <text x="118" y="60" font-family="Azeret Mono,monospace" font-size="10" fill="#f59e0b">w₁</text>
+      <text x="126" y="86" font-family="Azeret Mono,monospace" font-size="10" fill="#f59e0b">w₂</text>
+      <text x="118" y="116" font-family="Azeret Mono,monospace" font-size="10" fill="#f59e0b">w₃</text>
+      <!-- Summation node -->
+      <circle cx="220" cy="90" r="26" fill="#0f1829" stroke="#f59e0b" stroke-width="1.8"/>
+      <text x="220" y="86" font-family="Azeret Mono,monospace" font-size="12" fill="#f59e0b" text-anchor="middle">Σ</text>
+      <text x="220" y="102" font-family="Azeret Mono,monospace" font-size="9" fill="#f59e0b" text-anchor="middle">+b</text>
+      <!-- Bias -->
+      <circle cx="220" cy="25" r="14" fill="#0f1829" stroke="#10b981" stroke-width="1"/>
+      <text x="220" y="30" font-family="Azeret Mono,monospace" font-size="10" fill="#10b981" text-anchor="middle">b</text>
+      <line x1="220" y1="39" x2="220" y2="64" stroke="#10b981" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- Arrow to activation -->
+      <line x1="246" y1="90" x2="316" y2="90" stroke="#00d4ff" stroke-width="1.8" marker-end="url(#a)"/>
+      <text x="278" y="84" font-family="Azeret Mono,monospace" font-size="10" fill="#4a6080">z=Σwᵢxᵢ+b</text>
+      <!-- Activation node -->
+      <rect x="320" y="68" width="56" height="44" rx="6" fill="#0f1829" stroke="#00d4ff" stroke-width="1.8"/>
+      <text x="348" y="86" font-family="Azeret Mono,monospace" font-size="12" fill="#00d4ff" text-anchor="middle">σ(z)</text>
+      <text x="348" y="101" font-family="Azeret Mono,monospace" font-size="9" fill="#4a6080" text-anchor="middle">activation</text>
+      <!-- Output arrow -->
+      <line x1="376" y1="90" x2="440" y2="90" stroke="#00d4ff" stroke-width="1.8" marker-end="url(#a)"/>
+      <!-- Output node -->
+      <circle cx="462" cy="90" r="20" fill="#00d4ff" stroke="#00d4ff" stroke-width="1.5"/>
+      <text x="462" y="86" font-family="Azeret Mono,monospace" font-size="11" fill="#060b14" text-anchor="middle" font-weight="600">ŷ</text>
+      <text x="462" y="98" font-family="Azeret Mono,monospace" font-size="9" fill="#060b14" text-anchor="middle">output</text>
+      <!-- Formula below -->
+      <text x="260" y="158" font-family="Azeret Mono,monospace" font-size="11" fill="#4a6080" text-anchor="middle">ŷ = σ(w₁x₁ + w₂x₂ + w₃x₃ + b) = σ(wᵀx + b)</text>
+    </svg>
+    <div class="diag-cap">A single neuron: weighted sum → add bias → apply activation → output</div>
+  </div>
+
+  <div class="math">
+    <div class="math-lbl">Forward Pass — Single Neuron</div>
+    <div class="math-eq">z = <strong>w</strong>ᵀ<strong>x</strong> + b &nbsp;=&nbsp; Σᵢ wᵢxᵢ + b</div>
+    <div class="math-eq">ŷ = σ(z) &nbsp;where&nbsp; σ &nbsp;is an activation function</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Neuron from scratch</span></div>
+    <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">class</span> <span class="tp">Neuron</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_inputs):
+        <span class="cm"># He initialisation: good for ReLU networks</span>
+        self.w <span class="op">=</span> np.random.<span class="fn">randn</span>(n_inputs) <span class="op">*</span> np.<span class="fn">sqrt</span>(<span class="nm">2</span> <span class="op">/</span> n_inputs)
+        self.b <span class="op">=</span> <span class="nm">0.0</span>
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        self.x <span class="op">=</span> x                        <span class="cm"># cache for backprop</span>
+        self.z <span class="op">=</span> np.<span class="fn">dot</span>(self.w, x) <span class="op">+</span> self.b  <span class="cm"># linear combination</span>
+        self.a <span class="op">=</span> np.<span class="fn">maximum</span>(<span class="nm">0</span>, self.z)   <span class="cm"># ReLU activation</span>
+        <span class="kw">return</span> self.a
+
+    <span class="kw">def</span> <span class="fn">backward</span>(self, da):
+        <span class="cm"># Gradient of ReLU: 1 if z>0, else 0</span>
+        dz <span class="op">=</span> da <span class="op">*</span> (self.z <span class="op">&gt;</span> <span class="nm">0</span>).astype(<span class="tp">float</span>)
+        self.dw <span class="op">=</span> dz <span class="op">*</span> self.x
+        self.db <span class="op">=</span> dz
+        <span class="kw">return</span> dz <span class="op">*</span> self.w  <span class="cm"># grad w.r.t. input</span>
+
+neuron <span class="op">=</span> <span class="fn">Neuron</span>(n_inputs<span class="op">=</span><span class="nm">3</span>)
+x <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">0.5</span>, <span class="op">-</span><span class="nm">0.3</span>, <span class="nm">1.2</span>])
+output <span class="op">=</span> neuron.<span class="fn">forward</span>(x)   <span class="cm"># ReLU(wᵀx + b)</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S2: MLP ══════════════ -->
+<section id="mlp">
+<div class="wrap reveal">
+  <div class="sec-label">Section 02</div>
+  <h2>Multi-Layer <span class="acc">Perceptron (MLP)</span></h2>
+  <p class="sec-lead">Stack layers of neurons. The hidden layers learn increasingly abstract representations. This is what "deep" in deep learning means.</p>
+
+  <h3>Network Architecture</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 560 220" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>Multi-layer perceptron with input layer 4 nodes, hidden layer 1 with 5 nodes, hidden layer 2 with 4 nodes, output layer with 3 nodes and softmax</title>
+      <defs>
+        <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <!-- Layer labels -->
+      <text x="55"  y="14" font-family="Space Grotesk,sans-serif" font-size="10" fill="#4a6080" text-anchor="middle">Input</text>
+      <text x="55"  y="25" font-family="Azeret Mono,monospace" font-size="9"  fill="#4a6080" text-anchor="middle">d=4</text>
+      <text x="200" y="14" font-family="Space Grotesk,sans-serif" font-size="10" fill="#4a6080" text-anchor="middle">Hidden 1</text>
+      <text x="200" y="25" font-family="Azeret Mono,monospace" font-size="9"  fill="#4a6080" text-anchor="middle">h₁=5</text>
+      <text x="350" y="14" font-family="Space Grotesk,sans-serif" font-size="10" fill="#4a6080" text-anchor="middle">Hidden 2</text>
+      <text x="350" y="25" font-family="Azeret Mono,monospace" font-size="9"  fill="#4a6080" text-anchor="middle">h₂=4</text>
+      <text x="490" y="14" font-family="Space Grotesk,sans-serif" font-size="10" fill="#4a6080" text-anchor="middle">Output</text>
+      <text x="490" y="25" font-family="Azeret Mono,monospace" font-size="9"  fill="#4a6080" text-anchor="middle">k=3</text>
+
+      <!-- Connections L0→L1 -->
+      <g stroke="#1a2840" stroke-width="0.7" opacity="0.6">
+        <line x1="72" y1="50" x2="182" y2="42"/>  <line x1="72" y1="50" x2="182" y2="75"/>
+        <line x1="72" y1="50" x2="182" y2="108"/> <line x1="72" y1="50" x2="182" y2="141"/>
+        <line x1="72" y1="50" x2="182" y2="175"/>
+        <line x1="72" y1="85" x2="182" y2="42"/>  <line x1="72" y1="85" x2="182" y2="75"/>
+        <line x1="72" y1="85" x2="182" y2="108"/> <line x1="72" y1="85" x2="182" y2="141"/>
+        <line x1="72" y1="85" x2="182" y2="175"/>
+        <line x1="72" y1="120" x2="182" y2="42"/> <line x1="72" y1="120" x2="182" y2="75"/>
+        <line x1="72" y1="120" x2="182" y2="108"/><line x1="72" y1="120" x2="182" y2="141"/>
+        <line x1="72" y1="120" x2="182" y2="175"/>
+        <line x1="72" y1="155" x2="182" y2="42"/> <line x1="72" y1="155" x2="182" y2="75"/>
+        <line x1="72" y1="155" x2="182" y2="108"/><line x1="72" y1="155" x2="182" y2="141"/>
+        <line x1="72" y1="155" x2="182" y2="175"/>
+      </g>
+      <!-- Connections L1→L2 -->
+      <g stroke="#1a2840" stroke-width="0.7" opacity="0.6">
+        <line x1="218" y1="42"  x2="332" y2="56"/>  <line x1="218" y1="42"  x2="332" y2="95"/>
+        <line x1="218" y1="42"  x2="332" y2="130"/> <line x1="218" y1="42"  x2="332" y2="170"/>
+        <line x1="218" y1="75"  x2="332" y2="56"/>  <line x1="218" y1="75"  x2="332" y2="95"/>
+        <line x1="218" y1="75"  x2="332" y2="130"/> <line x1="218" y1="75"  x2="332" y2="170"/>
+        <line x1="218" y1="108" x2="332" y2="56"/>  <line x1="218" y1="108" x2="332" y2="95"/>
+        <line x1="218" y1="108" x2="332" y2="130"/> <line x1="218" y1="108" x2="332" y2="170"/>
+        <line x1="218" y1="141" x2="332" y2="56"/>  <line x1="218" y1="141" x2="332" y2="95"/>
+        <line x1="218" y1="141" x2="332" y2="130"/> <line x1="218" y1="141" x2="332" y2="170"/>
+        <line x1="218" y1="175" x2="332" y2="56"/>  <line x1="218" y1="175" x2="332" y2="95"/>
+        <line x1="218" y1="175" x2="332" y2="130"/> <line x1="218" y1="175" x2="332" y2="170"/>
+      </g>
+      <!-- Connections L2→L3 -->
+      <g stroke="#1a2840" stroke-width="0.7" opacity="0.6">
+        <line x1="368" y1="56"  x2="472" y2="70"/>  <line x1="368" y1="56"  x2="472" y2="112"/>
+        <line x1="368" y1="56"  x2="472" y2="155"/>
+        <line x1="368" y1="95"  x2="472" y2="70"/>  <line x1="368" y1="95"  x2="472" y2="112"/>
+        <line x1="368" y1="95"  x2="472" y2="155"/>
+        <line x1="368" y1="130" x2="472" y2="70"/>  <line x1="368" y1="130" x2="472" y2="112"/>
+        <line x1="368" y1="130" x2="472" y2="155"/>
+        <line x1="368" y1="170" x2="472" y2="70"/>  <line x1="368" y1="170" x2="472" y2="112"/>
+        <line x1="368" y1="170" x2="472" y2="155"/>
+      </g>
+      <!-- Input layer nodes -->
+      <g fill="#0f1829" stroke="#00d4ff" stroke-width="1.5" filter="url(#glow)">
+        <circle cx="55" cy="50"  r="17"/><circle cx="55" cy="85"  r="17"/>
+        <circle cx="55" cy="120" r="17"/><circle cx="55" cy="155" r="17"/>
+      </g>
+      <!-- H1 nodes -->
+      <g fill="#0f1829" stroke="#7c3aed" stroke-width="1.5">
+        <circle cx="200" cy="42"  r="17"/><circle cx="200" cy="75"  r="17"/>
+        <circle cx="200" cy="108" r="17"/><circle cx="200" cy="141" r="17"/>
+        <circle cx="200" cy="175" r="17"/>
+      </g>
+      <!-- H2 nodes -->
+      <g fill="#0f1829" stroke="#f59e0b" stroke-width="1.5">
+        <circle cx="350" cy="56"  r="17"/><circle cx="350" cy="95"  r="17"/>
+        <circle cx="350" cy="130" r="17"/><circle cx="350" cy="170" r="17"/>
+      </g>
+      <!-- Output nodes -->
+      <g fill="#00d4ff" stroke="#00d4ff" stroke-width="1.5">
+        <circle cx="490" cy="70"  r="17"/><circle cx="490" cy="112" r="17"/>
+        <circle cx="490" cy="155" r="17"/>
+      </g>
+      <!-- Labels -->
+      <g font-family="Azeret Mono,monospace" font-size="9" text-anchor="middle">
+        <text x="55"  y="53"  fill="#00d4ff">x₁</text><text x="55"  y="88"  fill="#00d4ff">x₂</text>
+        <text x="55"  y="123" fill="#00d4ff">x₃</text><text x="55"  y="158" fill="#00d4ff">x₄</text>
+        <text x="490" y="73"  fill="#060b14">p₁</text><text x="490" y="115" fill="#060b14">p₂</text>
+        <text x="490" y="158" fill="#060b14">p₃</text>
+      </g>
+      <!-- Softmax label -->
+      <text x="505" y="113" font-family="Azeret Mono,monospace" font-size="8" fill="#00d4ff">Softmax</text>
+      <!-- ReLU labels -->
+      <text x="200" y="198" font-family="Azeret Mono,monospace" font-size="8" fill="#7c3aed" text-anchor="middle">ReLU</text>
+      <text x="350" y="198" font-family="Azeret Mono,monospace" font-size="8" fill="#f59e0b" text-anchor="middle">ReLU</text>
+    </svg>
+    <div class="diag-cap">MLP: 4 → 5 → 4 → 3. Every layer fully connected to the next. Each hidden neuron learns a different feature combination.</div>
+  </div>
+
+  <div class="math">
+    <div class="math-lbl">Layer-wise Forward Pass</div>
+    <div class="math-eq"><strong>Z</strong>⁽ˡ⁾ = <strong>W</strong>⁽ˡ⁾ <strong>A</strong>⁽ˡ⁻¹⁾ + <strong>b</strong>⁽ˡ⁾ &nbsp;&nbsp; (linear)</div>
+    <div class="math-eq"><strong>A</strong>⁽ˡ⁾ = σ(<strong>Z</strong>⁽ˡ⁾) &nbsp;&nbsp; (activation)</div>
+    <div class="math-eq">W⁽ˡ⁾ ∈ ℝ^{hₗ × hₗ₋₁} &nbsp; b⁽ˡ⁾ ∈ ℝ^{hₗ}</div>
+  </div>
+
+  <div class="box box-math">
+    <div class="box-title">★ Universal Approximation Theorem</div>
+    <p>An MLP with a single hidden layer and a non-linear activation can approximate <em>any</em> continuous function to arbitrary precision — given enough neurons. This is why neural networks are so powerful. In practice, <strong>depth</strong> is more efficient than width for complex functions.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S3: ACTIVATIONS ══════════════ -->
+<section id="activations">
+<div class="wrap reveal">
+  <div class="sec-label">Section 03</div>
+  <h2>Activation <span class="acc">Functions</span></h2>
+  <p class="sec-lead">Without non-linear activations, any deep network collapses to a single linear transform. Activations are what give networks their expressive power.</p>
+
+  <!-- Interactive Activation Visualiser -->
+  <h3>Interactive: Activation Comparisons</h3>
+  <div class="demo">
+    <div class="demo-title">// Plot any activation function</div>
+    <div class="demo-ctrl">
+      <button class="dbtn active" onclick="setAct('relu',this)">ReLU</button>
+      <button class="dbtn" onclick="setAct('sigmoid',this)">Sigmoid</button>
+      <button class="dbtn" onclick="setAct('tanh',this)">Tanh</button>
+      <button class="dbtn" onclick="setAct('leaky',this)">Leaky ReLU</button>
+      <button class="dbtn" onclick="setAct('gelu',this)">GELU</button>
+      <button class="dbtn" onclick="setAct('swish',this)">Swish</button>
+    </div>
+    <canvas class="demo-canvas" id="actCanvas" height="200"></canvas>
+    <div class="demo-info" id="actInfo"></div>
+  </div>
+
+  <div class="act-grid">
+    <div class="act-card">
+      <div class="act-name">ReLU</div>
+      <div class="act-formula">max(0, z)</div>
+      <svg viewBox="0 0 140 70" height="60">
+        <line x1="70" y1="5" x2="70" y2="65" stroke="#1a2840" stroke-width="0.8"/>
+        <line x1="10" y1="55" x2="130" y2="55" stroke="#1a2840" stroke-width="0.8"/>
+        <polyline points="10,55 70,55 130,5" stroke="#00d4ff" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="act-desc">Fast, no vanishing gradient for z&gt;0. Dead neurons if always z&lt;0. Default choice.</div>
+    </div>
+    <div class="act-card">
+      <div class="act-name">Sigmoid</div>
+      <div class="act-formula">1/(1+e⁻ᶻ)</div>
+      <svg viewBox="0 0 140 70" height="60">
+        <line x1="70" y1="5" x2="70" y2="65" stroke="#1a2840" stroke-width="0.8"/>
+        <line x1="10" y1="55" x2="130" y2="55" stroke="#1a2840" stroke-width="0.8"/>
+        <path d="M10,54 C30,52 45,45 60,38 C75,31 85,18 100,12 C115,8 125,7 130,7" stroke="#7c3aed" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="act-desc">Output probability [0,1]. Vanishing gradient for large |z|. Use only in output.</div>
+    </div>
+    <div class="act-card">
+      <div class="act-name">Tanh</div>
+      <div class="act-formula">(eᶻ−e⁻ᶻ)/(eᶻ+e⁻ᶻ)</div>
+      <svg viewBox="0 0 140 70" height="60">
+        <line x1="70" y1="5" x2="70" y2="65" stroke="#1a2840" stroke-width="0.8"/>
+        <line x1="10" y1="35" x2="130" y2="35" stroke="#1a2840" stroke-width="0.8"/>
+        <path d="M10,62 C25,58 40,50 55,40 C65,34 70,32 80,28 C90,22 105,16 120,12 C128,9 132,8 130,8" stroke="#f59e0b" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="act-desc">Output [-1,1]. Zero-centred. Still vanishing gradient. Good for RNNs.</div>
+    </div>
+    <div class="act-card">
+      <div class="act-name">GELU</div>
+      <div class="act-formula">z·Φ(z)</div>
+      <svg viewBox="0 0 140 70" height="60">
+        <line x1="70" y1="5" x2="70" y2="65" stroke="#1a2840" stroke-width="0.8"/>
+        <line x1="10" y1="50" x2="130" y2="50" stroke="#1a2840" stroke-width="0.8"/>
+        <path d="M10,50 C20,51 35,52 48,52 C55,52 60,50 65,47 C68,42 70,40 75,36 C85,28 100,18 120,10 C126,8 130,7 130,7" stroke="#10b981" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="act-desc">Smooth ReLU. Used in BERT, GPT. Better gradient flow in transformers.</div>
+    </div>
+    <div class="act-card">
+      <div class="act-name">Leaky ReLU</div>
+      <div class="act-formula">max(0.01z, z)</div>
+      <svg viewBox="0 0 140 70" height="60">
+        <line x1="70" y1="5" x2="70" y2="65" stroke="#1a2840" stroke-width="0.8"/>
+        <line x1="10" y1="55" x2="130" y2="55" stroke="#1a2840" stroke-width="0.8"/>
+        <polyline points="10,61 70,55 130,5" stroke="#f43f5e" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="act-desc">Fixes dead neurons — small slope for z&lt;0. α=0.01 or learnable (PReLU).</div>
+    </div>
+    <div class="act-card">
+      <div class="act-name">Softmax</div>
+      <div class="act-formula">eᶻⁱ/Σeᶻʲ</div>
+      <svg viewBox="0 0 140 70" height="60">
+        <rect x="10" y="20" width="30" height="30" fill="rgba(0,212,255,.3)" stroke="#00d4ff" stroke-width="1" rx="2"/>
+        <rect x="55" y="30" width="30" height="20" fill="rgba(0,212,255,.3)" stroke="#00d4ff" stroke-width="1" rx="2"/>
+        <rect x="100" y="40" width="30" height="10" fill="rgba(0,212,255,.3)" stroke="#00d4ff" stroke-width="1" rx="2"/>
+        <text x="70" y="64" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">sums to 1</text>
+      </svg>
+      <div class="act-desc">Multi-class output layer. Converts logits to probability distribution.</div>
+    </div>
+  </div>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Issue</th><th>Cause</th><th>Solution</th></tr>
+      <tr><td><strong>Vanishing gradient</strong></td><td>Sigmoid/tanh saturate at extremes; gradient → 0</td><td>Use ReLU/GELU, batch norm, skip connections</td></tr>
+      <tr><td><strong>Exploding gradient</strong></td><td>Deep nets multiply large gradients; grows exponentially</td><td>Gradient clipping, weight initialisation, batch norm</td></tr>
+      <tr><td><strong>Dead neurons</strong></td><td>ReLU stuck at z&lt;0 permanently</td><td>Leaky ReLU, careful lr, He init</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S4: BACKPROP ══════════════ -->
+<section id="backprop">
+<div class="wrap reveal">
+  <div class="sec-label">Section 04</div>
+  <h2>Back<span class="acc">propagation</span></h2>
+  <p class="sec-lead">Backprop is automatic differentiation applied to neural networks — it efficiently computes the gradient of the loss with respect to every weight using the chain rule.</p>
+
+  <h3>The Chain Rule</h3>
+  <div class="math">
+    <div class="math-lbl">Chain Rule — Foundation of Backprop</div>
+    <div class="math-eq">∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w</div>
+    <div class="math-eq">&nbsp;= δ · σ'(z) · x</div>
+  </div>
+
+  <h3>Full Backprop Pass</h3>
+  <div class="math">
+    <div class="math-lbl">Backprop Equations (layer l)</div>
+    <div class="math-eq">δ⁽ˡ⁾ = (W⁽ˡ⁺¹⁾)ᵀ δ⁽ˡ⁺¹⁾ ⊙ σ'(Z⁽ˡ⁾) &nbsp;&nbsp; (error propagation)</div>
+    <div class="math-eq">∂L/∂W⁽ˡ⁾ = δ⁽ˡ⁾ (A⁽ˡ⁻¹⁾)ᵀ / n &nbsp;&nbsp; (weight gradient)</div>
+    <div class="math-eq">∂L/∂b⁽ˡ⁾ = mean(δ⁽ˡ⁾, axis=batch) &nbsp;&nbsp; (bias gradient)</div>
+  </div>
+
+  <!-- Backprop computation graph -->
+  <div class="diagram">
+    <svg viewBox="0 0 560 140" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>Computation graph for backpropagation showing forward pass and backward gradient flow</title>
+      <defs>
+        <marker id="af" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        </marker>
+        <marker id="ab" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M9 1L1 5L9 9" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+        </marker>
+      </defs>
+      <!-- Nodes -->
+      <rect x="10"  y="50" width="60" height="40" rx="4" fill="#0f1829" stroke="#00d4ff" stroke-width="1.2"/>
+      <text x="40"  y="68" font-family="Azeret Mono,monospace" font-size="9" fill="#00d4ff" text-anchor="middle">Input x</text>
+      <text x="40"  y="81" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">A⁽⁰⁾</text>
+
+      <rect x="120" y="50" width="70" height="40" rx="4" fill="#0f1829" stroke="#7c3aed" stroke-width="1.2"/>
+      <text x="155" y="68" font-family="Azeret Mono,monospace" font-size="9" fill="#7c3aed" text-anchor="middle">Linear</text>
+      <text x="155" y="81" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">Z=W·A+b</text>
+
+      <rect x="240" y="50" width="70" height="40" rx="4" fill="#0f1829" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="275" y="68" font-family="Azeret Mono,monospace" font-size="9" fill="#f59e0b" text-anchor="middle">ReLU</text>
+      <text x="275" y="81" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">A=max(0,Z)</text>
+
+      <rect x="360" y="50" width="70" height="40" rx="4" fill="#0f1829" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="395" y="68" font-family="Azeret Mono,monospace" font-size="9" fill="#f59e0b" text-anchor="middle">Linear</text>
+      <text x="395" y="81" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">Z=W·A+b</text>
+
+      <rect x="480" y="50" width="70" height="40" rx="4" fill="#f43f5e" stroke="#f43f5e" stroke-width="1.2"/>
+      <text x="515" y="68" font-family="Azeret Mono,monospace" font-size="9" fill="white" text-anchor="middle">Loss L</text>
+      <text x="515" y="81" font-family="Azeret Mono,monospace" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">CE/MSE</text>
+
+      <!-- Forward arrows (blue, top) -->
+      <line x1="70"  y1="60" x2="118" y2="60" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#af)"/>
+      <line x1="190" y1="60" x2="238" y2="60" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#af)"/>
+      <line x1="310" y1="60" x2="358" y2="60" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#af)"/>
+      <line x1="430" y1="60" x2="478" y2="60" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#af)"/>
+      <text x="300" y="40" font-family="Space Grotesk,sans-serif" font-size="10" fill="#00d4ff" text-anchor="middle" font-weight="600">→ Forward Pass</text>
+
+      <!-- Backward arrows (amber, bottom) -->
+      <line x1="478" y1="80" x2="432" y2="80" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#ab)"/>
+      <line x1="358" y1="80" x2="312" y2="80" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#ab)"/>
+      <line x1="238" y1="80" x2="192" y2="80" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#ab)"/>
+      <line x1="118" y1="80" x2="72"  y2="80" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#ab)"/>
+      <text x="300" y="120" font-family="Space Grotesk,sans-serif" font-size="10" fill="#f59e0b" text-anchor="middle" font-weight="600">← Backward Pass (gradients)</text>
+    </svg>
+    <div class="diag-cap">Forward pass computes activations (blue →). Backward pass propagates gradients (amber ←). Each node needs to store its forward values for gradient computation.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Backprop from scratch (2-layer net)</span></div>
+    <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">relu</span>(z):        <span class="kw">return</span> np.<span class="fn">maximum</span>(<span class="nm">0</span>, z)
+<span class="kw">def</span> <span class="fn">relu_grad</span>(z):   <span class="kw">return</span> (z <span class="op">&gt;</span> <span class="nm">0</span>).astype(<span class="tp">float</span>)
+<span class="kw">def</span> <span class="fn">softmax</span>(z):
+    e <span class="op">=</span> np.<span class="fn">exp</span>(z <span class="op">-</span> z.<span class="fn">max</span>(axis<span class="op">=</span><span class="nm">1</span>, keepdims<span class="op">=</span><span class="kw">True</span>))
+    <span class="kw">return</span> e <span class="op">/</span> e.<span class="fn">sum</span>(axis<span class="op">=</span><span class="nm">1</span>, keepdims<span class="op">=</span><span class="kw">True</span>)
+
+<span class="cm"># ── FORWARD PASS ──</span>
+<span class="kw">def</span> <span class="fn">forward</span>(X, W1, b1, W2, b2):
+    Z1 <span class="op">=</span> X <span class="op">@</span> W1.T <span class="op">+</span> b1    <span class="cm"># (n, h1)</span>
+    A1 <span class="op">=</span> <span class="fn">relu</span>(Z1)          <span class="cm"># (n, h1)</span>
+    Z2 <span class="op">=</span> A1 <span class="op">@</span> W2.T <span class="op">+</span> b2   <span class="cm"># (n, k)</span>
+    A2 <span class="op">=</span> <span class="fn">softmax</span>(Z2)       <span class="cm"># (n, k)</span>
+    cache <span class="op">=</span> (X, Z1, A1, Z2, A2)
+    loss  <span class="op">=</span> <span class="op">-</span>np.<span class="fn">log</span>(A2[np.<span class="fn">arange</span>(<span class="fn">len</span>(X)), y] <span class="op">+</span> <span class="nm">1e-9</span>).<span class="fn">mean</span>()
+    <span class="kw">return</span> loss, cache
+
+<span class="cm"># ── BACKWARD PASS ──</span>
+<span class="kw">def</span> <span class="fn">backward</span>(cache, W2, y):
+    X, Z1, A1, Z2, A2 <span class="op">=</span> cache
+    n <span class="op">=</span> X.shape[<span class="nm">0</span>]
+
+    <span class="cm"># Output layer gradient (softmax + cross-entropy gradient is clean)</span>
+    dZ2 <span class="op">=</span> A2.copy()
+    dZ2[np.<span class="fn">arange</span>(n), y] <span class="op">-=</span> <span class="nm">1</span>
+    dZ2 <span class="op">/=</span> n              <span class="cm"># (n, k)</span>
+
+    dW2 <span class="op">=</span> dZ2.T <span class="op">@</span> A1     <span class="cm"># (k, h1)</span>
+    db2 <span class="op">=</span> dZ2.<span class="fn">sum</span>(axis<span class="op">=</span><span class="nm">0</span>)<span class="cm"># (k,)</span>
+
+    <span class="cm"># Hidden layer gradient</span>
+    dA1 <span class="op">=</span> dZ2 <span class="op">@</span> W2        <span class="cm"># (n, h1)</span>
+    dZ1 <span class="op">=</span> dA1 <span class="op">*</span> <span class="fn">relu_grad</span>(Z1)  <span class="cm"># element-wise gate</span>
+
+    dW1 <span class="op">=</span> dZ1.T <span class="op">@</span> X      <span class="cm"># (h1, d)</span>
+    db1 <span class="op">=</span> dZ1.<span class="fn">sum</span>(axis<span class="op">=</span><span class="nm">0</span>)<span class="cm"># (h1,)</span>
+    <span class="kw">return</span> dW1, db1, dW2, db2</pre>
+  </div>
+
+  <div class="box box-info">
+    <div class="box-title">// PyTorch autograd — no manual backprop needed</div>
+    <p>PyTorch builds a <strong>dynamic computation graph</strong> during the forward pass. Call <code class="ic">loss.backward()</code> and all gradients are automatically computed. <code class="ic">optimizer.step()</code> then updates weights. You never write backprop by hand in production.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S5: LOSS ══════════════ -->
+<section id="loss">
+<div class="wrap reveal">
+  <div class="sec-label">Section 05</div>
+  <h2>Loss <span class="acc">Functions</span></h2>
+  <p class="sec-lead">The loss function defines what the network is optimising. Choosing the wrong loss is choosing the wrong problem to solve.</p>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Task</th><th>Loss</th><th>Formula</th><th>PyTorch</th></tr>
+      <tr><td>Binary classification</td><td>Binary Cross-Entropy</td><td class="mono">−(y log ŷ + (1−y)log(1−ŷ))</td><td class="mono">nn.BCEWithLogitsLoss()</td></tr>
+      <tr><td>Multi-class</td><td>Cross-Entropy</td><td class="mono">−Σ yₖ log ŷₖ</td><td class="mono">nn.CrossEntropyLoss()</td></tr>
+      <tr><td>Regression</td><td>MSE</td><td class="mono">mean((y−ŷ)²)</td><td class="mono">nn.MSELoss()</td></tr>
+      <tr><td>Regression (robust)</td><td>Huber / MAE</td><td class="mono">smooth L1</td><td class="mono">nn.HuberLoss()</td></tr>
+      <tr><td>Ranking / embeddings</td><td>Contrastive</td><td class="mono">max(0, m−‖pos‖+‖neg‖)</td><td class="mono">nn.TripletMarginLoss()</td></tr>
+    </table>
+  </div>
+
+  <div class="box box-warn">
+    <div class="box-title">⚠ Never use nn.Sigmoid() + nn.BCELoss()</div>
+    <p>Always use <code class="ic">nn.BCEWithLogitsLoss()</code> — it combines sigmoid and BCE in one numerically stable operation. Similarly use <code class="ic">nn.CrossEntropyLoss()</code> (includes softmax) not <code class="ic">nn.NLLLoss(nn.LogSoftmax(x))</code>.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S6: OPTIMISERS ══════════════ -->
+<section id="optim">
+<div class="wrap reveal">
+  <div class="sec-label">Section 06</div>
+  <h2><span class="acc">Optimisers</span></h2>
+  <p class="sec-lead">The optimiser decides how to update weights given gradients. Choosing the right one — and tuning its learning rate — is one of the highest-leverage decisions in DL.</p>
+
+  <!-- Interactive optimiser race -->
+  <h3>Interactive: Optimiser Convergence Race</h3>
+  <div class="demo">
+    <div class="demo-title">// All optimisers descending a loss landscape</div>
+    <div class="demo-ctrl">
+      <button class="dbtn active" onclick="resetOptim()">Reset</button>
+      <button class="dbtn" onclick="runOptim()">Run</button>
+      <div class="dslider">
+        <label>LR:</label>
+        <input type="range" id="lrSlider" min="1" max="30" value="10">
+        <span class="dval" id="lrVal">0.10</span>
+      </div>
+    </div>
+    <canvas class="demo-canvas" id="optimCanvas" height="240"></canvas>
+    <div class="demo-info" id="optimInfo"></div>
+  </div>
+
+  <div class="opt-grid">
+    <div class="opt-card">
+      <div class="opt-name">SGD</div>
+      <div class="opt-eq">w ← w − α∇L</div>
+      <div class="opt-desc">Simple but noisy. Needs careful lr tuning. With momentum it's competitive.</div>
+    </div>
+    <div class="opt-card">
+      <div class="opt-name">SGD + Momentum</div>
+      <div class="opt-eq">v ← βv − α∇L; w ← w+v</div>
+      <div class="opt-desc">Builds velocity in consistent directions. Damps oscillations. β=0.9 typical.</div>
+    </div>
+    <div class="opt-card">
+      <div class="opt-name">RMSProp</div>
+      <div class="opt-eq">s ← βs+(1−β)g²; w ← w−α·g/√s</div>
+      <div class="opt-desc">Adaptive lr per parameter. Good for RNNs. Divides by gradient magnitude.</div>
+    </div>
+    <div class="opt-card">
+      <div class="opt-name">Adam</div>
+      <div class="opt-eq">m=β₁m+(1−β₁)g; v=β₂v+(1−β₂)g²</div>
+      <div class="opt-desc">Combines momentum + RMSProp. Default choice. β₁=0.9, β₂=0.999.</div>
+    </div>
+    <div class="opt-card">
+      <div class="opt-name">AdamW</div>
+      <div class="opt-eq">Adam + weight decay decoupled</div>
+      <div class="opt-desc">Adam but with proper L2 regularisation. Use for transformers. Default in HuggingFace.</div>
+    </div>
+    <div class="opt-card">
+      <div class="opt-name">LR Schedulers</div>
+      <div class="opt-eq">α(t) = f(epoch)</div>
+      <div class="opt-desc">Cosine annealing, warmup + decay, ReduceLROnPlateau. Always use one.</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Optimisers in PyTorch</span></div>
+    <pre><span class="kw">import</span> torch
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+
+<span class="cm"># AdamW — best default for most tasks</span>
+optimizer <span class="op">=</span> optim.<span class="fn">AdamW</span>(model.parameters(),
+                        lr<span class="op">=</span><span class="nm">3e-4</span>,
+                        weight_decay<span class="op">=</span><span class="nm">1e-2</span>,
+                        betas<span class="op">=</span>(<span class="nm">0.9</span>, <span class="nm">0.999</span>))
+
+<span class="cm"># SGD + Nesterov momentum — often beats Adam for CNNs</span>
+optimizer <span class="op">=</span> optim.<span class="fn">SGD</span>(model.parameters(), lr<span class="op">=</span><span class="nm">0.1</span>,
+                      momentum<span class="op">=</span><span class="nm">0.9</span>, nesterov<span class="op">=</span><span class="kw">True</span>,
+                      weight_decay<span class="op">=</span><span class="nm">5e-4</span>)
+
+<span class="cm"># ── Learning rate schedulers ──</span>
+<span class="cm"># Cosine annealing (best for most tasks)</span>
+scheduler <span class="op">=</span> optim.lr_scheduler.<span class="fn">CosineAnnealingLR</span>(
+    optimizer, T_max<span class="op">=</span>num_epochs, eta_min<span class="op">=</span><span class="nm">1e-6</span>)
+
+<span class="cm"># Linear warmup + cosine decay (best for transformers)</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> get_cosine_schedule_with_warmup
+scheduler <span class="op">=</span> <span class="fn">get_cosine_schedule_with_warmup</span>(
+    optimizer, num_warmup_steps<span class="op">=</span><span class="nm">100</span>,
+    num_training_steps<span class="op">=</span>num_epochs <span class="op">*</span> len(train_loader))
+
+<span class="cm"># ReduceLROnPlateau — reduce when val loss stagnates</span>
+scheduler <span class="op">=</span> optim.lr_scheduler.<span class="fn">ReduceLROnPlateau</span>(
+    optimizer, mode<span class="op">=</span><span class="st">'min'</span>, patience<span class="op">=</span><span class="nm">5</span>, factor<span class="op">=</span><span class="nm">0.5</span>)
+
+<span class="cm"># Step in train loop:</span>
+scheduler.<span class="fn">step</span>()               <span class="cm"># after each epoch</span>
+scheduler.<span class="fn">step</span>(val_loss)       <span class="cm"># for ReduceLROnPlateau</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S7: REGULARISATION ══════════════ -->
+<section id="reg">
+<div class="wrap reveal">
+  <div class="sec-label">Section 07</div>
+  <h2>Regularisation <span class="acc">in DL</span></h2>
+  <p class="sec-lead">Deep networks have millions of parameters and overfit easily. These techniques are essential to generalise beyond the training set.</p>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Technique</th><th>How it works</th><th>When to use</th></tr>
+      <tr><td><strong>Dropout</strong></td><td>Randomly zero p% of neurons during training → ensemble of sub-networks</td><td>FC layers; p=0.1–0.5</td></tr>
+      <tr><td><strong>Batch Norm</strong></td><td>Normalise activations per mini-batch → stable training, allows higher LR</td><td>After linear/conv, before activation</td></tr>
+      <tr><td><strong>Layer Norm</strong></td><td>Normalise across features per sample → batch-size independent</td><td>Transformers, RNNs</td></tr>
+      <tr><td><strong>Weight Decay (L2)</strong></td><td>Add λΣwᵢ² to loss → shrinks weights toward zero</td><td>Always; use AdamW not Adam</td></tr>
+      <tr><td><strong>Data Augmentation</strong></td><td>Create new training examples via transforms → increases effective data</td><td>Computer vision always</td></tr>
+      <tr><td><strong>Early Stopping</strong></td><td>Stop when val loss stops improving → prevents overfitting</td><td>Always monitor val loss</td></tr>
+      <tr><td><strong>Label Smoothing</strong></td><td>Soften hard 0/1 targets to 0.9/0.05 → calibrated probabilities</td><td>Classification; ε=0.1</td></tr>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Regularisation in PyTorch</span></div>
+    <pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="tp">RegularisedMLP</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_dim, hidden, out_dim, dropout<span class="op">=</span><span class="nm">0.3</span>):
+        <span class="fn">super</span>().__init__()
+        self.net <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Linear</span>(in_dim, hidden),
+            nn.<span class="fn">BatchNorm1d</span>(hidden),    <span class="cm"># normalise activations</span>
+            nn.<span class="fn">ReLU</span>(),
+            nn.<span class="fn">Dropout</span>(p<span class="op">=</span>dropout),    <span class="cm"># randomly zero neurons</span>
+
+            nn.<span class="fn">Linear</span>(hidden, hidden),
+            nn.<span class="fn">BatchNorm1d</span>(hidden),
+            nn.<span class="fn">ReLU</span>(),
+            nn.<span class="fn">Dropout</span>(p<span class="op">=</span>dropout),
+
+            nn.<span class="fn">Linear</span>(hidden, out_dim)  <span class="cm"># no dropout on output</span>
+        )
+        self.<span class="fn">_init_weights</span>()
+
+    <span class="kw">def</span> <span class="fn">_init_weights</span>(self):
+        <span class="kw">for</span> m <span class="kw">in</span> self.modules():
+            <span class="kw">if</span> isinstance(m, nn.<span class="tp">Linear</span>):
+                nn.init.<span class="fn">kaiming_normal_</span>(m.weight, nonlinearity<span class="op">=</span><span class="st">'relu'</span>)
+                nn.init.<span class="fn">zeros_</span>(m.bias)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="kw">return</span> self.net(x)
+
+<span class="cm"># Label smoothing loss</span>
+criterion <span class="op">=</span> nn.<span class="fn">CrossEntropyLoss</span>(label_smoothing<span class="op">=</span><span class="nm">0.1</span>)
+
+<span class="cm"># Gradient clipping — prevents explosions</span>
+nn.utils.<span class="fn">clip_grad_norm_</span>(model.parameters(), max_norm<span class="op">=</span><span class="nm">1.0</span>)</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S8: PYTORCH ══════════════ -->
+<section id="pytorch">
+<div class="wrap reveal">
+  <div class="sec-label">Section 08</div>
+  <h2>PyTorch <span class="acc">Deep Dive</span></h2>
+  <p class="sec-lead">PyTorch is the dominant research and production framework. Its dynamic graph and pythonic interface make it the most flexible deep learning library.</p>
+
+  <h3>Tensors — the Core Data Structure</h3>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — PyTorch Tensors</span></div>
+    <pre><span class="kw">import</span> torch
+
+<span class="cm"># Creation</span>
+x <span class="op">=</span> torch.<span class="fn">tensor</span>([[<span class="nm">1.0</span>, <span class="nm">2.0</span>], [<span class="nm">3.0</span>, <span class="nm">4.0</span>]])   <span class="cm"># from Python data</span>
+x <span class="op">=</span> torch.<span class="fn">randn</span>(<span class="nm">32</span>, <span class="nm">128</span>)                       <span class="cm"># random N(0,1)</span>
+x <span class="op">=</span> torch.<span class="fn">zeros</span>(<span class="nm">4</span>, <span class="nm">4</span>)                           <span class="cm"># zeros</span>
+x <span class="op">=</span> torch.<span class="fn">arange</span>(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">2</span>)                      <span class="cm"># [0,2,4,6,8]</span>
+
+<span class="cm"># Device management</span>
+device <span class="op">=</span> <span class="st">'cuda'</span> <span class="kw">if</span> torch.cuda.<span class="fn">is_available</span>() <span class="kw">else</span> <span class="st">'cpu'</span>
+x <span class="op">=</span> x.<span class="fn">to</span>(device)        <span class="cm"># move to GPU</span>
+model <span class="op">=</span> model.<span class="fn">to</span>(device)
+
+<span class="cm"># Gradients — automatic differentiation</span>
+x <span class="op">=</span> torch.<span class="fn">randn</span>(<span class="nm">3</span>, requires_grad<span class="op">=</span><span class="kw">True</span>)    <span class="cm"># track ops</span>
+y <span class="op">=</span> (x <span class="op">**</span> <span class="nm">2</span>).<span class="fn">sum</span>()
+y.<span class="fn">backward</span>()                                <span class="cm"># compute dy/dx</span>
+x.grad                                       <span class="cm"># tensor([2x₁, 2x₂, 2x₃])</span>
+
+<span class="cm"># Gradient context managers</span>
+<span class="kw">with</span> torch.no_grad():           <span class="cm"># disable grad (inference)</span>
+    pred <span class="op">=</span> model(x_test)
+
+<span class="cm"># Shape operations</span>
+x.<span class="fn">view</span>(<span class="nm">-1</span>, <span class="nm">4</span>)              <span class="cm"># reshape (must be contiguous)</span>
+x.<span class="fn">reshape</span>(<span class="nm">-1</span>, <span class="nm">4</span>)           <span class="cm"># safer reshape</span>
+x.<span class="fn">unsqueeze</span>(<span class="nm">0</span>)            <span class="cm"># add dimension at 0</span>
+x.<span class="fn">squeeze</span>()               <span class="cm"># remove size-1 dims</span>
+torch.<span class="fn">cat</span>([a, b], dim<span class="op">=</span><span class="nm">1</span>) <span class="cm"># concatenate</span>
+torch.<span class="fn">stack</span>([a, b])       <span class="cm"># new dimension</span>
+x.T                        <span class="cm"># transpose (2D)</span></pre>
+  </div>
+
+  <h3>Building Models with nn.Module</h3>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — nn.Module</span></div>
+    <pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+
+<span class="kw">class</span> <span class="tp">MLP</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_in, hidden, d_out, dropout<span class="op">=</span><span class="nm">0.2</span>):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        self.fc1 <span class="op">=</span> nn.<span class="fn">Linear</span>(d_in, hidden)
+        self.fc2 <span class="op">=</span> nn.<span class="fn">Linear</span>(hidden, hidden)
+        self.fc3 <span class="op">=</span> nn.<span class="fn">Linear</span>(hidden, d_out)
+        self.bn1 <span class="op">=</span> nn.<span class="fn">BatchNorm1d</span>(hidden)
+        self.bn2 <span class="op">=</span> nn.<span class="fn">BatchNorm1d</span>(hidden)
+        self.drop <span class="op">=</span> nn.<span class="fn">Dropout</span>(dropout)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x <span class="op">=</span> self.drop(F.<span class="fn">relu</span>(self.bn1(self.fc1(x))))
+        x <span class="op">=</span> self.drop(F.<span class="fn">relu</span>(self.bn2(self.fc2(x))))
+        <span class="kw">return</span> self.fc3(x)   <span class="cm"># raw logits — let loss handle softmax</span>
+
+model <span class="op">=</span> <span class="fn">MLP</span>(<span class="nm">128</span>, <span class="nm">256</span>, <span class="nm">10</span>).<span class="fn">to</span>(device)
+<span class="fn">print</span>(model)
+<span class="fn">print</span>(<span class="st">f"Parameters: {sum(p.numel() for p in model.parameters()):,}"</span>)</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S9: TRAINING PIPELINE ══════════════ -->
+<section id="training">
+<div class="wrap reveal">
+  <div class="sec-label">Section 09</div>
+  <h2>Training <span class="acc">Pipeline</span></h2>
+  <p class="sec-lead">A complete, production-quality training loop with dataset handling, validation, checkpointing, and monitoring.</p>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Complete Training Pipeline</span></div>
+    <pre><span class="kw">import</span> torch, torch.nn <span class="kw">as</span> nn
+<span class="kw">from</span> torch.utils.data <span class="kw">import</span> DataLoader, TensorDataset
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ─── 1. Dataset & DataLoader ───</span>
+X_t <span class="op">=</span> torch.<span class="fn">tensor</span>(X_train, dtype<span class="op">=</span>torch.float32)
+y_t <span class="op">=</span> torch.<span class="fn">tensor</span>(y_train, dtype<span class="op">=</span>torch.long)
+train_ds <span class="op">=</span> <span class="fn">TensorDataset</span>(X_t, y_t)
+train_dl <span class="op">=</span> <span class="fn">DataLoader</span>(train_ds, batch_size<span class="op">=</span><span class="nm">64</span>, shuffle<span class="op">=</span><span class="kw">True</span>,
+                       num_workers<span class="op">=</span><span class="nm">2</span>, pin_memory<span class="op">=</span><span class="kw">True</span>)
+
+<span class="cm"># ─── 2. Model, loss, optimiser ───</span>
+model     <span class="op">=</span> <span class="fn">MLP</span>(<span class="nm">X_train</span>.shape[<span class="nm">1</span>], <span class="nm">256</span>, num_classes).<span class="fn">to</span>(device)
+criterion <span class="op">=</span> nn.<span class="fn">CrossEntropyLoss</span>(label_smoothing<span class="op">=</span><span class="nm">0.1</span>)
+optimizer <span class="op">=</span> torch.optim.<span class="fn">AdamW</span>(model.parameters(), lr<span class="op">=</span><span class="nm">3e-4</span>, weight_decay<span class="op">=</span><span class="nm">1e-2</span>)
+scheduler <span class="op">=</span> torch.optim.lr_scheduler.<span class="fn">CosineAnnealingLR</span>(optimizer, T_max<span class="op">=</span><span class="nm">50</span>)
+
+<span class="cm"># ─── 3. Training loop ───</span>
+best_val, patience_cnt <span class="op">=</span> np.<span class="fn">inf</span>, <span class="nm">0</span>
+history <span class="op">=</span> {<span class="st">'train_loss'</span>:[], <span class="st">'val_loss'</span>:[], <span class="st">'val_acc'</span>:[]}
+
+<span class="kw">for</span> epoch <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">51</span>):
+    <span class="cm"># ── Train ──</span>
+    model.<span class="fn">train</span>()    <span class="cm"># enables dropout, batch norm in train mode</span>
+    train_loss <span class="op">=</span> <span class="nm">0</span>
+    <span class="kw">for</span> xb, yb <span class="kw">in</span> train_dl:
+        xb, yb <span class="op">=</span> xb.<span class="fn">to</span>(device), yb.<span class="fn">to</span>(device)
+        optimizer.<span class="fn">zero_grad</span>()           <span class="cm"># clear old gradients</span>
+        logits <span class="op">=</span> <span class="fn">model</span>(xb)
+        loss   <span class="op">=</span> <span class="fn">criterion</span>(logits, yb)
+        loss.<span class="fn">backward</span>()               <span class="cm"># compute gradients</span>
+        nn.utils.<span class="fn">clip_grad_norm_</span>(model.parameters(), <span class="nm">1.0</span>)
+        optimizer.<span class="fn">step</span>()             <span class="cm"># update weights</span>
+        train_loss <span class="op">+=</span> loss.item()
+
+    <span class="cm"># ── Validate ──</span>
+    model.<span class="fn">eval</span>()     <span class="cm"># disables dropout, uses batch norm running stats</span>
+    val_loss, correct, total <span class="op">=</span> <span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">0</span>
+    <span class="kw">with</span> torch.<span class="fn">no_grad</span>():
+        <span class="kw">for</span> xb, yb <span class="kw">in</span> val_dl:
+            xb, yb <span class="op">=</span> xb.<span class="fn">to</span>(device), yb.<span class="fn">to</span>(device)
+            logits <span class="op">=</span> <span class="fn">model</span>(xb)
+            val_loss <span class="op">+=</span> <span class="fn">criterion</span>(logits, yb).item()
+            correct  <span class="op">+=</span> (logits.<span class="fn">argmax</span>(<span class="nm">1</span>) <span class="op">==</span> yb).<span class="fn">sum</span>().item()
+            total    <span class="op">+=</span> <span class="fn">len</span>(yb)
+
+    val_acc <span class="op">=</span> correct <span class="op">/</span> total
+    scheduler.<span class="fn">step</span>()
+
+    <span class="cm"># ── Early stopping + checkpointing ──</span>
+    <span class="kw">if</span> val_loss <span class="op">&lt;</span> best_val:
+        best_val <span class="op">=</span> val_loss; patience_cnt <span class="op">=</span> <span class="nm">0</span>
+        torch.<span class="fn">save</span>(model.state_dict(), <span class="st">'best_model.pt'</span>)
+    <span class="kw">else</span>:
+        patience_cnt <span class="op">+=</span> <span class="nm">1</span>
+        <span class="kw">if</span> patience_cnt <span class="op">&gt;=</span> <span class="nm">10</span>: <span class="kw">break</span>   <span class="cm"># early stop</span>
+
+    <span class="fn">print</span>(<span class="st">f"E{epoch:02d} | train={train_loss/len(train_dl):.4f} "</span>
+          <span class="st">f"| val={val_loss/len(val_dl):.4f} | acc={val_acc:.4f}"</span>)
+
+<span class="cm"># ─── 4. Load best & evaluate ───</span>
+model.<span class="fn">load_state_dict</span>(torch.<span class="fn">load</span>(<span class="st">'best_model.pt'</span>))
+model.<span class="fn">eval</span>()</pre>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">✓ Training checklist</div>
+    <p>
+      ✅ Always call <code class="ic">model.train()</code> before training loop and <code class="ic">model.eval()</code> before validation.<br>
+      ✅ Always call <code class="ic">optimizer.zero_grad()</code> before <code class="ic">loss.backward()</code>.<br>
+      ✅ Use <code class="ic">torch.no_grad()</code> during evaluation — 40% speed boost, no memory waste.<br>
+      ✅ Use <code class="ic">pin_memory=True</code> in DataLoader if using GPU — faster CPU→GPU transfer.<br>
+      ✅ Save <code class="ic">model.state_dict()</code>, not the full model — more portable.
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════ S10: ARCHITECTURES ══════════════ -->
+<section id="arch">
+<div class="wrap reveal">
+  <div class="sec-label">Section 10</div>
+  <h2>Architecture <span class="acc">Zoo</span></h2>
+  <p class="sec-lead">Key architectural innovations that shaped modern deep learning — from the original MLP to transformers. Each solved a specific failure mode of its predecessors.</p>
+
+  <div class="arch-timeline">
+    <div class="arch-item">
+      <div class="arch-year">1958 — 1986</div>
+      <div class="arch-name">MLP + Backpropagation</div>
+      <div class="arch-desc">Multi-layer perceptrons trained via gradient descent. Solved XOR. Foundation of all DL.</div>
+    </div>
+    <div class="arch-item">
+      <div class="arch-year">1998</div>
+      <div class="arch-name">LeNet — CNNs for Vision</div>
+      <div class="arch-desc">Convolutional layers for spatial feature extraction. Trained on MNIST with shared weights.</div>
+    </div>
+    <div class="arch-item">
+      <div class="arch-year">2012</div>
+      <div class="arch-name">AlexNet — Deep CNN on GPU</div>
+      <div class="arch-desc">Won ImageNet by 10 points. Introduced ReLU, dropout, GPU training. Started the DL revolution.</div>
+    </div>
+    <div class="arch-item">
+      <div class="arch-year">2014</div>
+      <div class="arch-name">GAN — Generative Adversarial Networks</div>
+      <div class="arch-desc">Generator + Discriminator adversarial game. Learns to generate realistic images from noise.</div>
+    </div>
+    <div class="arch-item">
+      <div class="arch-year">2015</div>
+      <div class="arch-name">ResNet — Skip Connections</div>
+      <div class="arch-desc">Residual connections F(x)+x. Solved vanishing gradients for 100+ layer networks. Still widely used.</div>
+    </div>
+    <div class="arch-item">
+      <div class="arch-year">2017</div>
+      <div class="arch-name">Transformer — Attention is All You Need</div>
+      <div class="arch-desc">Self-attention mechanism replaces RNNs. Parallelisable. Foundation of BERT, GPT, Vision Transformers.</div>
+    </div>
+    <div class="arch-item">
+      <div class="arch-year">2018–now</div>
+      <div class="arch-name">Foundation Models — BERT, GPT, CLIP, DALL·E</div>
+      <div class="arch-desc">Pre-train on massive data, fine-tune on task. Transfer learning at scale. LLMs are the dominant paradigm.</div>
+    </div>
+  </div>
+
+  <h3>Residual Block — The ResNet Innovation</h3>
+  <div class="diagram">
+    <svg viewBox="0 0 400 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>Residual block diagram: input x passes through linear, batch norm, ReLU, linear, batch norm, then is added to the skip connection x to produce F(x)+x</title>
+      <defs>
+        <marker id="ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+        </marker>
+      </defs>
+      <!-- Input -->
+      <rect x="10" y="60" width="40" height="30" rx="3" fill="#0f1829" stroke="#00d4ff" stroke-width="1.2"/>
+      <text x="30" y="79" font-family="Azeret Mono,monospace" font-size="10" fill="#00d4ff" text-anchor="middle">x</text>
+      <!-- Main path -->
+      <line x1="50" y1="75" x2="80" y2="75" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ra)"/>
+      <rect x="82" y="58" width="64" height="34" rx="3" fill="#0f1829" stroke="#7c3aed" stroke-width="1.2"/>
+      <text x="114" y="73" font-family="Azeret Mono,monospace" font-size="9" fill="#7c3aed" text-anchor="middle">Linear</text>
+      <text x="114" y="85" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">BatchNorm</text>
+      <line x1="146" y1="75" x2="170" y2="75" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ra)"/>
+      <rect x="172" y="62" width="44" height="26" rx="3" fill="#0f1829" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="194" y="79" font-family="Azeret Mono,monospace" font-size="9" fill="#f59e0b" text-anchor="middle">ReLU</text>
+      <line x1="216" y1="75" x2="240" y2="75" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ra)"/>
+      <rect x="242" y="58" width="64" height="34" rx="3" fill="#0f1829" stroke="#7c3aed" stroke-width="1.2"/>
+      <text x="274" y="73" font-family="Azeret Mono,monospace" font-size="9" fill="#7c3aed" text-anchor="middle">Linear</text>
+      <text x="274" y="85" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">BatchNorm</text>
+      <!-- Skip connection -->
+      <path d="M30 90 L30 120 L330 120 L330 90" stroke="#10b981" stroke-width="1.8" fill="none" stroke-dasharray="5,3"/>
+      <text x="180" y="136" font-family="Azeret Mono,monospace" font-size="9" fill="#10b981" text-anchor="middle">Skip connection (identity)</text>
+      <!-- Add node -->
+      <line x1="306" y1="75" x2="330" y2="75" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ra)"/>
+      <circle cx="344" cy="75" r="16" fill="#0f1829" stroke="#10b981" stroke-width="1.5"/>
+      <text x="344" y="71" font-family="Azeret Mono,monospace" font-size="12" fill="#10b981" text-anchor="middle">⊕</text>
+      <text x="344" y="84" font-family="Azeret Mono,monospace" font-size="8" fill="#4a6080" text-anchor="middle">add</text>
+      <!-- Output -->
+      <line x1="360" y1="75" x2="390" y2="75" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#ra)"/>
+      <text x="382" y="68" font-family="Azeret Mono,monospace" font-size="9" fill="#00d4ff">F(x)+x</text>
+    </svg>
+    <div class="diag-cap">Residual block: output = F(x) + x. The skip connection ensures gradients can flow directly to early layers, enabling 100+ layer networks.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — ResNet Block in PyTorch</span></div>
+    <pre><span class="kw">class</span> <span class="tp">ResidualBlock</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, dim):
+        <span class="fn">super</span>().__init__()
+        self.block <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Linear</span>(dim, dim),
+            nn.<span class="fn">BatchNorm1d</span>(dim),
+            nn.<span class="fn">ReLU</span>(),
+            nn.<span class="fn">Linear</span>(dim, dim),
+            nn.<span class="fn">BatchNorm1d</span>(dim),
+        )
+        self.relu <span class="op">=</span> nn.<span class="fn">ReLU</span>()
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="kw">return</span> self.relu(self.block(x) <span class="op">+</span> x)  <span class="cm"># F(x) + x</span>
+
+<span class="kw">class</span> <span class="tp">DeepResNet</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_in, hidden, n_blocks, d_out):
+        <span class="fn">super</span>().__init__()
+        self.embed  <span class="op">=</span> nn.<span class="fn">Linear</span>(d_in, hidden)
+        self.blocks <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+            <span class="op">*</span>[<span class="fn">ResidualBlock</span>(hidden) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n_blocks)]
+        )
+        self.head <span class="op">=</span> nn.<span class="fn">Linear</span>(hidden, d_out)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x <span class="op">=</span> F.<span class="fn">relu</span>(self.embed(x))
+        x <span class="op">=</span> self.blocks(x)
+        <span class="kw">return</span> self.head(x)
+
+model <span class="op">=</span> <span class="fn">DeepResNet</span>(d_in<span class="op">=</span><span class="nm">128</span>, hidden<span class="op">=</span><span class="nm">256</span>, n_blocks<span class="op">=</span><span class="nm">8</span>, d_out<span class="op">=</span><span class="nm">10</span>)</pre>
+  </div>
+
+  <h3>Quick Reference — Key Formulas</h3>
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Concept</th><th>Formula</th><th>Code</th></tr>
+      <tr><td>Forward pass</td><td>A=σ(WX+b)</td><td class="mono">F.relu(self.fc(x))</td></tr>
+      <tr><td>Cross-entropy</td><td>−Σ y log ŷ</td><td class="mono">nn.CrossEntropyLoss()(logits,y)</td></tr>
+      <tr><td>Softmax</td><td>eᶻ/Σeᶻ</td><td class="mono">F.softmax(logits, dim=1)</td></tr>
+      <tr><td>He init</td><td>N(0, √(2/fan_in))</td><td class="mono">nn.init.kaiming_normal_(w)</td></tr>
+      <tr><td>Batch norm</td><td>(x−μ)/σ · γ+β</td><td class="mono">nn.BatchNorm1d(dim)</td></tr>
+      <tr><td>Dropout</td><td>mask ~ Bernoulli(1−p)</td><td class="mono">nn.Dropout(p=0.3)</td></tr>
+      <tr><td>Skip connection</td><td>F(x)+x</td><td class="mono">return self.block(x) + x</td></tr>
+      <tr><td>Grad clip</td><td>g ← g·min(1, clip/‖g‖)</td><td class="mono">nn.utils.clip_grad_norm_(params,1)</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Deep Learning &amp; Neural Networks — Comprehensive Notes &nbsp;·&nbsp; Module 05 of the <a href="#">3-Month ML Plan</a></p>
+    <p style="margin-top:6px;">← <a href="#">Module 04: Classical ML</a> &nbsp;&nbsp; <a href="#">Module 06: CNNs →</a></p>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════
+// HERO NEURAL NETWORK ANIMATION
+// ══════════════════════════════════════════
+const heroC = document.getElementById('heroNet');
+const heroCtx = heroC.getContext('2d');
+let heroT = 0;
+const layers = [3,4,4,2];
+const nodePos = [];
+
+function buildNet(){
+  const W = heroC.clientWidth; heroC.width = W; heroC.height = 280;
+  nodePos.length = 0;
+  layers.forEach((n, li) => {
+    const x = 40 + li * (W - 80) / (layers.length - 1);
+    const group = [];
+    for(let ni = 0; ni < n; ni++){
+      const y = 140 - (n-1)*30 + ni*60;
+      group.push({x, y, act: Math.random()});
+    }
+    nodePos.push(group);
+  });
+}
+
+function drawHeroNet(){
+  const W = heroC.clientWidth;
+  heroCtx.fillStyle = '#060b14';
+  heroCtx.fillRect(0, 0, W, 280);
+  heroT += 0.025;
+
+  // Draw connections
+  nodePos.forEach((layer, li) => {
+    if(li === nodePos.length - 1) return;
+    const next = nodePos[li + 1];
+    layer.forEach(src => {
+      next.forEach(dst => {
+        const wave = (Math.sin(heroT + src.x * 0.01 + src.y * 0.01) + 1) / 2;
+        heroCtx.strokeStyle = `rgba(0,212,255,${0.05 + wave * 0.15})`;
+        heroCtx.lineWidth = 0.8;
+        heroCtx.beginPath();
+        heroCtx.moveTo(src.x, src.y);
+        heroCtx.lineTo(dst.x, dst.y);
+        heroCtx.stroke();
+      });
+    });
+  });
+
+  // Draw nodes
+  const colors = ['#00d4ff','#7c3aed','#f59e0b','#10b981'];
+  nodePos.forEach((layer, li) => {
+    layer.forEach(n => {
+      n.act = 0.5 + 0.5 * Math.sin(heroT * 1.5 + n.x * 0.02 + n.y * 0.03);
+      const col = colors[li % colors.length];
+      // Glow
+      const grad = heroCtx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 20);
+      grad.addColorStop(0, col + '40');
+      grad.addColorStop(1, 'transparent');
+      heroCtx.fillStyle = grad;
+      heroCtx.beginPath(); heroCtx.arc(n.x, n.y, 20, 0, Math.PI*2); heroCtx.fill();
+      // Node
+      heroCtx.fillStyle = '#0a1020';
+      heroCtx.strokeStyle = col;
+      heroCtx.lineWidth = 1.5;
+      heroCtx.globalAlpha = 0.6 + n.act * 0.4;
+      heroCtx.beginPath(); heroCtx.arc(n.x, n.y, 12, 0, Math.PI*2);
+      heroCtx.fill(); heroCtx.stroke();
+      heroCtx.globalAlpha = 1;
+    });
+  });
+  requestAnimationFrame(drawHeroNet);
+}
+
+// ══════════════════════════════════════════
+// ACTIVATION FUNCTION VISUALISER
+// ══════════════════════════════════════════
+const acts = {
+  relu:    {fn: z => Math.max(0, z),                label: 'f(z)=max(0,z)  Gradient: 1 if z>0, else 0',    color:'#00d4ff'},
+  sigmoid: {fn: z => 1/(1+Math.exp(-z)),             label: 'f(z)=1/(1+e⁻ᶻ)  Range: (0,1)',                 color:'#7c3aed'},
+  tanh:    {fn: z => Math.tanh(z),                   label: 'f(z)=tanh(z)  Range: (-1,1)',                   color:'#f59e0b'},
+  leaky:   {fn: z => z>0?z:0.1*z,                   label: 'f(z)=max(0.1z,z)  No dead neurons',             color:'#f43f5e'},
+  gelu:    {fn: z => 0.5*z*(1+Math.tanh(0.7978*(z+0.044715*z**3))), label:'f(z)=z·Φ(z)  Used in GPT/BERT', color:'#10b981'},
+  swish:   {fn: z => z/(1+Math.exp(-z)),             label: 'f(z)=z·sigmoid(z)  Self-gated',                color:'#a78bfa'}
+};
+let currentAct = 'relu';
+
+function setAct(name, btn){
+  currentAct = name;
+  document.getElementById('actCanvas').closest('.demo').querySelectorAll('.dbtn')
+    .forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  drawAct();
+}
+
+function drawAct(){
+  const c = document.getElementById('actCanvas');
+  const W = c.clientWidth; c.width = W; c.height = 200;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#04080f'; ctx.fillRect(0,0,W,200);
+  const mx = W/2, my = 100, scx = W/14, scy = 35;
+  const act = acts[currentAct];
+
+  // Grid
+  ctx.strokeStyle = '#0f1829'; ctx.lineWidth = 0.7;
+  for(let i=-6;i<=6;i++){ctx.beginPath();ctx.moveTo(mx+i*scx,10);ctx.lineTo(mx+i*scx,190);ctx.stroke();}
+  for(let i=-3;i<=3;i++){ctx.beginPath();ctx.moveTo(20,my+i*scy);ctx.lineTo(W-20,my+i*scy);ctx.stroke();}
+
+  // Axes
+  ctx.strokeStyle = '#1a2840'; ctx.lineWidth = 1;
+  ctx.beginPath();ctx.moveTo(20,my);ctx.lineTo(W-20,my);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(mx,10);ctx.lineTo(mx,190);ctx.stroke();
+
+  // Tick labels
+  ctx.fillStyle = '#2a3f5f'; ctx.font = '9px Azeret Mono,monospace'; ctx.textAlign = 'center';
+  [-4,-2,2,4].forEach(v => ctx.fillText(v, mx+v*scx, my+12));
+  [-1,1].forEach(v => { ctx.textAlign='right'; ctx.fillText(v, mx-4, my-v*scy+4); });
+
+  // Function curve
+  ctx.strokeStyle = act.color; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  let first = true;
+  for(let px=20;px<W-20;px++){
+    const z = (px - mx) / scx;
+    const fz = act.fn(z);
+    const py = my - fz * scy;
+    if(py < 5 || py > 195){ first=true; continue; }
+    if(first){ ctx.moveTo(px,py); first=false; } else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  // Gradient curve (dashed)
+  ctx.strokeStyle = act.color + '60'; ctx.lineWidth = 1.2; ctx.setLineDash([4,4]);
+  ctx.beginPath(); first = true;
+  for(let px=20;px<W-20;px++){
+    const z = (px - mx) / scx;
+    const h = 0.001;
+    const grad = (act.fn(z+h) - act.fn(z-h)) / (2*h);
+    const py = my - grad * scy;
+    if(py < 5 || py > 195){ first=true; continue; }
+    if(first){ ctx.moveTo(px,py); first=false; } else ctx.lineTo(px,py);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Legend
+  ctx.fillStyle = act.color; ctx.textAlign='left'; ctx.font='9px Azeret Mono,monospace';
+  ctx.fillText('— f(z)', 28, 22);
+  ctx.fillStyle = act.color+'90';
+  ctx.fillText('- - f\'(z)', 72, 22);
+
+  document.getElementById('actInfo').textContent = act.label;
+}
+
+// ══════════════════════════════════════════
+// OPTIMISER CONVERGENCE DEMO
+// ══════════════════════════════════════════
+const optimCanvas = document.getElementById('optimCanvas');
+const optimCtx = optimCanvas.getContext('2d');
+const lrSlider = document.getElementById('lrSlider');
+const lrVal = document.getElementById('lrVal');
+
+// Rosenbrock-like loss surface, simplified to 2D
+function lossFn(x, y){ return (1-x)**2 + 100*(y-x**2)**2; }
+function lossGrad(x, y){ return [2*(x-1)+400*x*(x**2-y), 200*(y-x**2)]; }
+
+const optColors = {'SGD':'#f43f5e','Momentum':'#f59e0b','RMSProp':'#a78bfa','Adam':'#00d4ff'};
+let optimPaths = {};
+let optimTimer = null;
+
+function initOptim(){
+  const lr = parseFloat(lrSlider.value) / 100;
+  lrVal.textContent = lr.toFixed(2);
+  optimPaths = {
+    SGD:      {x:-0.5, y:0.5, vx:0, vy:0, m1x:0, m1y:0, m2x:0, m2y:0, t:0, path:[]},
+    Momentum: {x:-0.5, y:0.5, vx:0, vy:0, m1x:0, m1y:0, m2x:0, m2y:0, t:0, path:[]},
+    RMSProp:  {x:-0.5, y:0.5, vx:0, vy:0, m1x:1e-8, m1y:1e-8, m2x:0, m2y:0, t:0, path:[]},
+    Adam:     {x:-0.5, y:0.5, vx:0, vy:0, m1x:0, m1y:0, m2x:0, m2y:0, t:0, path:[]}
+  };
+}
+
+function stepOptimAll(){
+  const lr = parseFloat(lrSlider.value) / 100;
+  const b1=0.9, b2=0.999, eps=1e-8;
+
+  Object.entries(optimPaths).forEach(([name, o]) => {
+    if(Math.abs(o.x-1)<0.02 && Math.abs(o.y-1)<0.02) return;
+    o.t++;
+    const [gx, gy] = lossGrad(o.x, o.y);
+    const gc = Math.min(Math.sqrt(gx**2+gy**2), 5); // clip
+    const sgx = gx/Math.max(Math.sqrt(gx**2+gy**2),1e-8)*Math.min(gc,5);
+    const sgy = gy/Math.max(Math.sqrt(gx**2+gy**2),1e-8)*Math.min(gc,5);
+
+    if(name==='SGD'){
+      o.x -= lr * sgx * 0.5; o.y -= lr * sgy * 0.5;
+    } else if(name==='Momentum'){
+      o.vx = b1*o.vx + lr*sgx*0.5; o.vy = b1*o.vy + lr*sgy*0.5;
+      o.x -= o.vx; o.y -= o.vy;
+    } else if(name==='RMSProp'){
+      o.m1x = 0.9*o.m1x + 0.1*sgx**2; o.m1y = 0.9*o.m1y + 0.1*sgy**2;
+      o.x -= lr*sgx/(Math.sqrt(o.m1x)+eps)*0.5;
+      o.y -= lr*sgy/(Math.sqrt(o.m1y)+eps)*0.5;
+    } else { // Adam
+      o.m1x = b1*o.m1x + (1-b1)*sgx; o.m1y = b1*o.m1y + (1-b1)*sgy;
+      o.m2x = b2*o.m2x + (1-b2)*sgx**2; o.m2y = b2*o.m2y + (1-b2)*sgy**2;
+      const mhx = o.m1x/(1-b1**o.t), mhy = o.m1y/(1-b1**o.t);
+      const vhx = o.m2x/(1-b2**o.t), vhy = o.m2y/(1-b2**o.t);
+      o.x -= lr*mhx/(Math.sqrt(vhx)+eps)*0.3;
+      o.y -= lr*mhy/(Math.sqrt(vhy)+eps)*0.3;
+    }
+    o.x = Math.max(-1.5, Math.min(1.5, o.x));
+    o.y = Math.max(-0.5, Math.min(2.0, o.y));
+    o.path.push({x:o.x, y:o.y});
+    if(o.path.length > 300) o.path.shift();
+  });
+}
+
+function drawOptim(){
+  const W = optimCanvas.clientWidth; optimCanvas.width=W; optimCanvas.height=240;
+  const ctx = optimCtx;
+  ctx.fillStyle='#04080f'; ctx.fillRect(0,0,W,240);
+
+  // Map: x ∈ [-1.5,1.5], y ∈ [-0.5,2.0] → canvas
+  function toCanvas(x,y){ return [(x+1.5)/3*W, (1-(y+0.5)/2.5)*220+10]; }
+
+  // Contour plot (simplified)
+  const resolution = 4;
+  for(let px=0;px<W;px+=resolution){
+    for(let py=10;py<230;py+=resolution){
+      const wx = (px/W)*3-1.5, wy = 2.5-(py-10)/220*2.5-0.5;
+      const l = Math.min(lossFn(wx,wy), 200);
+      const t = Math.log(l+1)/Math.log(201);
+      const r = Math.round(t*20), g = Math.round(10+t*30), b = Math.round(30+t*50);
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.fillRect(px,py,resolution,resolution);
+    }
+  }
+
+  // Minimum marker
+  const [mx,my2] = toCanvas(1,1);
+  ctx.strokeStyle='#00d4ff'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(mx-8,my2); ctx.lineTo(mx+8,my2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mx,my2-8); ctx.lineTo(mx,my2+8); ctx.stroke();
+  ctx.fillStyle='#00d4ff'; ctx.font='8px Azeret Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('min', mx, my2-10);
+
+  // Paths
+  Object.entries(optimPaths).forEach(([name, o]) => {
+    if(o.path.length < 2) return;
+    ctx.strokeStyle = optColors[name]; ctx.lineWidth=1.8;
+    ctx.beginPath();
+    o.path.forEach((p,i) => {
+      const [px,py] = toCanvas(p.x, p.y);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    });
+    ctx.stroke();
+    // Current point
+    const last = o.path[o.path.length-1];
+    const [lx,ly] = toCanvas(last.x, last.y);
+    ctx.fillStyle=optColors[name];
+    ctx.beginPath(); ctx.arc(lx,ly,4,0,Math.PI*2); ctx.fill();
+  });
+
+  // Legend
+  let lx2=14, ly2=18;
+  Object.entries(optColors).forEach(([name,col])=>{
+    ctx.fillStyle=col; ctx.fillRect(lx2,ly2-7,18,3);
+    ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='9px Azeret Mono,monospace'; ctx.textAlign='left';
+    ctx.fillText(name, lx2+22, ly2);
+    lx2 += 80;
+  });
+
+  // Stats
+  const losses = Object.entries(optimPaths).map(([n,o])=>`${n}:${lossFn(o.x,o.y).toFixed(2)}`).join('  ');
+  document.getElementById('optimInfo').textContent = 'Loss → ' + losses;
+}
+
+function resetOptim(){ if(optimTimer){clearInterval(optimTimer);optimTimer=null;} initOptim(); drawOptim(); }
+function runOptim(){
+  if(optimTimer){clearInterval(optimTimer);optimTimer=null;return;}
+  let frame=0;
+  optimTimer=setInterval(()=>{
+    for(let i=0;i<3;i++) stepOptimAll();
+    drawOptim();
+    if(++frame>200){clearInterval(optimTimer);optimTimer=null;}
+  },40);
+}
+
+lrSlider.addEventListener('input',()=>{
+  lrVal.textContent=(parseFloat(lrSlider.value)/100).toFixed(2);
+  resetOptim();
+});
+
+// ══════════════════════════════════════════
+// SCROLL REVEAL + NAV
+// ══════════════════════════════════════════
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+const secs=document.querySelectorAll('section[id],.hero[id]');
+const navLinks=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+window.addEventListener('load',()=>{
+  buildNet(); drawHeroNet();
+  drawAct();
+  initOptim(); drawOptim();
+});
+window.addEventListener('resize',()=>{
+  buildNet();
+  drawAct();
+  drawOptim();
+});
+</script>
+</body>
+</html>

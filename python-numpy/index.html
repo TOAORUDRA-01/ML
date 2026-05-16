@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python & NumPy — Comprehensive Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0d0f14;
+    --bg2:      #13161e;
+    --bg3:      #1b1f2b;
+    --border:   #252a38;
+    --accent:   #6ee7b7;   /* mint */
+    --accent2:  #f59e0b;   /* amber */
+    --accent3:  #818cf8;   /* indigo */
+    --accent4:  #fb7185;   /* rose */
+    --text:     #e2e8f0;
+    --muted:    #64748b;
+    --code-bg:  #0a0c12;
+    --tag-py:   #3b82f6;
+    --tag-np:   #6ee7b7;
+    --tag-math: #f59e0b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,15,20,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 2rem;
+    height: 52px;
+    overflow-x: auto;
+  }
+  nav a {
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    padding: 0 14px; height: 52px; display: flex; align-items: center;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color .2s, border-color .2s;
+  }
+  nav a:hover { color: var(--text); }
+  nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 110px 0 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -120px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(110,231,183,.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); letter-spacing: .12em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 800; line-height: 1.1; color: #fff;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    font-size: 1.05rem; color: var(--muted); max-width: 600px;
+    font-style: italic;
+  }
+  .hero-pills { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 4px 12px; border-radius: 20px;
+    border: 1px solid; letter-spacing: .04em;
+  }
+  .pill-py   { color: #93c5fd; border-color: #3b82f6; background: rgba(59,130,246,.08); }
+  .pill-np   { color: var(--accent); border-color: var(--accent); background: rgba(110,231,183,.08); }
+  .pill-math { color: #fcd34d; border-color: var(--accent2); background: rgba(245,158,11,.08); }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: .1em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  section h2 {
+    font-family: 'Syne', sans-serif; font-size: 1.9rem;
+    font-weight: 700; color: #fff; margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  section h2 .accent { color: var(--accent); }
+  .section-lead {
+    color: var(--muted); font-style: italic; margin-bottom: 36px;
+    max-width: 640px;
+  }
+  h3 {
+    font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+    color: var(--accent2); margin: 36px 0 12px;
+  }
+  h4 {
+    font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 600;
+    color: var(--accent3); margin: 24px 0 8px; letter-spacing: .02em;
+  }
+  p { margin-bottom: 14px; color: #cbd5e1; }
+
+  /* ── CODE BLOCKS ── */
+  .code-wrap {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 18px 0;
+    box-shadow: 0 4px 24px rgba(0,0,0,.4);
+  }
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: .08em;
+  }
+  pre {
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+
+  /* Syntax highlight classes */
+  .kw  { color: #c084fc; }   /* keyword */
+  .fn  { color: #60a5fa; }   /* function/method */
+  .st  { color: #86efac; }   /* string */
+  .nm  { color: #fcd34d; }   /* number */
+  .cm  { color: #475569; font-style: italic; } /* comment */
+  .op  { color: #94a3b8; }   /* operator */
+  .tp  { color: #f97316; }   /* type/class */
+  .at  { color: var(--accent); } /* attribute */
+
+  /* ── INLINE CODE ── */
+  .ic {
+    font-family: 'JetBrains Mono', monospace; font-size: .82em;
+    background: rgba(110,231,183,.1); color: var(--accent);
+    padding: 1px 6px; border-radius: 4px;
+    border: 1px solid rgba(110,231,183,.2);
+  }
+
+  /* ── INFO BOXES ── */
+  .box {
+    border-radius: 10px; padding: 16px 20px;
+    margin: 20px 0; border-left: 3px solid;
+  }
+  .box-note  { background: rgba(99,102,241,.08); border-color: var(--accent3); }
+  .box-tip   { background: rgba(110,231,183,.07); border-color: var(--accent); }
+  .box-warn  { background: rgba(251,113,133,.07); border-color: var(--accent4); }
+  .box-math  { background: rgba(245,158,11,.07);  border-color: var(--accent2); }
+  .box-title {
+    font-family: 'Syne', sans-serif; font-size: .8rem;
+    font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .box-note  .box-title { color: var(--accent3); }
+  .box-tip   .box-title { color: var(--accent); }
+  .box-warn  .box-title { color: var(--accent4); }
+  .box-math  .box-title { color: var(--accent2); }
+  .box p { margin: 0; font-size: .93rem; }
+
+  /* ── CARDS GRID ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .card-title {
+    font-family: 'Syne', sans-serif; font-size: .9rem;
+    font-weight: 700; color: #fff; margin-bottom: 4px;
+  }
+  .card p { font-size: .83rem; color: var(--muted); margin: 0; }
+
+  /* ── VISUAL: MEMORY DIAGRAM ── */
+  .mem-diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .mem-diagram svg { display: block; margin: 0 auto; }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin: 20px 0; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: .88rem; font-family: 'JetBrains Mono', monospace;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--accent); font-weight: 600;
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: .8rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(37,42,56,.6);
+    color: #cbd5e1;
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(110,231,183,.03); }
+  .td-code { color: var(--accent); }
+  .td-out  { color: #fcd34d; }
+
+  /* ── BROADCAST VISUAL ── */
+  .broadcast-grid {
+    display: flex; gap: 20px; align-items: center;
+    flex-wrap: wrap; justify-content: center;
+    margin: 20px 0;
+  }
+  .matrix-box {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .matrix-row { display: flex; gap: 3px; }
+  .matrix-cell {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    font-weight: 500;
+  }
+  .mc-a { background: rgba(99,102,241,.25); color: #a5b4fc; border: 1px solid rgba(99,102,241,.4); }
+  .mc-b { background: rgba(110,231,183,.2); color: var(--accent); border: 1px solid rgba(110,231,183,.4); }
+  .mc-r { background: rgba(251,113,133,.2); color: #fda4af; border: 1px solid rgba(251,113,133,.4); }
+  .mc-empty { background: transparent; border: 1px dashed var(--border); color: var(--muted); }
+  .math-op {
+    font-family: 'Syne', sans-serif; font-size: 1.6rem;
+    font-weight: 700; color: var(--muted);
+  }
+  .matrix-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); text-align: center; margin-top: 6px;
+    letter-spacing: .04em;
+  }
+
+  /* ── DTYPE TABLE VISUAL ── */
+  .dtype-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 18px 0; }
+  .dtype-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .dtype-name { font-family: 'JetBrains Mono', monospace; font-size: .82rem; color: var(--accent); font-weight: 600; }
+  .dtype-desc { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+  .dtype-range { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: #475569; margin-top: 4px; }
+
+  /* ── PERFORMANCE BARS ── */
+  .perf-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .perf-label { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--text); width: 140px; flex-shrink: 0; }
+  .perf-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 20px; overflow: hidden; }
+  .perf-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: .75rem; font-family: 'JetBrains Mono', monospace; transition: width 1s ease; }
+  .perf-num { font-family: 'JetBrains Mono', monospace; font-size: .78rem; color: var(--muted); width: 56px; text-align: right; }
+
+  /* ── INDEXING VISUAL ── */
+  .array-visual { display: flex; gap: 0; margin: 14px 0; overflow-x: auto; }
+  .arr-cell {
+    min-width: 44px; height: 44px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .arr-cell:first-child { border-radius: 6px 0 0 6px; }
+  .arr-cell:last-child  { border-radius: 0 6px 6px 0; }
+  .arr-val  { font-size: 13px; color: #fff; font-weight: 500; }
+  .arr-idx  { font-size: 9px; color: var(--muted); margin-top: 1px; }
+  .arr-cell.hl-green { background: rgba(110,231,183,.15); border-color: var(--accent); }
+  .arr-cell.hl-amber { background: rgba(245,158,11,.15); border-color: var(--accent2); }
+  .arr-cell.hl-indigo{ background: rgba(129,140,248,.15); border-color: var(--accent3); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 0;
+    text-align: center;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .5s, transform .5s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px 26px; margin-bottom: 0;
+  }
+  .toc-title { font-family: 'Syne', sans-serif; font-size: .85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
+  .toc ol { counter-reset: toc; padding-left: 0; list-style: none; }
+  .toc ol li { counter-increment: toc; margin-bottom: 6px; }
+  .toc ol li::before { content: "0" counter(toc) " "; font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--muted); margin-right: 8px; }
+  .toc a { color: var(--text); text-decoration: none; font-size: .9rem; transition: color .2s; }
+  .toc a:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 90px 0 40px; }
+    nav a { padding: 0 10px; font-size: 11px; }
+    .broadcast-grid { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="topnav">
+  <a href="#intro"      class="active">Intro</a>
+  <a href="#basics"    >Python Basics</a>
+  <a href="#ds"        >Data Structures</a>
+  <a href="#functions" >Functions</a>
+  <a href="#oop"       >OOP</a>
+  <a href="#numpy-intro">NumPy</a>
+  <a href="#indexing"  >Indexing</a>
+  <a href="#math"      >Math Ops</a>
+  <a href="#broadcast" >Broadcasting</a>
+  <a href="#perf"      >Performance</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="intro">
+  <div class="container">
+    <div class="hero-tag">// Comprehensive Notes — Module 01</div>
+    <h1>Python &amp; <span>NumPy</span></h1>
+    <p class="hero-sub">Theory, mathematics, code, and visuals — everything you need from variables to vectorised computation.</p>
+    <div class="hero-pills">
+      <span class="pill pill-py">Python 3.10+</span>
+      <span class="pill pill-np">NumPy 1.26</span>
+      <span class="pill pill-math">Linear Algebra</span>
+      <span class="pill pill-py">Data Structures</span>
+      <span class="pill pill-np">Broadcasting</span>
+      <span class="pill pill-math">Performance</span>
+    </div>
+    <div style="margin-top:36px;" class="toc">
+      <div class="toc-title">Table of Contents</div>
+      <ol>
+        <li><a href="#basics">Python Basics — variables, types, control flow</a></li>
+        <li><a href="#ds">Data Structures — list, dict, set, tuple</a></li>
+        <li><a href="#functions">Functions, scope, lambda, comprehensions</a></li>
+        <li><a href="#oop">OOP — classes, inheritance, dunder methods</a></li>
+        <li><a href="#numpy-intro">NumPy — arrays, dtype, shape</a></li>
+        <li><a href="#indexing">Indexing, slicing, fancy indexing</a></li>
+        <li><a href="#math">Mathematical operations &amp; linear algebra</a></li>
+        <li><a href="#broadcast">Broadcasting — theory &amp; visuals</a></li>
+        <li><a href="#perf">Performance — vectorisation vs loops</a></li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — PYTHON BASICS
+═══════════════════════════════════════════ -->
+<section id="basics">
+<div class="container reveal">
+  <div class="section-tag">Section 01</div>
+  <h2>Python <span class="accent">Basics</span></h2>
+  <p class="section-lead">Everything that can be represented in a computer has a type. Python's type system is dynamic but strongly typed — implicit coercion is minimal.</p>
+
+  <h3>Variables &amp; Built-in Types</h3>
+  <p>Python variables are <strong>names bound to objects</strong>. The name does not have a type; the object it points to does. Every assignment creates (or rebinds) a reference.</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="cm"># --- Core types ---</span>
+x   <span class="op">=</span> <span class="nm">42</span>            <span class="cm"># int   — arbitrary precision integer</span>
+pi  <span class="op">=</span> <span class="nm">3.14159</span>       <span class="cm"># float — 64-bit IEEE 754 double</span>
+c   <span class="op">=</span> <span class="nm">2</span><span class="op">+</span><span class="nm">3j</span>          <span class="cm"># complex</span>
+s   <span class="op">=</span> <span class="st">"hello"</span>       <span class="cm"># str   — immutable Unicode sequence</span>
+b   <span class="op">=</span> <span class="kw">True</span>          <span class="cm"># bool  — subclass of int (True==1, False==0)</span>
+n   <span class="op">=</span> <span class="kw">None</span>          <span class="cm"># NoneType — the null sentinel</span>
+
+<span class="cm"># --- Type checks ---</span>
+<span class="fn">type</span>(x)             <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">isinstance</span>(x, <span class="tp">int</span>)  <span class="cm"># True</span>
+
+<span class="cm"># --- Dynamic rebinding ---</span>
+x <span class="op">=</span> <span class="st">"now a string"</span>  <span class="cm"># perfectly legal — name rebinds to new object</span>
+
+<span class="cm"># --- Multiple assignment ---</span>
+a, b, c <span class="op">=</span> <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>
+a, <span class="op">*</span>rest <span class="op">=</span> [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>]   <span class="cm"># rest = [20, 30, 40]</span></pre>
+  </div>
+
+  <div class="box box-math">
+    <div class="box-title">&#x1d4d4; Integer arithmetic note</div>
+    <p>Python integers have <strong>arbitrary precision</strong> — <code class="ic">2 ** 1000</code> works without overflow. Floats use IEEE 754 double precision: 64 bits (1 sign, 11 exponent, 52 mantissa), giving ~15–17 significant decimal digits.</p>
+  </div>
+
+  <h3>Operators &amp; Expressions</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Operator</th><th>Name</th><th>Example</th><th>Output</th></tr>
+      <tr><td class="td-code">+  -  *  /</td><td>Arithmetic</td><td class="td-code">7 / 2</td><td class="td-out">3.5</td></tr>
+      <tr><td class="td-code">//</td><td>Floor division</td><td class="td-code">7 // 2</td><td class="td-out">3</td></tr>
+      <tr><td class="td-code">%</td><td>Modulo</td><td class="td-code">7 % 2</td><td class="td-out">1</td></tr>
+      <tr><td class="td-code">**</td><td>Exponentiation</td><td class="td-code">2 ** 10</td><td class="td-out">1024</td></tr>
+      <tr><td class="td-code">==  !=  &lt;  &gt;  &lt;=  &gt;=</td><td>Comparison</td><td class="td-code">5 &gt; 3</td><td class="td-out">True</td></tr>
+      <tr><td class="td-code">and  or  not</td><td>Boolean</td><td class="td-code">True and False</td><td class="td-out">False</td></tr>
+      <tr><td class="td-code">&amp;  |  ^  ~  &lt;&lt;  &gt;&gt;</td><td>Bitwise</td><td class="td-code">6 &amp; 3</td><td class="td-out">2</td></tr>
+      <tr><td class="td-code">:=</td><td>Walrus (3.8+)</td><td class="td-code">if (n := len(a)) &gt; 5</td><td class="td-out">assign &amp; test</td></tr>
+    </table>
+  </div>
+
+  <h3>Control Flow</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="cm"># --- if / elif / else ---</span>
+score <span class="op">=</span> <span class="nm">78</span>
+<span class="kw">if</span>   score <span class="op">&gt;=</span> <span class="nm">90</span>: grade <span class="op">=</span> <span class="st">"A"</span>
+<span class="kw">elif</span> score <span class="op">&gt;=</span> <span class="nm">75</span>: grade <span class="op">=</span> <span class="st">"B"</span>
+<span class="kw">else</span>:            grade <span class="op">=</span> <span class="st">"C"</span>
+
+<span class="cm"># --- for loop with enumerate & range ---</span>
+fruits <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cherry"</span>]
+<span class="kw">for</span> i, fruit <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="fn">print</span>(<span class="st">f"</span><span class="nm">{i}</span><span class="st">: </span><span class="nm">{fruit}</span><span class="st">"</span>)
+
+<span class="cm"># --- while with break / continue ---</span>
+n <span class="op">=</span> <span class="nm">10</span>
+<span class="kw">while</span> n <span class="op">&gt;</span> <span class="nm">0</span>:
+    <span class="kw">if</span> n <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>: <span class="kw">pass</span>   <span class="cm"># even — do nothing</span>
+    <span class="kw">else</span>: <span class="fn">print</span>(n)          <span class="cm"># odd — print</span>
+    n <span class="op">-=</span> <span class="nm">1</span>
+
+<span class="cm"># --- match / case (Python 3.10+) ---</span>
+command <span class="op">=</span> <span class="st">"quit"</span>
+<span class="kw">match</span> command:
+    <span class="kw">case</span> <span class="st">"quit"</span>:  <span class="fn">print</span>(<span class="st">"Exiting"</span>)
+    <span class="kw">case</span> <span class="st">"help"</span>:  <span class="fn">print</span>(<span class="st">"Showing help"</span>)
+    <span class="kw">case</span> _:       <span class="fn">print</span>(<span class="st">"Unknown command"</span>)</pre>
+  </div>
+
+  <h3>Exception Handling</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="kw">try</span>:
+    result <span class="op">=</span> <span class="nm">10</span> <span class="op">/</span> <span class="nm">0</span>
+<span class="kw">except</span> <span class="tp">ZeroDivisionError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"Caught: </span><span class="nm">{e}</span><span class="st">"</span>)
+<span class="kw">except</span> (<span class="tp">TypeError</span>, <span class="tp">ValueError</span>) <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">"Type or value error"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"No exception raised"</span>)  <span class="cm"># runs only if no exception</span>
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="st">"Always runs — good for cleanup"</span>)
+
+<span class="cm"># Custom exception</span>
+<span class="kw">class</span> <span class="tp">ShapeError</span>(<span class="tp">ValueError</span>):
+    <span class="kw">pass</span>
+
+<span class="kw">raise</span> <span class="tp">ShapeError</span>(<span class="st">"Array shapes don't align"</span>)</pre>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — DATA STRUCTURES
+═══════════════════════════════════════════ -->
+<section id="ds">
+<div class="container reveal">
+  <div class="section-tag">Section 02</div>
+  <h2>Data <span class="accent">Structures</span></h2>
+  <p class="section-lead">Python's built-in collections are implemented in C and highly optimised. Choosing the right one is essential for ML code performance.</p>
+
+  <div class="cards">
+    <div class="card"><div class="card-icon">📋</div><div class="card-title">list</div><p>Ordered, mutable, heterogeneous. O(1) append, O(n) insert.</p></div>
+    <div class="card"><div class="card-icon">📚</div><div class="card-title">dict</div><p>Hash map. O(1) average lookup. Insertion-ordered (3.7+).</p></div>
+    <div class="card"><div class="card-icon">🔗</div><div class="card-title">set</div><p>Hash set. O(1) membership test. No duplicates, unordered.</p></div>
+    <div class="card"><div class="card-icon">🔒</div><div class="card-title">tuple</div><p>Immutable sequence. Faster iteration, hashable (if elements are).</p></div>
+  </div>
+
+  <h3>Lists — the workhorse</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre>nums <span class="op">=</span> [<span class="nm">3</span>, <span class="nm">1</span>, <span class="nm">4</span>, <span class="nm">1</span>, <span class="nm">5</span>, <span class="nm">9</span>, <span class="nm">2</span>]
+
+<span class="cm"># Slicing  [start : stop : step]</span>
+nums[<span class="nm">1</span>:<span class="nm">4</span>]      <span class="cm"># [1, 4, 1]</span>
+nums[::<span class="nm">2</span>]      <span class="cm"># [3, 4, 5, 2]  — every other</span>
+nums[<span class="op">::-</span><span class="nm">1</span>]     <span class="cm"># [2, 9, 5, 1, 4, 1, 3] — reversed</span>
+
+<span class="cm"># Mutation</span>
+nums.<span class="fn">append</span>(<span class="nm">6</span>)        <span class="cm"># add to end</span>
+nums.<span class="fn">insert</span>(<span class="nm">0</span>, <span class="nm">0</span>)     <span class="cm"># insert at index 0</span>
+nums.<span class="fn">pop</span>()            <span class="cm"># remove & return last element</span>
+nums.<span class="fn">sort</span>(reverse<span class="op">=</span><span class="kw">True</span>)  <span class="cm"># in-place descending sort</span>
+
+<span class="cm"># List comprehension — preferred over map/filter</span>
+squares  <span class="op">=</span> [x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>)]
+evens    <span class="op">=</span> [x    <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">20</span>) <span class="kw">if</span> x <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>]
+matrix   <span class="op">=</span> [[<span class="nm">0</span>]<span class="op">*</span><span class="nm">3</span> <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3</span>)]  <span class="cm"># 3×3 zero matrix</span></pre>
+  </div>
+
+  <h3>Dictionaries &amp; Sets</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="cm"># --- dict ---</span>
+model_info <span class="op">=</span> {<span class="st">"name"</span>: <span class="st">"ResNet"</span>, <span class="st">"layers"</span>: <span class="nm">50</span>, <span class="st">"acc"</span>: <span class="nm">0.94</span>}
+model_info[<span class="st">"params"</span>] <span class="op">=</span> <span class="st">"25M"</span>        <span class="cm"># add key</span>
+model_info.<span class="fn">get</span>(<span class="st">"lr"</span>, <span class="nm">0.001</span>)        <span class="cm"># safe lookup with default</span>
+model_info.<span class="fn">items</span>()                  <span class="cm"># dict_items view for iteration</span>
+
+<span class="cm"># dict comprehension</span>
+word_len <span class="op">=</span> {w: <span class="fn">len</span>(w) <span class="kw">for</span> w <span class="kw">in</span> [<span class="st">"cat"</span>, <span class="st">"elephant"</span>, <span class="st">"dog"</span>]}
+
+<span class="cm"># --- set ---</span>
+a <span class="op">=</span> {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>}
+b <span class="op">=</span> {<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>}
+a <span class="op">&amp;</span> b   <span class="cm"># {3, 4}   — intersection</span>
+a <span class="op">|</span> b   <span class="cm"># {1,2,3,4,5,6} — union</span>
+a <span class="op">-</span> b   <span class="cm"># {1, 2}  — difference</span>
+a <span class="op">^</span> b   <span class="cm"># {1,2,5,6} — symmetric difference</span>
+
+<span class="cm"># Remove duplicates from list (order lost)</span>
+unique <span class="op">=</span> <span class="fn">list</span>(<span class="fn">set</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">3</span>,<span class="nm">4</span>]))</pre>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">&#x2713; ML Tip</div>
+    <p>Use <code class="ic">defaultdict(list)</code> from <code class="ic">collections</code> to group training samples by class label without <code class="ic">KeyError</code>. Use <code class="ic">Counter</code> to quickly count class frequencies and check for imbalance.</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — FUNCTIONS
+═══════════════════════════════════════════ -->
+<section id="functions">
+<div class="container reveal">
+  <div class="section-tag">Section 03</div>
+  <h2>Functions &amp; <span class="accent">Functional Tools</span></h2>
+  <p class="section-lead">Functions are first-class objects in Python — they can be passed as arguments, returned from other functions, and stored in data structures.</p>
+
+  <h3>Defining Functions</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="kw">def</span> <span class="fn">sigmoid</span>(z: <span class="tp">float</span>) <span class="op">-&gt;</span> <span class="tp">float</span>:
+    <span class="st">"""Squash any real number into (0, 1).  σ(z) = 1 / (1 + e^{-z})"""</span>
+    <span class="kw">import</span> math
+    <span class="kw">return</span> <span class="nm">1</span> <span class="op">/</span> (<span class="nm">1</span> <span class="op">+</span> math.<span class="fn">exp</span>(<span class="op">-</span>z))
+
+<span class="fn">sigmoid</span>(<span class="nm">0</span>)    <span class="cm"># 0.5</span>
+<span class="fn">sigmoid</span>(<span class="nm">2</span>)    <span class="cm"># 0.8808</span>
+
+<span class="cm"># --- *args and **kwargs ---</span>
+<span class="kw">def</span> <span class="fn">train</span>(model, <span class="op">*</span>datasets, epochs<span class="op">=</span><span class="nm">10</span>, lr<span class="op">=</span><span class="nm">0.001</span>, <span class="op">**</span>kwargs):
+    <span class="fn">print</span>(<span class="st">f"Training on </span><span class="nm">{len(datasets)}</span><span class="st"> datasets, </span><span class="nm">{epochs}</span><span class="st"> epochs"</span>)
+    <span class="fn">print</span>(<span class="st">f"Extra params: </span><span class="nm">{kwargs}</span><span class="st">"</span>)
+
+<span class="fn">train</span>(<span class="st">"ResNet"</span>, <span class="st">"train.csv"</span>, <span class="st">"val.csv"</span>, epochs<span class="op">=</span><span class="nm">30</span>, weight_decay<span class="op">=</span><span class="nm">1e-4</span>)</pre>
+  </div>
+
+  <h3>Lambda, map, filter, zip</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="cm"># lambda — anonymous one-liner</span>
+relu <span class="op">=</span> <span class="kw">lambda</span> x: <span class="fn">max</span>(<span class="nm">0</span>, x)
+relu(<span class="op">-</span><span class="nm">3</span>)   <span class="cm"># 0</span>
+relu(<span class="nm">5</span>)    <span class="cm"># 5</span>
+
+<span class="cm"># map — apply function to every element (lazy)</span>
+losses <span class="op">=</span> [<span class="nm">0.8</span>, <span class="nm">0.5</span>, <span class="nm">0.3</span>, <span class="nm">0.1</span>]
+rounded <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: <span class="fn">round</span>(x, <span class="nm">2</span>), losses))
+
+<span class="cm"># filter — keep elements passing predicate</span>
+pos <span class="op">=</span> <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: x <span class="op">&gt;</span> <span class="nm">0</span>, [<span class="op">-</span><span class="nm">1</span>, <span class="nm">2</span>, <span class="op">-</span><span class="nm">3</span>, <span class="nm">4</span>]))  <span class="cm"># [2, 4]</span>
+
+<span class="cm"># zip — pair up iterables</span>
+features <span class="op">=</span> [<span class="nm">0.1</span>, <span class="nm">0.9</span>, <span class="nm">0.4</span>]
+labels   <span class="op">=</span> [<span class="nm">0</span>,   <span class="nm">1</span>,   <span class="nm">0</span>  ]
+<span class="kw">for</span> feat, lbl <span class="kw">in</span> <span class="fn">zip</span>(features, labels):
+    <span class="fn">print</span>(<span class="st">f"feat={feat}, label={lbl}"</span>)
+
+<span class="cm"># Generator expression — memory-efficient</span>
+total <span class="op">=</span> <span class="fn">sum</span>(x<span class="op">**</span><span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1_000_000</span>))  <span class="cm"># never materialises list</span></pre>
+  </div>
+
+  <h3>Closures &amp; Decorators</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="cm"># Closure — inner function captures outer variable</span>
+<span class="kw">def</span> <span class="fn">make_lr_scheduler</span>(initial_lr):
+    <span class="kw">def</span> <span class="fn">decay</span>(epoch):
+        <span class="kw">return</span> initial_lr <span class="op">/</span> (<span class="nm">1</span> <span class="op">+</span> <span class="nm">0.1</span> <span class="op">*</span> epoch)
+    <span class="kw">return</span> decay
+
+scheduler <span class="op">=</span> <span class="fn">make_lr_scheduler</span>(<span class="nm">0.01</span>)
+scheduler(<span class="nm">5</span>)   <span class="cm"># 0.00667</span>
+
+<span class="cm"># Decorator — wraps a function to add behaviour</span>
+<span class="kw">import</span> time, functools
+
+<span class="kw">def</span> <span class="fn">timer</span>(func):
+    <span class="op">@</span><span class="fn">functools.wraps</span>(func)
+    <span class="kw">def</span> <span class="fn">wrapper</span>(<span class="op">*</span>args, <span class="op">**</span>kwargs):
+        t0 <span class="op">=</span> time.<span class="fn">perf_counter</span>()
+        result <span class="op">=</span> <span class="fn">func</span>(<span class="op">*</span>args, <span class="op">**</span>kwargs)
+        <span class="fn">print</span>(<span class="st">f"{func.__name__} took {time.perf_counter()-t0:.4f}s"</span>)
+        <span class="kw">return</span> result
+    <span class="kw">return</span> wrapper
+
+<span class="op">@</span>timer
+<span class="kw">def</span> <span class="fn">train_epoch</span>(data):
+    time.<span class="fn">sleep</span>(<span class="nm">0.1</span>)   <span class="cm"># simulate work</span>
+
+<span class="fn">train_epoch</span>([])   <span class="cm"># train_epoch took 0.1001s</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — OOP
+═══════════════════════════════════════════ -->
+<section id="oop">
+<div class="container reveal">
+  <div class="section-tag">Section 04</div>
+  <h2>Object-Oriented <span class="accent">Programming</span></h2>
+  <p class="section-lead">Most ML frameworks (PyTorch, sklearn) are class-based. Understanding OOP makes reading and writing framework code natural.</p>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="kw">class</span> <span class="tp">Layer</span>:
+    <span class="st">"""Base class for neural network layers."""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name: <span class="tp">str</span>):
+        self.name <span class="op">=</span> name
+        self.trainable <span class="op">=</span> <span class="kw">True</span>
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="kw">raise</span> <span class="tp">NotImplementedError</span>
+
+    <span class="kw">def</span> <span class="fn">__repr__</span>(self):
+        <span class="kw">return</span> <span class="st">f"Layer(name=</span><span class="nm">{self.name!r}</span><span class="st">)"</span>
+
+    <span class="kw">def</span> <span class="fn">__call__</span>(self, x):        <span class="cm"># makes instance callable: layer(x)</span>
+        <span class="kw">return</span> self.<span class="fn">forward</span>(x)
+
+
+<span class="kw">class</span> <span class="tp">LinearLayer</span>(<span class="tp">Layer</span>):        <span class="cm"># Inheritance</span>
+    <span class="kw">import</span> numpy <span class="kw">as</span> np
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_dim: <span class="tp">int</span>, out_dim: <span class="tp">int</span>):
+        <span class="fn">super</span>().__init__(<span class="st">"linear"</span>)
+        <span class="kw">import</span> numpy <span class="kw">as</span> np
+        <span class="cm"># He initialisation — good for ReLU networks</span>
+        self.W <span class="op">=</span> np.<span class="fn">random.randn</span>(in_dim, out_dim) <span class="op">*</span> np.<span class="fn">sqrt</span>(<span class="nm">2</span> <span class="op">/</span> in_dim)
+        self.b <span class="op">=</span> np.<span class="fn">zeros</span>(out_dim)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):          <span class="cm"># override parent method</span>
+        <span class="kw">return</span> x <span class="op">@</span> self.W <span class="op">+</span> self.b  <span class="cm"># matrix multiply + bias</span>
+
+
+layer <span class="op">=</span> <span class="fn">LinearLayer</span>(<span class="nm">4</span>, <span class="nm">2</span>)
+<span class="fn">print</span>(layer)           <span class="cm"># Layer(name='linear')</span></pre>
+  </div>
+
+  <div class="box box-note">
+    <div class="box-title">&#x2139; Dunder methods cheatsheet</div>
+    <p><code class="ic">__init__</code> constructor &nbsp;·&nbsp; <code class="ic">__repr__</code> developer string &nbsp;·&nbsp; <code class="ic">__str__</code> user string &nbsp;·&nbsp; <code class="ic">__len__</code> <code class="ic">len(obj)</code> &nbsp;·&nbsp; <code class="ic">__getitem__</code> <code class="ic">obj[i]</code> &nbsp;·&nbsp; <code class="ic">__iter__</code> for-loop support &nbsp;·&nbsp; <code class="ic">__add__</code> <code class="ic">+</code> operator &nbsp;·&nbsp; <code class="ic">__call__</code> <code class="ic">obj()</code></p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — NUMPY INTRO
+═══════════════════════════════════════════ -->
+<section id="numpy-intro">
+<div class="container reveal">
+  <div class="section-tag">Section 05</div>
+  <h2>NumPy — <span class="accent">Arrays &amp; Internals</span></h2>
+  <p class="section-lead">NumPy's <code class="ic">ndarray</code> is the backbone of scientific Python. It stores elements in contiguous memory blocks and delegates computation to highly optimised C/Fortran code.</p>
+
+  <h3>Memory Layout</h3>
+  <p>An <code class="ic">ndarray</code> is a Python object wrapping a <strong>raw C buffer</strong>. Three key attributes govern everything:</p>
+
+  <div class="mem-diagram">
+    <svg viewBox="0 0 680 180" width="100%" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>NumPy ndarray memory layout diagram</title>
+      <!-- Python object box -->
+      <rect x="10" y="20" width="200" height="140" rx="8" fill="#1b1f2b" stroke="#252a38"/>
+      <text x="110" y="44" font-family="JetBrains Mono,monospace" font-size="11" fill="#64748b" text-anchor="middle">ndarray object</text>
+      <text x="22" y="68"  font-family="JetBrains Mono,monospace" font-size="10" fill="#6ee7b7">.shape</text>
+      <text x="140" y="68" font-family="JetBrains Mono,monospace" font-size="10" fill="#fcd34d">(3, 4)</text>
+      <text x="22" y="86"  font-family="JetBrains Mono,monospace" font-size="10" fill="#6ee7b7">.dtype</text>
+      <text x="140" y="86" font-family="JetBrains Mono,monospace" font-size="10" fill="#fcd34d">float64</text>
+      <text x="22" y="104" font-family="JetBrains Mono,monospace" font-size="10" fill="#6ee7b7">.ndim</text>
+      <text x="140" y="104" font-family="JetBrains Mono,monospace" font-size="10" fill="#fcd34d">2</text>
+      <text x="22" y="122" font-family="JetBrains Mono,monospace" font-size="10" fill="#6ee7b7">.strides</text>
+      <text x="140" y="122" font-family="JetBrains Mono,monospace" font-size="10" fill="#fcd34d">(32, 8)</text>
+      <text x="22" y="140" font-family="JetBrains Mono,monospace" font-size="10" fill="#6ee7b7">.data</text>
+      <text x="140" y="140" font-family="JetBrains Mono,monospace" font-size="10" fill="#818cf8">ptr →</text>
+
+      <!-- arrow -->
+      <line x1="210" y1="90" x2="244" y2="90" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#818cf8" stroke-width="1.5"/>
+        </marker>
+      </defs>
+
+      <!-- Memory buffer -->
+      <rect x="248" y="20" width="416" height="140" rx="8" fill="#0a0c12" stroke="#252a38"/>
+      <text x="456" y="44" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748b" text-anchor="middle">Contiguous C buffer (3×4 × 8 bytes = 96 bytes)</text>
+
+      <!-- 12 cells -->
+      <g id="cells">
+        <!-- row 0 -->
+        <rect x="260" y="54" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="275" y="74" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">1.0</text>
+        <rect x="294" y="54" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="309" y="74" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">2.0</text>
+        <rect x="328" y="54" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="343" y="74" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">3.0</text>
+        <rect x="362" y="54" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="377" y="74" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">4.0</text>
+        <!-- row 1 -->
+        <rect x="260" y="88" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="275" y="108" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">5.0</text>
+        <rect x="294" y="88" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="309" y="108" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">6.0</text>
+        <rect x="328" y="88" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="343" y="108" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">7.0</text>
+        <rect x="362" y="88" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="377" y="108" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">8.0</text>
+        <!-- row 2 -->
+        <rect x="260" y="122" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="275" y="142" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">9.0</text>
+        <rect x="294" y="122" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="309" y="142" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">10.</text>
+        <rect x="328" y="122" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="343" y="142" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">11.</text>
+        <rect x="362" y="122" width="30" height="30" rx="3" fill="#1f2a3c" stroke="#3b4a6b"/>
+        <text x="377" y="142" font-family="JetBrains Mono,monospace" font-size="9" fill="#a5b4fc" text-anchor="middle">12.</text>
+      </g>
+      <!-- Stride annotation -->
+      <line x1="260" y1="48" x2="323" y2="48" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="291" y="44" font-family="JetBrains Mono,monospace" font-size="9" fill="#f59e0b" text-anchor="middle">stride[1]=8B</text>
+      <line x1="400" y1="54" x2="400" y2="117" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="430" y="90" font-family="JetBrains Mono,monospace" font-size="9" fill="#f59e0b">stride[0]=32B</text>
+    </svg>
+  </div>
+
+  <h3>Creating Arrays</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># From Python data</span>
+a <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])                     <span class="cm"># 1-D int64</span>
+b <span class="op">=</span> np.<span class="fn">array</span>([[<span class="nm">1.0</span>, <span class="nm">2</span>], [<span class="nm">3</span>, <span class="nm">4</span>]])           <span class="cm"># 2-D float64</span>
+
+<span class="cm"># Factory functions</span>
+np.<span class="fn">zeros</span>((<span class="nm">3</span>, <span class="nm">4</span>))           <span class="cm"># 3×4 of 0.0</span>
+np.<span class="fn">ones</span>((<span class="nm">2</span>, <span class="nm">3</span>), dtype<span class="op">=</span>np.int32)
+np.<span class="fn">eye</span>(<span class="nm">4</span>)                  <span class="cm"># 4×4 identity matrix</span>
+np.<span class="fn">full</span>((<span class="nm">2</span>, <span class="nm">2</span>), <span class="nm">7.0</span>)       <span class="cm"># 2×2 filled with 7.0</span>
+
+<span class="cm"># Ranges</span>
+np.<span class="fn">arange</span>(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">2</span>)         <span class="cm"># [0 2 4 6 8]  — like range()</span>
+np.<span class="fn">linspace</span>(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">5</span>)        <span class="cm"># [0, 0.25, 0.5, 0.75, 1.0]</span>
+
+<span class="cm"># Random</span>
+np.random.<span class="fn">seed</span>(<span class="nm">42</span>)
+np.random.<span class="fn">randn</span>(<span class="nm">3</span>, <span class="nm">3</span>)       <span class="cm"># standard normal N(0,1)</span>
+np.random.<span class="fn">uniform</span>(<span class="nm">0</span>, <span class="nm">1</span>, (<span class="nm">4</span>, <span class="nm">4</span>))
+np.random.<span class="fn">randint</span>(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">6</span>) <span class="cm"># 6 integers in [0,10)</span></pre>
+  </div>
+
+  <h3>Data Types (dtype)</h3>
+  <div class="dtype-grid">
+    <div class="dtype-card"><div class="dtype-name">float64</div><div class="dtype-desc">Default float — 64-bit IEEE 754</div><div class="dtype-range">~1.8×10<sup>308</sup> max</div></div>
+    <div class="dtype-card"><div class="dtype-name">float32</div><div class="dtype-desc">GPU-friendly — half memory</div><div class="dtype-range">~3.4×10<sup>38</sup> max</div></div>
+    <div class="dtype-card"><div class="dtype-name">int64</div><div class="dtype-desc">Large signed integers</div><div class="dtype-range">±9.2×10<sup>18</sup></div></div>
+    <div class="dtype-card"><div class="dtype-name">int32</div><div class="dtype-desc">Standard signed integer</div><div class="dtype-range">±2.1×10<sup>9</sup></div></div>
+    <div class="dtype-card"><div class="dtype-name">bool</div><div class="dtype-desc">Boolean mask arrays</div><div class="dtype-range">True / False</div></div>
+    <div class="dtype-card"><div class="dtype-name">complex128</div><div class="dtype-desc">Complex arithmetic</div><div class="dtype-range">two float64</div></div>
+  </div>
+
+  <div class="box box-warn">
+    <div class="box-title">&#x26a0; dtype matters in ML</div>
+    <p>PyTorch and most GPU frameworks expect <code class="ic">float32</code>. Always cast: <code class="ic">arr.astype(np.float32)</code>. Using <code class="ic">float64</code> on a GPU wastes 2× memory and halves throughput.</p>
+  </div>
+
+  <h3>Shape &amp; Reshape</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre>x <span class="op">=</span> np.<span class="fn">arange</span>(<span class="nm">24</span>)          <span class="cm"># shape (24,)</span>
+
+x.<span class="fn">reshape</span>(<span class="nm">4</span>, <span class="nm">6</span>)            <span class="cm"># (4, 6) — 24 elements</span>
+x.<span class="fn">reshape</span>(<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>)         <span class="cm"># (2, 3, 4) — 24 elements</span>
+x.<span class="fn">reshape</span>(<span class="op">-</span><span class="nm">1</span>, <span class="nm">6</span>)           <span class="cm"># (-1 inferred → 4, 6)</span>
+
+x.<span class="fn">flatten</span>()               <span class="cm"># always returns copy</span>
+x.<span class="fn">ravel</span>()                 <span class="cm"># returns view when possible (faster)</span>
+
+<span class="cm"># Adding/removing axes</span>
+a <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>])       <span class="cm"># shape (3,)</span>
+a[np.newaxis, :]           <span class="cm"># shape (1, 3) — row vector</span>
+a[:, np.newaxis]           <span class="cm"># shape (3, 1) — column vector</span>
+np.<span class="fn">expand_dims</span>(a, axis<span class="op">=</span><span class="nm">0</span>) <span class="cm"># same as a[np.newaxis,:]</span>
+np.<span class="fn">squeeze</span>(a[np.newaxis])  <span class="cm"># remove all size-1 axes</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — INDEXING
+═══════════════════════════════════════════ -->
+<section id="indexing">
+<div class="container reveal">
+  <div class="section-tag">Section 06</div>
+  <h2>Indexing &amp; <span class="accent">Slicing</span></h2>
+  <p class="section-lead">Mastering indexing is what separates NumPy beginners from practitioners. Views vs copies, boolean masks, and fancy indexing are all critical for ML data pipelines.</p>
+
+  <h3>1-D Visual</h3>
+  <p>Array: <code class="ic">a = np.array([10, 20, 30, 40, 50, 60, 70])</code></p>
+  <div class="array-visual">
+    <div class="arr-cell hl-amber"><div class="arr-val">10</div><div class="arr-idx">0 / -7</div></div>
+    <div class="arr-cell"><div class="arr-val">20</div><div class="arr-idx">1 / -6</div></div>
+    <div class="arr-cell hl-green"><div class="arr-val">30</div><div class="arr-idx">2 / -5</div></div>
+    <div class="arr-cell hl-green"><div class="arr-val">40</div><div class="arr-idx">3 / -4</div></div>
+    <div class="arr-cell hl-green"><div class="arr-val">50</div><div class="arr-idx">4 / -3</div></div>
+    <div class="arr-cell"><div class="arr-val">60</div><div class="arr-idx">5 / -2</div></div>
+    <div class="arr-cell hl-indigo"><div class="arr-val">70</div><div class="arr-idx">6 / -1</div></div>
+  </div>
+  <p style="font-size:.85rem;color:var(--muted);">
+    <span style="color:var(--accent2);">■</span> <code class="ic">a[0]</code> = 10 &nbsp;
+    <span style="color:var(--accent);">■</span> <code class="ic">a[2:5]</code> = [30,40,50] &nbsp;
+    <span style="color:var(--accent3);">■</span> <code class="ic">a[-1]</code> = 70
+  </p>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python — Slicing</span></div>
+    <pre>a <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">10</span>,<span class="nm">20</span>,<span class="nm">30</span>,<span class="nm">40</span>,<span class="nm">50</span>,<span class="nm">60</span>,<span class="nm">70</span>])
+
+a[<span class="nm">2</span>:<span class="nm">5</span>]      <span class="cm"># [30 40 50]   — indices 2,3,4</span>
+a[::<span class="nm">2</span>]      <span class="cm"># [10 30 50 70] — every 2nd</span>
+a[<span class="op">::-</span><span class="nm">1</span>]     <span class="cm"># [70 60 50 40 30 20 10] — reversed</span>
+a[<span class="op">-</span><span class="nm">3</span>:]      <span class="cm"># [50 60 70]   — last 3</span>
+
+<span class="cm"># 2-D slicing — rows then columns</span>
+M <span class="op">=</span> np.<span class="fn">arange</span>(<span class="nm">16</span>).<span class="fn">reshape</span>(<span class="nm">4</span>,<span class="nm">4</span>)
+M[<span class="nm">1</span>:<span class="nm">3</span>, <span class="nm">1</span>:<span class="nm">3</span>]   <span class="cm"># 2×2 sub-matrix (view!)</span>
+M[:, <span class="nm">0</span>]       <span class="cm"># entire first column</span>
+M[<span class="nm">0</span>, :]        <span class="cm"># entire first row</span></pre>
+  </div>
+
+  <h3>Boolean (Mask) Indexing</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre>data <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">0.1</span>, <span class="op">-</span><span class="nm">0.5</span>, <span class="nm">0.8</span>, <span class="op">-</span><span class="nm">0.2</span>, <span class="nm">1.2</span>])
+
+mask <span class="op">=</span> data <span class="op">&gt;</span> <span class="nm">0</span>          <span class="cm"># [True, False, True, False, True]</span>
+data[mask]               <span class="cm"># [0.1, 0.8, 1.2]  — positive values only</span>
+
+<span class="cm"># Compound mask</span>
+data[(data <span class="op">&gt;</span> <span class="nm">0</span>) <span class="op">&amp;</span> (data <span class="op">&lt;</span> <span class="nm">1</span>)]  <span class="cm"># [0.1, 0.8]</span>
+
+<span class="cm"># Use case: zero out negative activations (ReLU)</span>
+activations <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">5</span>)
+activations[activations <span class="op">&lt;</span> <span class="nm">0</span>] <span class="op">=</span> <span class="nm">0</span>   <span class="cm"># in-place ReLU</span>
+
+<span class="cm"># np.where — vectorised conditional</span>
+np.<span class="fn">where</span>(data <span class="op">&gt;</span> <span class="nm">0</span>, data, <span class="nm">0</span>)      <span class="cm"># ReLU via where</span></pre>
+  </div>
+
+  <h3>Fancy (Integer Array) Indexing</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre>embeddings <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">1000</span>, <span class="nm">128</span>)  <span class="cm"># 1000 word vectors</span>
+token_ids  <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">5</span>, <span class="nm">42</span>, <span class="nm">17</span>, <span class="nm">5</span>])   <span class="cm"># a sentence</span>
+
+sentence <span class="op">=</span> embeddings[token_ids]         <span class="cm"># shape (4, 128) — COPY</span>
+
+<span class="cm"># 2-D fancy indexing — select specific (row, col) pairs</span>
+rows <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>])
+cols <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">2</span>, <span class="nm">0</span>, <span class="nm">1</span>])
+M[rows, cols]   <span class="cm"># picks M[0,2], M[1,0], M[2,1]</span></pre>
+  </div>
+
+  <div class="box box-warn">
+    <div class="box-title">&#x26a0; Views vs Copies</div>
+    <p>Basic slices return <strong>views</strong> (same memory — fast, but mutations affect original). Boolean and fancy indexing return <strong>copies</strong>. Use <code class="ic">arr.base is None</code> or <code class="ic">np.shares_memory(a, b)</code> to check.</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 — MATH OPS
+═══════════════════════════════════════════ -->
+<section id="math">
+<div class="container reveal">
+  <div class="section-tag">Section 07</div>
+  <h2>Mathematical <span class="accent">Operations</span></h2>
+  <p class="section-lead">NumPy implements the mathematical primitives that underpin every ML algorithm — from simple element-wise ops to full linear algebra solvers.</p>
+
+  <h3>Element-wise Universal Functions (ufuncs)</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre>a <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">1.0</span>, <span class="nm">4.0</span>, <span class="nm">9.0</span>, <span class="nm">16.0</span>])
+b <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">2.0</span>, <span class="nm">2.0</span>, <span class="nm">3.0</span>,  <span class="nm">4.0</span>])
+
+a <span class="op">+</span> b        <span class="cm"># [ 3.  6. 12. 20.]</span>
+a <span class="op">*</span> b        <span class="cm"># element-wise multiply</span>
+a <span class="op">**</span> <span class="nm">0.5</span>    <span class="cm"># [1. 2. 3. 4.] — square root</span>
+np.<span class="fn">sqrt</span>(a)  <span class="cm"># same via ufunc</span>
+np.<span class="fn">log</span>(a)   <span class="cm"># natural log</span>
+np.<span class="fn">exp</span>(a)   <span class="cm"># e^x element-wise</span>
+np.<span class="fn">abs</span>(np.<span class="fn">array</span>([<span class="op">-</span><span class="nm">1</span>,<span class="nm">2</span>,<span class="op">-</span><span class="nm">3</span>]))   <span class="cm"># [1 2 3]</span>
+
+<span class="cm"># Aggregations</span>
+a.<span class="fn">sum</span>()         <span class="cm"># 30.0</span>
+a.<span class="fn">mean</span>()        <span class="cm"># 7.5</span>
+a.<span class="fn">std</span>()         <span class="cm"># standard deviation</span>
+a.<span class="fn">min</span>(), a.<span class="fn">max</span>()
+a.<span class="fn">argmin</span>(), a.<span class="fn">argmax</span>()  <span class="cm"># index of min/max</span>
+np.<span class="fn">cumsum</span>(a)    <span class="cm"># [1. 5. 14. 30.]</span>
+
+<span class="cm"># Axis-wise aggregation on 2-D</span>
+M <span class="op">=</span> np.<span class="fn">array</span>([[<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>],[<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>]])
+M.<span class="fn">sum</span>(axis<span class="op">=</span><span class="nm">0</span>)   <span class="cm"># [5 7 9]  — column sums</span>
+M.<span class="fn">sum</span>(axis<span class="op">=</span><span class="nm">1</span>)   <span class="cm"># [6 15]  — row sums</span></pre>
+  </div>
+
+  <h3>Linear Algebra — the ML core</h3>
+  <div class="box box-math">
+    <div class="box-title">&#x1d4d4; Matrix multiply — the most important operation in ML</div>
+    <p>For matrices <strong>A ∈ ℝ<sup>m×k</sup></strong> and <strong>B ∈ ℝ<sup>k×n</sup></strong>, the product <strong>C = AB ∈ ℝ<sup>m×n</sup></strong> where each element <strong>C<sub>ij</sub> = Σ<sub>l</sub> A<sub>il</sub> B<sub>lj</sub></strong>. In a neural network forward pass, every linear layer computes <strong>Y = XW + b</strong> — a batched matrix multiply.</p>
+  </div>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python — Linear Algebra</span></div>
+    <pre><span class="cm"># Matrix multiply — three equivalent ways</span>
+A <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">3</span>, <span class="nm">4</span>)
+B <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">4</span>, <span class="nm">2</span>)
+
+C <span class="op">=</span> A <span class="op">@</span> B                  <span class="cm"># (3,2) — preferred syntax</span>
+C <span class="op">=</span> np.<span class="fn">dot</span>(A, B)            <span class="cm"># same</span>
+C <span class="op">=</span> np.<span class="fn">matmul</span>(A, B)         <span class="cm"># same for 2-D</span>
+
+<span class="cm"># Element-wise vs matrix multiply — common bug!</span>
+A <span class="op">*</span> B    <span class="cm"># WRONG if shapes don't match — element-wise</span>
+A <span class="op">@</span> B    <span class="cm"># CORRECT — matrix multiply</span>
+
+<span class="cm"># Transpose</span>
+A.T                        <span class="cm"># (4, 3) — view of A</span>
+
+<span class="cm"># Dot product of two vectors</span>
+u <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])
+v <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>])
+np.<span class="fn">dot</span>(u, v)               <span class="cm"># 32  (= 1×4 + 2×5 + 3×6)</span>
+
+<span class="cm"># L2 norm  ‖v‖ = √(Σ vᵢ²)</span>
+np.<span class="fn">linalg</span>.<span class="fn">norm</span>(v)          <span class="cm"># 8.774</span>
+
+<span class="cm"># Cosine similarity  cos θ = u·v / (‖u‖‖v‖)</span>
+cos_sim <span class="op">=</span> np.<span class="fn">dot</span>(u,v) <span class="op">/</span> (np.<span class="fn">linalg</span>.<span class="fn">norm</span>(u) <span class="op">*</span> np.<span class="fn">linalg</span>.<span class="fn">norm</span>(v))
+
+<span class="cm"># Inverse and solve</span>
+A_sq <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">3</span>, <span class="nm">3</span>)
+np.<span class="fn">linalg</span>.<span class="fn">inv</span>(A_sq)         <span class="cm"># A⁻¹</span>
+np.<span class="fn">linalg</span>.<span class="fn">solve</span>(A_sq, v)    <span class="cm"># Ax = v → x (more stable than inv)</span>
+
+<span class="cm"># Eigenvalues — used in PCA</span>
+eigenvalues, eigenvectors <span class="op">=</span> np.<span class="fn">linalg</span>.<span class="fn">eig</span>(A_sq)
+
+<span class="cm"># SVD — the workhorse of dimensionality reduction</span>
+U, S, Vt <span class="op">=</span> np.<span class="fn">linalg</span>.<span class="fn">svd</span>(A, full_matrices<span class="op">=</span><span class="kw">False</span>)
+<span class="cm"># A ≈ U @ np.diag(S) @ Vt</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8 — BROADCASTING
+═══════════════════════════════════════════ -->
+<section id="broadcast">
+<div class="container reveal">
+  <div class="section-tag">Section 08</div>
+  <h2>Broadcasting — <span class="accent">Shape Magic</span></h2>
+  <p class="section-lead">Broadcasting lets NumPy perform operations between arrays of different shapes without copying data. It is the single concept that makes vectorised code elegant and fast.</p>
+
+  <div class="box box-math">
+    <div class="box-title">&#x1d4d4; Broadcasting Rules</div>
+    <p>Two shapes are <strong>compatible</strong> dimension-by-dimension from the right. A dimension is compatible if (1) the sizes are equal, or (2) one of them is 1. A size-1 dimension is "stretched" to match the other — conceptually, not in memory.</p>
+  </div>
+
+  <h3>Visual Examples</h3>
+
+  <p><strong>Case 1</strong> — scalar broadcast: <code class="ic">(4, 3) + scalar</code></p>
+  <div class="broadcast-grid">
+    <div>
+      <div class="matrix-box">
+        <div class="matrix-row"><div class="matrix-cell mc-a">1</div><div class="matrix-cell mc-a">2</div><div class="matrix-cell mc-a">3</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-a">4</div><div class="matrix-cell mc-a">5</div><div class="matrix-cell mc-a">6</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-a">7</div><div class="matrix-cell mc-a">8</div><div class="matrix-cell mc-a">9</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-a">10</div><div class="matrix-cell mc-a">11</div><div class="matrix-cell mc-a">12</div></div>
+      </div>
+      <div class="matrix-label">(4, 3)</div>
+    </div>
+    <div class="math-op">+</div>
+    <div>
+      <div class="matrix-box">
+        <div class="matrix-row"><div class="matrix-cell mc-b">10</div></div>
+      </div>
+      <div class="matrix-label">scalar</div>
+    </div>
+    <div class="math-op">=</div>
+    <div>
+      <div class="matrix-box">
+        <div class="matrix-row"><div class="matrix-cell mc-r">11</div><div class="matrix-cell mc-r">12</div><div class="matrix-cell mc-r">13</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-r">14</div><div class="matrix-cell mc-r">15</div><div class="matrix-cell mc-r">16</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-r">17</div><div class="matrix-cell mc-r">18</div><div class="matrix-cell mc-r">19</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-r">20</div><div class="matrix-cell mc-r">21</div><div class="matrix-cell mc-r">22</div></div>
+      </div>
+      <div class="matrix-label">(4, 3)</div>
+    </div>
+  </div>
+
+  <p style="margin-top:24px;"><strong>Case 2</strong> — row broadcast: <code class="ic">(4, 3) + (3,)</code> — row vector added to every row</p>
+  <div class="broadcast-grid">
+    <div>
+      <div class="matrix-box">
+        <div class="matrix-row"><div class="matrix-cell mc-a">1</div><div class="matrix-cell mc-a">2</div><div class="matrix-cell mc-a">3</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-a">4</div><div class="matrix-cell mc-a">5</div><div class="matrix-cell mc-a">6</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-a">7</div><div class="matrix-cell mc-a">8</div><div class="matrix-cell mc-a">9</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-a">10</div><div class="matrix-cell mc-a">11</div><div class="matrix-cell mc-a">12</div></div>
+      </div>
+      <div class="matrix-label">(4, 3)</div>
+    </div>
+    <div class="math-op">+</div>
+    <div>
+      <div class="matrix-box">
+        <div class="matrix-row"><div class="matrix-cell mc-b">1</div><div class="matrix-cell mc-b">0</div><div class="matrix-cell mc-b">-1</div></div>
+      </div>
+      <div class="matrix-label">(3,) → (1,3)</div>
+    </div>
+    <div class="math-op">=</div>
+    <div>
+      <div class="matrix-box">
+        <div class="matrix-row"><div class="matrix-cell mc-r">2</div><div class="matrix-cell mc-r">2</div><div class="matrix-cell mc-r">2</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-r">5</div><div class="matrix-cell mc-r">5</div><div class="matrix-cell mc-r">5</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-r">8</div><div class="matrix-cell mc-r">8</div><div class="matrix-cell mc-r">8</div></div>
+        <div class="matrix-row"><div class="matrix-cell mc-r">11</div><div class="matrix-cell mc-r">11</div><div class="matrix-cell mc-r">11</div></div>
+      </div>
+      <div class="matrix-label">(4, 3)</div>
+    </div>
+  </div>
+
+  <div class="code-wrap" style="margin-top:28px;">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python — Broadcasting in practice</span></div>
+    <pre><span class="cm"># Normalise a batch: (batch, features) → subtract mean row</span>
+X <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">100</span>, <span class="nm">32</span>)   <span class="cm"># 100 samples, 32 features</span>
+mu <span class="op">=</span> X.<span class="fn">mean</span>(axis<span class="op">=</span><span class="nm">0</span>)            <span class="cm"># shape (32,) — feature means</span>
+std <span class="op">=</span> X.<span class="fn">std</span>(axis<span class="op">=</span><span class="nm">0</span>) <span class="op">+</span> <span class="nm">1e-8</span>      <span class="cm"># avoid /0</span>
+X_norm <span class="op">=</span> (X <span class="op">-</span> mu) <span class="op">/</span> std        <span class="cm"># (100,32)-(32,) → broadcasts ✓</span>
+
+<span class="cm"># Pairwise Euclidean distances — clever broadcasting</span>
+<span class="cm"># A: (m, d)   B: (n, d)  →  distances: (m, n)</span>
+A <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">5</span>, <span class="nm">3</span>)
+B <span class="op">=</span> np.random.<span class="fn">randn</span>(<span class="nm">4</span>, <span class="nm">3</span>)
+diff <span class="op">=</span> A[:, np.newaxis, :] <span class="op">-</span> B[np.newaxis, :, :]  <span class="cm"># (5,4,3)</span>
+dists <span class="op">=</span> np.<span class="fn">sqrt</span>((diff<span class="op">**</span><span class="nm">2</span>).<span class="fn">sum</span>(axis<span class="op">=</span><span class="op">-</span><span class="nm">1</span>))             <span class="cm"># (5,4)</span>
+
+<span class="cm"># Outer product — (n,1) * (1,m) → (n,m)</span>
+u <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>])[:, np.newaxis]  <span class="cm"># (3,1)</span>
+v <span class="op">=</span> np.<span class="fn">array</span>([<span class="nm">10</span>,<span class="nm">20</span>])[np.newaxis, :]  <span class="cm"># (1,2)</span>
+u <span class="op">*</span> v   <span class="cm"># [[10,20],[20,40],[30,60]]</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 9 — PERFORMANCE
+═══════════════════════════════════════════ -->
+<section id="perf">
+<div class="container reveal">
+  <div class="section-tag">Section 09</div>
+  <h2>Performance &amp; <span class="accent">Vectorisation</span></h2>
+  <p class="section-lead">Vectorisation is the art of replacing Python loops with NumPy operations. The speedup can be 100–1000×.</p>
+
+  <h3>Loop vs Vectorised — Speed Comparison</h3>
+  <p>Computing element-wise square of 1 million values:</p>
+
+  <div style="margin:20px 0;">
+    <div class="perf-row">
+      <div class="perf-label">Python list loop</div>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:100%;background:#fb7185;">~1200 ms</div></div>
+      <div class="perf-num">1200 ms</div>
+    </div>
+    <div class="perf-row">
+      <div class="perf-label">NumPy loop (ndarray)</div>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:62%;background:#f59e0b;">~750 ms</div></div>
+      <div class="perf-num">750 ms</div>
+    </div>
+    <div class="perf-row">
+      <div class="perf-label">NumPy vectorised</div>
+      <div class="perf-bar-wrap"><div class="perf-bar" style="width:3%;background:#6ee7b7;min-width:36px;">~2 ms</div></div>
+      <div class="perf-num">2 ms</div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python — Refactor patterns</span></div>
+    <pre><span class="cm"># ✗ SLOW — Python loop</span>
+result <span class="op">=</span> []
+<span class="kw">for</span> x <span class="kw">in</span> data:
+    result.<span class="fn">append</span>(x <span class="op">**</span> <span class="nm">2</span>)
+
+<span class="cm"># ✓ FAST — vectorised</span>
+result <span class="op">=</span> data <span class="op">**</span> <span class="nm">2</span>
+
+<span class="cm"># ✗ SLOW — manual dot product</span>
+dot <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">for</span> a, b <span class="kw">in</span> <span class="fn">zip</span>(u, v):
+    dot <span class="op">+=</span> a <span class="op">*</span> b
+
+<span class="cm"># ✓ FAST</span>
+dot <span class="op">=</span> np.<span class="fn">dot</span>(u, v)
+
+<span class="cm"># ✗ SLOW — manual softmax</span>
+<span class="kw">def</span> <span class="fn">softmax_slow</span>(z):
+    exp_z <span class="op">=</span> [math.<span class="fn">exp</span>(x) <span class="kw">for</span> x <span class="kw">in</span> z]
+    total <span class="op">=</span> <span class="fn">sum</span>(exp_z)
+    <span class="kw">return</span> [e <span class="op">/</span> total <span class="kw">for</span> e <span class="kw">in</span> exp_z]
+
+<span class="cm"># ✓ FAST — numerically stable vectorised softmax</span>
+<span class="kw">def</span> <span class="fn">softmax</span>(z):
+    z <span class="op">=</span> z <span class="op">-</span> z.<span class="fn">max</span>()          <span class="cm"># subtract max for numerical stability</span>
+    e <span class="op">=</span> np.<span class="fn">exp</span>(z)
+    <span class="kw">return</span> e <span class="op">/</span> e.<span class="fn">sum</span>()</pre>
+  </div>
+
+  <h3>Memory Tips</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div><span class="code-lang">Python</span></div>
+    <pre><span class="cm"># Check memory usage</span>
+arr <span class="op">=</span> np.<span class="fn">zeros</span>((<span class="nm">1000</span>, <span class="nm">1000</span>))
+arr.nbytes                  <span class="cm"># 8_000_000 bytes = 8 MB (float64)</span>
+arr.<span class="fn">astype</span>(np.float32).nbytes  <span class="cm"># 4_000_000 bytes — half!</span>
+
+<span class="cm"># out= parameter avoids allocating new array</span>
+result <span class="op">=</span> np.<span class="fn">empty_like</span>(arr)
+np.<span class="fn">add</span>(arr, arr, out<span class="op">=</span>result)    <span class="cm"># no extra allocation</span>
+
+<span class="cm"># Contiguous memory = faster ops</span>
+C_arr <span class="op">=</span> np.<span class="fn">ascontiguousarray</span>(arr.T)  <span class="cm"># make C-contiguous copy</span>
+arr.<span class="fn">flags</span>[<span class="st">'C_CONTIGUOUS'</span>]           <span class="cm"># check</span></pre>
+  </div>
+
+  <div class="box box-tip">
+    <div class="box-title">&#x2713; Golden Rules of NumPy performance</div>
+    <p>
+      1. <strong>No Python loops over array elements</strong> — every loop is 100× slower.<br>
+      2. <strong>Use <code class="ic">float32</code> for ML</strong> — half memory, same or faster computation.<br>
+      3. <strong>Prefer views over copies</strong> — slices are free; fancy indexing always copies.<br>
+      4. <strong>Check shape before every operation</strong> — 95% of bugs are shape mismatches.<br>
+      5. <strong>Use <code class="ic">np.linalg.solve</code> not <code class="ic">np.linalg.inv</code></strong> — more numerically stable.
+    </p>
+  </div>
+
+  <h3>Quick Reference Card</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Task</th><th>Code</th></tr>
+      <tr><td>Create array</td><td class="td-code">np.array([1,2,3])</td></tr>
+      <tr><td>Zeros / ones</td><td class="td-code">np.zeros((m,n)) / np.ones((m,n))</td></tr>
+      <tr><td>Matrix multiply</td><td class="td-code">A @ B</td></tr>
+      <tr><td>Transpose</td><td class="td-code">A.T</td></tr>
+      <tr><td>Reshape</td><td class="td-code">a.reshape(m, -1)</td></tr>
+      <tr><td>Add axis</td><td class="td-code">a[:, np.newaxis] or a[..., None]</td></tr>
+      <tr><td>Boolean mask</td><td class="td-code">a[a &gt; 0]</td></tr>
+      <tr><td>Stack arrays</td><td class="td-code">np.vstack / np.hstack / np.concatenate</td></tr>
+      <tr><td>Mean/std per axis</td><td class="td-code">X.mean(axis=0) / X.std(axis=0)</td></tr>
+      <tr><td>Norm</td><td class="td-code">np.linalg.norm(v)</td></tr>
+      <tr><td>Eigenvalues</td><td class="td-code">np.linalg.eig(A)</td></tr>
+      <tr><td>SVD</td><td class="td-code">U, S, Vt = np.linalg.svd(A)</td></tr>
+      <tr><td>Softmax (stable)</td><td class="td-code">e = np.exp(z - z.max()); e/e.sum()</td></tr>
+      <tr><td>ReLU</td><td class="td-code">np.maximum(0, z)</td></tr>
+      <tr><td>Shuffle rows</td><td class="td-code">idx = np.random.permutation(len(X)); X[idx]</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Python &amp; NumPy — Comprehensive Notes &nbsp;·&nbsp; Part of the <a href="#">3-Month ML Plan</a> &nbsp;·&nbsp; Next: <a href="#">Pandas &amp; EDA →</a></p>
+  </div>
+</footer>
+
+<script>
+// Scroll-based reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.08 });
+reveals.forEach(el => observer.observe(el));
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('section[id], .hero[id]');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+</script>
+</body>
+</html>

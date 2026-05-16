@@ -1,0 +1,33 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ML Portfolio Tracker Open Graph image">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff4e9" />
+      <stop offset="55%" stop-color="#f0f2f7" />
+      <stop offset="100%" stop-color="#e9eef5" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ea4c3c" />
+      <stop offset="100%" stop-color="#ff8a65" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="980" cy="120" r="140" fill="#f6d9d3" />
+  <circle cx="180" cy="520" r="180" fill="#dfe7f2" />
+  <rect x="120" y="120" width="960" height="390" rx="36" fill="#ffffff" opacity="0.92" />
+  <rect x="160" y="170" width="240" height="8" rx="4" fill="url(#accent)" />
+  <text x="160" y="250" fill="#0f1b2b" font-family="Space Grotesk, Arial, sans-serif" font-size="64" font-weight="700">
+    ML Portfolio Tracker
+  </text>
+  <text x="160" y="320" fill="#6d7a8b" font-family="Space Grotesk, Arial, sans-serif" font-size="30" font-weight="400">
+    Notes, artifacts, and a 3-month plan in one place.
+  </text>
+  <g>
+    <rect x="160" y="380" width="180" height="54" rx="27" fill="url(#accent)" />
+    <text x="190" y="416" fill="#ffffff" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="600">
+      Explore Notes
+    </text>
+  </g>
+  <text x="160" y="470" fill="#6d7a8b" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="500">
+    ml-portfolio.your-domain.com
+  </text>
+</svg>
