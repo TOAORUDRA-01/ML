@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNNs & Computer Vision — Comprehensive Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:     #0a0a0a;
+  --bg2:    #111111;
+  --bg3:    #181818;
+  --bg4:    #202020;
+  --border: #2a2a2a;
+  --red:    #dc2626;
+  --red-lt: rgba(220,38,38,.1);
+  --red-dk: #991b1b;
+  --orange: #ea580c;
+  --orange-lt:rgba(234,88,12,.1);
+  --blue:   #2563eb;
+  --blue-lt:rgba(37,99,235,.1);
+  --green:  #16a34a;
+  --green-lt:rgba(22,163,74,.1);
+  --violet: #7c3aed;
+  --violet-lt:rgba(124,58,237,.1);
+  --text:   #f0f0f0;
+  --muted:  #555;
+  --code-bg:#070707;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;overflow-x:hidden;}
+
+/* ── SCAN LINE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.008) 2px,rgba(255,255,255,.008) 4px);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,.97);backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--red);display:flex;align-items:center;padding:0 1.5rem;height:50px;overflow-x:auto;gap:0;}
+nav::-webkit-scrollbar{height:2px;}
+nav::-webkit-scrollbar-thumb{background:var(--red);}
+nav a{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;padding:0 13px;height:50px;display:flex;align-items:center;
+  border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s;margin-bottom:-2px;}
+nav a:hover{color:var(--text);}
+nav a.active{color:var(--red);border-bottom-color:var(--red);}
+
+/* ── LAYOUT ── */
+.wrap{max-width:900px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+
+/* ── HERO ── */
+.hero{padding:90px 0 64px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero-accent{position:absolute;top:0;right:0;width:400px;height:400px;
+  background:radial-gradient(ellipse at top right,rgba(220,38,38,.08) 0%,transparent 65%);pointer-events:none;}
+.hero-number{font-family:'Dela Gothic One',sans-serif;font-size:clamp(5rem,15vw,11rem);
+  line-height:1;color:transparent;-webkit-text-stroke:1px var(--border);
+  position:absolute;right:-20px;top:60px;user-select:none;z-index:0;}
+.hero-inner{position:relative;z-index:1;}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--red);margin-bottom:14px;}
+.hero h1{font-family:'Inter',sans-serif;font-size:clamp(2.4rem,6vw,4.2rem);
+  font-weight:900;line-height:1.0;color:#fff;margin-bottom:16px;}
+.hero h1 span{color:var(--red);}
+.hero-sub{font-size:.93rem;color:var(--muted);max-width:560px;margin-bottom:26px;}
+.tags{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 10px;border-radius:2px;border:1px solid;}
+.tg{color:var(--red);border-color:var(--red);background:var(--red-lt);}
+.tb{color:var(--blue);border-color:var(--blue);background:var(--blue-lt);}
+.to{color:var(--orange);border-color:var(--orange);background:var(--orange-lt);}
+.tv{color:var(--violet);border-color:var(--violet);background:var(--violet-lt);}
+
+/* ── TOC ── */
+.toc{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--red);
+  padding:20px 24px;margin-top:28px;}
+.toc-hd{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;}
+@media(max-width:500px){.toc-grid{grid-template-columns:1fr;}}
+.toc a{font-size:.83rem;color:var(--muted);text-decoration:none;padding:2px 0;
+  display:flex;align-items:center;gap:8px;transition:color .15s;}
+.toc a:hover{color:var(--red);}
+.tn{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--border);width:16px;}
+
+/* ── SECTIONS ── */
+section{padding:64px 0 52px;border-bottom:1px solid var(--border);position:relative;z-index:1;}
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+section h2{font-size:1.85rem;font-weight:900;color:#fff;margin-bottom:6px;line-height:1.15;}
+section h2 .acc{color:var(--red);}
+.sec-lead{font-size:.91rem;color:var(--muted);margin-bottom:36px;max-width:620px;font-style:italic;}
+h3{font-size:.97rem;font-weight:700;color:var(--red);margin:34px 0 12px;
+  display:flex;align-items:center;gap:9px;}
+h3::before{content:'';width:14px;height:2px;background:var(--red);display:inline-block;border-radius:2px;}
+h4{font-size:.88rem;font-weight:700;color:var(--orange);margin:20px 0 8px;}
+p{margin-bottom:13px;color:#888;font-size:.9rem;}
+
+/* ── MATH ── */
+.math{background:var(--bg2);border-left:3px solid var(--orange);
+  padding:14px 20px;margin:16px 0;border-radius:0 4px 4px 0;
+  font-family:'JetBrains Mono',monospace;font-size:.88rem;line-height:2;color:var(--text);}
+.math-lbl{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:6px;}
+.math-eq{text-align:center;padding:4px 0;}
+
+/* ── CODE ── */
+.code-wrap{background:var(--code-bg);border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;margin:14px 0;box-shadow:0 0 30px rgba(220,38,38,.04);}
+.code-bar{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 13px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.cdots{display:flex;gap:5px;}
+.cdots span{width:9px;height:9px;border-radius:50%;}
+.cdr{background:#ff5f57;}.cdy{background:#febc2e;}.cdg{background:#28c840;}
+.clang{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;}
+pre{padding:16px 18px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#7a8a7a;}
+.kw{color:#f43f5e;}.fn{color:#60a5fa;}.st{color:#86efac;}
+.nm{color:#fbbf24;}.cm{color:#2d3a2d;font-style:italic;}
+.op{color:#94a3b8;}.tp{color:#fb923c;}.at{color:#34d399;}
+.ic{font-family:'JetBrains Mono',monospace;font-size:.78em;
+  background:var(--red-lt);color:var(--red);padding:1px 6px;border-radius:2px;border:1px solid rgba(220,38,38,.25);}
+
+/* ── BOXES ── */
+.box{border-radius:4px;padding:14px 18px;margin:16px 0;border:1px solid;}
+.box-r{background:var(--red-lt);border-color:rgba(220,38,38,.25);}
+.box-g{background:var(--green-lt);border-color:rgba(22,163,74,.25);}
+.box-o{background:var(--orange-lt);border-color:rgba(234,88,12,.25);}
+.box-b{background:var(--blue-lt);border-color:rgba(37,99,235,.25);}
+.box-v{background:var(--violet-lt);border-color:rgba(124,58,237,.25);}
+.box-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;}
+.box-r .box-title{color:var(--red);}
+.box-g .box-title{color:var(--green);}
+.box-o .box-title{color:var(--orange);}
+.box-b .box-title{color:var(--blue);}
+.box-v .box-title{color:var(--violet);}
+.box p{margin:0;font-size:.85rem;}
+
+/* ── TABLES ── */
+.tbl{overflow-x:auto;margin:16px 0;}
+table.t{width:100%;border-collapse:collapse;font-size:.82rem;}
+table.t th{background:var(--bg3);color:var(--red);font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;
+  padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);}
+table.t td{padding:8px 13px;border-bottom:1px solid rgba(42,42,42,.5);color:#888;}
+table.t tr:hover td{background:rgba(220,38,38,.03);}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--blue);}
+.gd{color:var(--green);font-weight:600;}
+.bd{color:var(--red);}
+
+/* ── PIXEL GRID (for convolution visual) ── */
+.pixel-grid{display:inline-grid;gap:2px;border:1px solid var(--border);padding:4px;border-radius:4px;}
+.pixel-cell{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:10px;border-radius:2px;transition:all .3s;}
+
+/* ── DIAGRAM ── */
+.diagram{background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+  padding:20px;margin:16px 0;text-align:center;overflow-x:auto;}
+.diagram svg{display:inline-block;}
+.diag-cap{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted);margin-top:10px;}
+
+/* ── DEMO ── */
+.demo{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin:16px 0;}
+.demo-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.demo-ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.dbtn{font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:5px 11px;border-radius:3px;border:1px solid var(--border);
+  background:var(--bg3);color:var(--text);cursor:pointer;transition:all .15s;}
+.dbtn.active,.dbtn:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.demo-canvas{display:block;width:100%;border-radius:3px;border:1px solid var(--border);}
+.demo-info{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--red);margin-top:7px;}
+
+/* ── ARCH CARDS ── */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:16px 0;}
+.arch-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:14px;
+  border-top:2px solid;transition:transform .15s;}
+.arch-card:hover{transform:translateY(-2px);}
+.arch-year{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);margin-bottom:4px;}
+.arch-name{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.arch-desc{font-size:.78rem;color:var(--muted);}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ── FOOTER ── */
+footer{padding:44px 0;text-align:center;font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;color:var(--muted);border-top:2px solid var(--red);position:relative;z-index:1;}
+footer a{color:var(--red);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav id="topnav">
+  <a href="#intro"   class="active">Intro</a>
+  <a href="#why"     >Why CNN</a>
+  <a href="#conv"    >Convolution</a>
+  <a href="#pooling" >Pooling</a>
+  <a href="#arch"    >Architectures</a>
+  <a href="#transfer">Transfer</a>
+  <a href="#detect"  >Detection</a>
+  <a href="#segment" >Segmentation</a>
+  <a href="#aug"     >Augmentation</a>
+  <a href="#tips"    >Practical Tips</a>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<div class="hero" id="intro">
+<div class="hero-accent"></div>
+<div class="wrap">
+  <div class="hero-number">06</div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">// Module 06 — Computer Vision</div>
+    <h1>CNNs &amp;<br><span>Computer</span><br><span>Vision</span></h1>
+    <p class="hero-sub">Convolution, pooling, classic architectures, transfer learning, object detection, segmentation — everything from pixels to predictions.</p>
+    <div class="tags">
+      <span class="tag tg">Convolution</span>
+      <span class="tag tb">Pooling</span>
+      <span class="tag to">ResNet / EfficientNet</span>
+      <span class="tag tv">Transfer Learning</span>
+      <span class="tag tg">YOLO Detection</span>
+      <span class="tag tb">Segmentation</span>
+      <span class="tag to">Augmentation</span>
+      <span class="tag tv">PyTorch Vision</span>
+    </div>
+    <div class="toc">
+      <div class="toc-hd">// Contents</div>
+      <div class="toc-grid">
+        <a href="#why"><span class="tn">01</span>Why CNNs beat MLPs on images</a>
+        <a href="#detect"><span class="tn">06</span>Object detection</a>
+        <a href="#conv"><span class="tn">02</span>Convolution operation</a>
+        <a href="#segment"><span class="tn">07</span>Segmentation</a>
+        <a href="#pooling"><span class="tn">03</span>Pooling &amp; feature maps</a>
+        <a href="#aug"><span class="tn">08</span>Data augmentation</a>
+        <a href="#arch"><span class="tn">04</span>Architecture zoo</a>
+        <a href="#tips"><span class="tn">09</span>Training tips &amp; tricks</a>
+        <a href="#transfer"><span class="tn">05</span>Transfer learning</a>
+        <a href="#eval"><span class="tn">10</span>Evaluation metrics</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     S1: WHY CNNs
+══════════════════════════════════════ -->
+<section id="why">
+<div class="wrap reveal">
+  <div class="sec-label">Section 01</div>
+  <h2>Why CNNs Beat <span class="acc">MLPs on Images</span></h2>
+  <p class="sec-lead">A raw MLP on a 224×224 image needs 150,000+ weights per neuron. CNNs exploit three inductive biases that make vision tractable.</p>
+
+  <h3>The Three Key Inductive Biases</h3>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Bias</th><th>What it means</th><th>How CNNs encode it</th></tr>
+      <tr><td><strong>Local connectivity</strong></td><td>Nearby pixels are more related than distant ones</td><td>Small kernel (3×3, 5×5) sees only local patch</td></tr>
+      <tr><td><strong>Weight sharing</strong></td><td>The same edge detector works anywhere in the image</td><td>One filter applied to every position — same weights</td></tr>
+      <tr><td><strong>Translation equivariance</strong></td><td>A cat shifted right is still a cat</td><td>Convolution commutes with translation</td></tr>
+    </table>
+  </div>
+
+  <h3>Parameter Count Comparison</h3>
+
+  <div class="diagram">
+    <svg viewBox="0 0 520 130" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>Bar chart comparing parameters: MLP first layer on 224x224 image needs 150K weights per neuron, CNN conv layer needs only 27 weights per filter</title>
+      <!-- MLP bar -->
+      <rect x="60" y="20" width="340" height="36" rx="3" fill="#dc2626" opacity=".9"/>
+      <text x="66" y="43" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="white">MLP first layer (224×224→1 neuron)</text>
+      <text x="408" y="43" font-family="JetBrains Mono,monospace" font-size="11" fill="#dc2626">150,528 params</text>
+      <!-- CNN bar -->
+      <rect x="60" y="72" width="7" height="36" rx="3" fill="#2563eb" opacity=".9"/>
+      <text x="73" y="95" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="white">CNN 3×3 conv filter (1 channel)</text>
+      <text x="408" y="95" font-family="JetBrains Mono,monospace" font-size="11" fill="#2563eb">9 params (+1 bias)</text>
+      <!-- labels -->
+      <text x="60" y="122" font-family="JetBrains Mono,monospace" font-size="9" fill="#555">0</text>
+      <text x="390" y="122" font-family="JetBrains Mono,monospace" font-size="9" fill="#555">150K weights</text>
+    </svg>
+    <div class="diag-cap">A single CNN filter uses 9 weights regardless of image size. An MLP first-layer neuron needs one weight per pixel — doesn't scale.</div>
+  </div>
+
+  <div class="box box-r">
+    <div class="box-title">★ Key insight</div>
+    <p>Because the <strong>same filter slides across every position</strong>, a CNN learns "is there an edge here?" once and applies that detector everywhere. The MLP must learn a separate edge detector for every position — catastrophically inefficient.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S2: CONVOLUTION
+══════════════════════════════════════ -->
+<section id="conv">
+<div class="wrap reveal">
+  <div class="sec-label">Section 02</div>
+  <h2>The <span class="acc">Convolution</span> Operation</h2>
+  <p class="sec-lead">A filter (kernel) slides over the input, computing a dot product at each position. The output is a feature map showing where and how strongly the filter detected its pattern.</p>
+
+  <h3>Mathematics</h3>
+  <div class="math">
+    <div class="math-lbl">2D Convolution (single channel)</div>
+    <div class="math-eq">(I * K)[i,j] = Σₘ Σₙ I[i+m, j+n] · K[m,n]</div>
+  </div>
+
+  <div class="math">
+    <div class="math-lbl">Output feature map size</div>
+    <div class="math-eq">H_out = ⌊(H_in + 2·pad − kernel) / stride⌋ + 1</div>
+    <div class="math-eq">W_out = ⌊(W_in + 2·pad − kernel) / stride⌋ + 1</div>
+  </div>
+
+  <div class="math">
+    <div class="math-lbl">Parameter count per conv layer</div>
+    <div class="math-eq">params = C_out × (C_in × K × K + 1)</div>
+    <div class="math-eq">e.g. 64 filters, 3×3, 32 input channels = 64 × (32×9+1) = 18,496</div>
+  </div>
+
+  <!-- Interactive Convolution Visualiser -->
+  <h3>Interactive: Convolution Visualiser</h3>
+  <div class="demo">
+    <div class="demo-title">// Slide a filter across a 7×7 input — watch the feature map build</div>
+    <div class="demo-ctrl">
+      <button class="dbtn active" onclick="setFilter('edge-h',this)">Horiz. Edge</button>
+      <button class="dbtn" onclick="setFilter('edge-v',this)">Vert. Edge</button>
+      <button class="dbtn" onclick="setFilter('sharpen',this)">Sharpen</button>
+      <button class="dbtn" onclick="setFilter('blur',this)">Blur</button>
+      <button class="dbtn" onclick="setFilter('sobel',this)">Sobel</button>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;">INPUT 7×7</div>
+        <canvas id="inputCanvas" width="238" height="238" style="border:1px solid var(--border);border-radius:3px;display:block;"></canvas>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;">KERNEL 3×3</div>
+        <canvas id="kernelCanvas" width="96" height="96" style="border:1px solid var(--border);border-radius:3px;display:block;"></canvas>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;">FEATURE MAP 5×5</div>
+        <canvas id="outputCanvas" width="170" height="170" style="border:1px solid var(--border);border-radius:3px;display:block;"></canvas>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <button class="dbtn" onclick="animConv()">▶ Animate</button>
+      <button class="dbtn" onclick="resetConv()">Reset</button>
+    </div>
+    <div class="demo-info" id="convInfo">Click Animate to watch the filter slide across the input</div>
+  </div>
+
+  <h3>Key Convolution Hyperparameters</h3>
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Param</th><th>Effect</th><th>Common values</th></tr>
+      <tr><td><strong>Kernel size</strong></td><td>Larger = wider receptive field, more params</td><td>3×3 (default), 1×1, 5×5, 7×7</td></tr>
+      <tr><td><strong>Stride</strong></td><td>Step size; larger stride = smaller output</td><td>1 (no downsample), 2 (halve size)</td></tr>
+      <tr><td><strong>Padding</strong></td><td>Preserve spatial size; "same" padding keeps H,W</td><td>0 (valid), 1 for 3×3 same</td></tr>
+      <tr><td><strong>Dilation</strong></td><td>Dilated conv: expands receptive field without more params</td><td>1 (standard), 2, 4</td></tr>
+      <tr><td><strong>Groups</strong></td><td>Depthwise: each input channel has own filter (MobileNet)</td><td>1 (standard), C_in (depthwise)</td></tr>
+    </table>
+  </div>
+
+  <h3>1×1 Convolution — the Bottleneck</h3>
+  <div class="box box-b">
+    <div class="box-title">// 1×1 conv — channel projection</div>
+    <p>A 1×1 convolution mixes information <em>across channels</em> without touching spatial dimensions. It's a learned linear projection of the channel axis — used to reduce/increase channel count cheaply (bottleneck in ResNet, NiN, Inception). Cost: C_out × C_in × 1 × 1 vs C_out × C_in × K × K.</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Convolution in PyTorch</span></div>
+    <pre><span class="kw">import</span> torch, torch.nn <span class="kw">as</span> nn
+
+<span class="cm"># Standard conv block: Conv → BN → ReLU (the atomic unit of CNNs)</span>
+<span class="kw">class</span> <span class="tp">ConvBNReLU</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, c_in, c_out, k<span class="op">=</span><span class="nm">3</span>, stride<span class="op">=</span><span class="nm">1</span>, groups<span class="op">=</span><span class="nm">1</span>):
+        <span class="fn">super</span>().__init__()
+        pad <span class="op">=</span> k <span class="op">//</span> <span class="nm">2</span>           <span class="cm"># "same" padding for odd kernels</span>
+        self.block <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Conv2d</span>(c_in, c_out, k, stride, pad, groups<span class="op">=</span>groups, bias<span class="op">=</span><span class="kw">False</span>),
+            nn.<span class="fn">BatchNorm2d</span>(c_out),   <span class="cm"># BN after conv, before ReLU</span>
+            nn.<span class="fn">ReLU</span>(inplace<span class="op">=</span><span class="kw">True</span>)
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.block(x)
+
+<span class="cm"># Depthwise separable convolution (MobileNet building block)</span>
+<span class="kw">class</span> <span class="tp">DepthwiseSeparable</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, c_in, c_out, stride<span class="op">=</span><span class="nm">1</span>):
+        <span class="fn">super</span>().__init__()
+        self.dw <span class="op">=</span> <span class="fn">ConvBNReLU</span>(c_in, c_in,  k<span class="op">=</span><span class="nm">3</span>, stride<span class="op">=</span>stride, groups<span class="op">=</span>c_in) <span class="cm"># depthwise</span>
+        self.pw <span class="op">=</span> <span class="fn">ConvBNReLU</span>(c_in, c_out, k<span class="op">=</span><span class="nm">1</span>)                             <span class="cm"># pointwise</span>
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.pw(self.dw(x))
+
+<span class="cm"># Dilated convolution (DeepLab — larger receptive field, same resolution)</span>
+nn.<span class="fn">Conv2d</span>(<span class="nm">64</span>, <span class="nm">64</span>, kernel_size<span class="op">=</span><span class="nm">3</span>, dilation<span class="op">=</span><span class="nm">2</span>, padding<span class="op">=</span><span class="nm">2</span>)
+
+<span class="cm"># Check output size: (H+2p-k)/s + 1</span>
+x <span class="op">=</span> torch.<span class="fn">randn</span>(<span class="nm">1</span>, <span class="nm">3</span>, <span class="nm">224</span>, <span class="nm">224</span>)     <span class="cm"># (B, C, H, W)</span>
+conv <span class="op">=</span> nn.<span class="fn">Conv2d</span>(<span class="nm">3</span>, <span class="nm">64</span>, <span class="nm">3</span>, stride<span class="op">=</span><span class="nm">2</span>, padding<span class="op">=</span><span class="nm">1</span>)
+<span class="fn">print</span>(conv(x).shape)              <span class="cm"># (1, 64, 112, 112)</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S3: POOLING
+══════════════════════════════════════ -->
+<section id="pooling">
+<div class="wrap reveal">
+  <div class="sec-label">Section 03</div>
+  <h2>Pooling &amp; <span class="acc">Feature Maps</span></h2>
+  <p class="sec-lead">Pooling reduces spatial dimensions, increases receptive field, and provides a degree of translation invariance — without any learnable parameters.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 540 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>Max pooling diagram: 4x4 feature map with 2x2 kernel stride 2 produces 2x2 output by taking max of each region</title>
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="#dc2626" stroke-width="1.5"/>
+        </marker>
+      </defs>
+      <!-- 4×4 input -->
+      <text x="72" y="18" font-family="JetBrains Mono,monospace" font-size="10" fill="#555" text-anchor="middle">Input 4×4</text>
+      <g font-family="JetBrains Mono,monospace" font-size="13" text-anchor="middle">
+        <rect x="10" y="24" width="36" height="36" rx="2" fill="#181818" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="28" y="47" fill="#dc2626" font-weight="700">6</text>
+        <rect x="48" y="24" width="36" height="36" rx="2" fill="#181818" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="66" y="47" fill="#dc2626" font-weight="700">8</text>
+        <rect x="86" y="24" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="104" y="47" fill="#555">2</text>
+        <rect x="124" y="24" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="142" y="47" fill="#555">4</text>
+        <rect x="10" y="62" width="36" height="36" rx="2" fill="#181818" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="28" y="85" fill="#dc2626" font-weight="700">5</text>
+        <rect x="48" y="62" width="36" height="36" rx="2" fill="#181818" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="66" y="85" fill="#dc2626" font-weight="700">9</text>
+        <rect x="86" y="62" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="104" y="85" fill="#555">3</text>
+        <rect x="124" y="62" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="142" y="85" fill="#555">1</text>
+        <rect x="10" y="100" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="28" y="123" fill="#555">1</text>
+        <rect x="48" y="100" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="66" y="123" fill="#555">2</text>
+        <rect x="86" y="100" width="36" height="36" rx="2" fill="#181818" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="104" y="123" fill="#ea580c" font-weight="700">7</text>
+        <rect x="124" y="100" width="36" height="36" rx="2" fill="#181818" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="142" y="123" fill="#ea580c" font-weight="700">5</text>
+        <rect x="10" y="138" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="28" y="161" fill="#555">3</text>
+        <rect x="48" y="138" width="36" height="36" rx="2" fill="#181818" stroke="#2a2a2a"/>
+        <text x="66" y="161" fill="#555">1</text>
+        <rect x="86" y="138" width="36" height="36" rx="2" fill="#181818" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="104" y="161" fill="#ea580c" font-weight="700">4</text>
+        <rect x="124" y="138" width="36" height="36" rx="2" fill="#181818" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="142" y="161" fill="#ea580c" font-weight="700">8</text>
+      </g>
+      <!-- Arrow -->
+      <line x1="175" y1="90" x2="260" y2="90" stroke="#dc2626" stroke-width="1.5" marker-end="url(#a)"/>
+      <text x="217" y="82" font-family="JetBrains Mono,monospace" font-size="9" fill="#555" text-anchor="middle">MaxPool</text>
+      <text x="217" y="95" font-family="JetBrains Mono,monospace" font-size="9" fill="#555" text-anchor="middle">2×2, s=2</text>
+      <!-- 2×2 output -->
+      <text x="330" y="18" font-family="JetBrains Mono,monospace" font-size="10" fill="#555" text-anchor="middle">Output 2×2</text>
+      <g font-family="JetBrains Mono,monospace" font-size="16" text-anchor="middle">
+        <rect x="270" y="24" width="60" height="60" rx="3" fill="#181818" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="300" y="61" fill="#dc2626" font-weight="700">9</text>
+        <text x="292" y="20" font-family="JetBrains Mono,monospace" font-size="9" fill="#dc2626">max(6,8,5,9)</text>
+        <rect x="340" y="24" width="60" height="60" rx="3" fill="#181818" stroke="#2563eb" stroke-width="1.5"/>
+        <text x="370" y="61" fill="#2563eb" font-weight="700">4</text>
+        <rect x="270" y="95" width="60" height="60" rx="3" fill="#181818" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="300" y="131" fill="#ea580c" font-weight="700">8</text>
+        <rect x="340" y="95" width="60" height="60" rx="3" fill="#181818" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="370" y="131" fill="#7c3aed" font-weight="700">7</text>
+      </g>
+      <!-- Annotations -->
+      <text x="450" y="50"  font-family="JetBrains Mono,monospace" font-size="9" fill="#dc2626">max=9</text>
+      <text x="450" y="70"  font-family="JetBrains Mono,monospace" font-size="9" fill="#2563eb">max=4</text>
+      <text x="450" y="120" font-family="JetBrains Mono,monospace" font-size="9" fill="#ea580c">max=8</text>
+      <text x="450" y="140" font-family="JetBrains Mono,monospace" font-size="9" fill="#7c3aed">max=7</text>
+    </svg>
+    <div class="diag-cap">MaxPool 2×2, stride=2: halves both H and W. Each output = maximum of 4 input values in that region.</div>
+  </div>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Pooling type</th><th>Operation</th><th>Use case</th></tr>
+      <tr><td><strong>Max Pooling</strong></td><td>Take max of region</td><td>Most common; detects presence of feature</td></tr>
+      <tr><td><strong>Average Pooling</strong></td><td>Mean of region</td><td>Smoother; used in global average pooling</td></tr>
+      <tr><td><strong>Global Avg Pool</strong></td><td>Mean over entire spatial dim</td><td>Replaces FC layers; reduces params drastically</td></tr>
+      <tr><td><strong>Adaptive Pool</strong></td><td>Pool to any output size</td><td>Handle variable input sizes (PyTorch's default)</td></tr>
+      <tr><td><strong>Strided Conv</strong></td><td>Conv with stride=2</td><td>Learnable downsampling (modern preference over pool)</td></tr>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Pooling layers</span></div>
+    <pre><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="cm"># MaxPool: halve spatial dims</span>
+pool <span class="op">=</span> nn.<span class="fn">MaxPool2d</span>(kernel_size<span class="op">=</span><span class="nm">2</span>, stride<span class="op">=</span><span class="nm">2</span>)
+
+<span class="cm"># Global Average Pooling — flatten spatially</span>
+gap <span class="op">=</span> nn.<span class="fn">AdaptiveAvgPool2d</span>((<span class="nm">1</span>, <span class="nm">1</span>))  <span class="cm"># (B, C, H, W) → (B, C, 1, 1)</span>
+
+<span class="cm"># Usage in classifier head (modern approach)</span>
+<span class="kw">class</span> <span class="tp">ClassifierHead</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_features, n_classes):
+        <span class="fn">super</span>().__init__()
+        self.gap  <span class="op">=</span> nn.<span class="fn">AdaptiveAvgPool2d</span>(<span class="nm">1</span>)  <span class="cm"># any H,W → 1×1</span>
+        self.drop <span class="op">=</span> nn.<span class="fn">Dropout</span>(<span class="nm">0.2</span>)
+        self.fc   <span class="op">=</span> nn.<span class="fn">Linear</span>(n_features, n_classes)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x <span class="op">=</span> self.gap(x)          <span class="cm"># (B, C, 1, 1)</span>
+        x <span class="op">=</span> x.<span class="fn">flatten</span>(<span class="nm">1</span>)         <span class="cm"># (B, C)</span>
+        x <span class="op">=</span> self.drop(x)
+        <span class="kw">return</span> self.fc(x)</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S4: ARCHITECTURES
+══════════════════════════════════════ -->
+<section id="arch">
+<div class="wrap reveal">
+  <div class="sec-label">Section 04</div>
+  <h2>Architecture <span class="acc">Zoo</span></h2>
+  <p class="sec-lead">Each architecture solved a specific failure mode of its predecessor. Understanding the evolution gives you intuition for design decisions.</p>
+
+  <!-- Interactive Architecture Accuracy vs Params -->
+  <div class="demo">
+    <div class="demo-title">// Top-1 ImageNet accuracy vs parameters</div>
+    <canvas class="demo-canvas" id="archCanvas" height="260"></canvas>
+    <div class="demo-info" id="archInfo">Hover over a point to see details</div>
+  </div>
+
+  <div class="arch-grid">
+    <div class="arch-card" style="border-top-color:var(--muted);">
+      <div class="arch-year">1998</div>
+      <div class="arch-name">LeNet-5</div>
+      <div class="arch-desc">First successful CNN. 5 layers, trained on MNIST. Proved convolutions work.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--red);">
+      <div class="arch-year">2012</div>
+      <div class="arch-name">AlexNet</div>
+      <div class="arch-desc">Won ImageNet by 10%. ReLU, dropout, multi-GPU. Launched the DL revolution.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--orange);">
+      <div class="arch-year">2014</div>
+      <div class="arch-name">VGG-16/19</div>
+      <div class="arch-desc">Only 3×3 convs + max pool. Simple and deep. Baseline for many CV tasks.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--blue);">
+      <div class="arch-year">2014</div>
+      <div class="arch-name">GoogLeNet</div>
+      <div class="arch-desc">Inception modules — parallel branches of 1×1, 3×3, 5×5. Efficient multi-scale.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--green);">
+      <div class="arch-year">2015</div>
+      <div class="arch-name">ResNet-50/101</div>
+      <div class="arch-desc">Skip connections solve vanishing gradients. Enabled 100+ layer nets. Still standard.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--violet);">
+      <div class="arch-year">2017</div>
+      <div class="arch-name">DenseNet</div>
+      <div class="arch-desc">Every layer connected to all subsequent layers. Maximum feature reuse.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--red);">
+      <div class="arch-year">2018</div>
+      <div class="arch-name">MobileNetV2</div>
+      <div class="arch-desc">Depthwise separable convs + inverted residuals. 8× fewer FLOPs for mobile.</div>
+    </div>
+    <div class="arch-card" style="border-top-color:var(--orange);">
+      <div class="arch-year">2019</div>
+      <div class="arch-name">EfficientNet</div>
+      <div class="arch-desc">Compound scaling (width × depth × resolution). State-of-the-art efficiency.</div>
+    </div>
+  </div>
+
+  <h3>ResNet Block — The Most Important Innovation</h3>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — ResNet Bottleneck Block</span></div>
+    <pre><span class="kw">class</span> <span class="tp">Bottleneck</span>(nn.<span class="tp">Module</span>):
+    <span class="at">expansion</span> <span class="op">=</span> <span class="nm">4</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_ch, out_ch, stride<span class="op">=</span><span class="nm">1</span>):
+        <span class="fn">super</span>().__init__()
+        <span class="cm"># 1×1 → 3×3 → 1×1 (cheaper than 3×3→3×3)</span>
+        self.conv1 <span class="op">=</span> <span class="fn">ConvBNReLU</span>(in_ch, out_ch,    k<span class="op">=</span><span class="nm">1</span>)
+        self.conv2 <span class="op">=</span> <span class="fn">ConvBNReLU</span>(out_ch, out_ch,   k<span class="op">=</span><span class="nm">3</span>, stride<span class="op">=</span>stride)
+        self.conv3 <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Conv2d</span>(out_ch, out_ch<span class="op">*</span>self.expansion, <span class="nm">1</span>, bias<span class="op">=</span><span class="kw">False</span>),
+            nn.<span class="fn">BatchNorm2d</span>(out_ch<span class="op">*</span>self.expansion)
+        )
+        <span class="cm"># Skip connection may need projection if channels/size change</span>
+        self.skip <span class="op">=</span> (nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Conv2d</span>(in_ch, out_ch<span class="op">*</span>self.expansion, <span class="nm">1</span>, stride<span class="op">=</span>stride, bias<span class="op">=</span><span class="kw">False</span>),
+            nn.<span class="fn">BatchNorm2d</span>(out_ch<span class="op">*</span>self.expansion)
+        ) <span class="kw">if</span> stride <span class="op">!=</span> <span class="nm">1</span> <span class="kw">or</span> in_ch <span class="op">!=</span> out_ch<span class="op">*</span>self.expansion <span class="kw">else</span> nn.<span class="fn">Identity</span>())
+        self.relu <span class="op">=</span> nn.<span class="fn">ReLU</span>(inplace<span class="op">=</span><span class="kw">True</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        out <span class="op">=</span> self.conv3(self.conv2(self.conv1(x)))
+        <span class="kw">return</span> self.relu(out <span class="op">+</span> self.skip(x))  <span class="cm"># F(x) + x</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S5: TRANSFER LEARNING
+══════════════════════════════════════ -->
+<section id="transfer">
+<div class="wrap reveal">
+  <div class="sec-label">Section 05</div>
+  <h2>Transfer <span class="acc">Learning</span></h2>
+  <p class="sec-lead">Pre-trained models encode 1M+ images of feature knowledge. Fine-tune them on your task — often reaching SOTA with just hundreds of examples.</p>
+
+  <h3>Strategies by Dataset Size</h3>
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Your data size</th><th>Strategy</th><th>What to freeze</th></tr>
+      <tr><td>&lt; 500 samples</td><td class="gd">Feature extraction only</td><td>Freeze all conv layers; only train new head</td></tr>
+      <tr><td>500 – 5000</td><td class="gd">Fine-tune last 1–2 blocks</td><td>Freeze early layers; low LR for later layers</td></tr>
+      <tr><td>5000 – 50K</td><td>Fine-tune all layers</td><td>Nothing frozen; use small LR everywhere</td></tr>
+      <tr><td>&gt; 50K</td><td>Full training or fine-tune</td><td>Can train from scratch or fine-tune</td></tr>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Transfer Learning with torchvision</span></div>
+    <pre><span class="kw">import</span> torchvision.models <span class="kw">as</span> models
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="cm"># ─── Load pretrained EfficientNet ───</span>
+weights <span class="op">=</span> models.EfficientNet_B0_Weights.IMAGENET1K_V1
+model   <span class="op">=</span> models.<span class="fn">efficientnet_b0</span>(weights<span class="op">=</span>weights)
+
+<span class="cm"># ─── Strategy 1: Feature extraction ───</span>
+<span class="kw">for</span> param <span class="kw">in</span> model.parameters():
+    param.requires_grad <span class="op">=</span> <span class="kw">False</span>          <span class="cm"># freeze everything</span>
+<span class="cm"># Replace classifier head</span>
+num_ftrs <span class="op">=</span> model.classifier[<span class="nm">1</span>].in_features
+model.classifier <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+    nn.<span class="fn">Dropout</span>(<span class="nm">0.2</span>),
+    nn.<span class="fn">Linear</span>(num_ftrs, NUM_CLASSES)    <span class="cm"># only this is trained</span>
+)
+
+<span class="cm"># ─── Strategy 2: Fine-tune last block ───</span>
+<span class="kw">for</span> name, param <span class="kw">in</span> model.named_parameters():
+    param.requires_grad <span class="op">=</span> <span class="kw">False</span>          <span class="cm"># freeze all first</span>
+<span class="kw">for</span> param <span class="kw">in</span> model.features[<span class="op">-</span><span class="nm">1</span>].parameters():  <span class="cm"># unfreeze last block</span>
+    param.requires_grad <span class="op">=</span> <span class="kw">True</span>
+<span class="kw">for</span> param <span class="kw">in</span> model.classifier.parameters():
+    param.requires_grad <span class="op">=</span> <span class="kw">True</span>
+
+<span class="cm"># ─── Differential LR (lower LR for older layers) ───</span>
+optimizer <span class="op">=</span> torch.optim.<span class="fn">AdamW</span>([
+    {<span class="st">'params'</span>: model.features[:<span class="nm">4</span>].parameters(),  <span class="st">'lr'</span>: <span class="nm">1e-5</span>},
+    {<span class="st">'params'</span>: model.features[<span class="nm">4</span>:].parameters(),  <span class="st">'lr'</span>: <span class="nm">5e-5</span>},
+    {<span class="st">'params'</span>: model.classifier.parameters(),     <span class="st">'lr'</span>: <span class="nm">3e-4</span>},
+], weight_decay<span class="op">=</span><span class="nm">1e-2</span>)
+
+<span class="cm"># ─── Preprocessing must match pretrained model's expectations ───</span>
+<span class="kw">from</span> torchvision <span class="kw">import</span> transforms
+transform <span class="op">=</span> weights.transforms()   <span class="cm"># auto-applies correct normalisation</span>
+<span class="cm"># Or manually:</span>
+transform <span class="op">=</span> transforms.<span class="fn">Compose</span>([
+    transforms.<span class="fn">Resize</span>(<span class="nm">256</span>),
+    transforms.<span class="fn">CenterCrop</span>(<span class="nm">224</span>),
+    transforms.<span class="fn">ToTensor</span>(),
+    transforms.<span class="fn">Normalize</span>(mean<span class="op">=</span>[<span class="nm">0.485</span>,<span class="nm">0.456</span>,<span class="nm">0.406</span>],
+                         std<span class="op">=</span>[<span class="nm">0.229</span>,<span class="nm">0.224</span>,<span class="nm">0.225</span>])  <span class="cm"># ImageNet stats</span>
+])</pre>
+  </div>
+
+  <div class="box box-g">
+    <div class="box-title">✓ Practical rule of thumb</div>
+    <p>Always start with <strong>EfficientNet-B0 or ResNet-50</strong> as your baseline. Unfreeze progressively — train the head first (3–5 epochs), then unfreeze more layers with a lower LR. Use <code class="ic">torchvision</code> or <code class="ic">timm</code> (PyTorch Image Models) for 500+ pretrained architectures.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S6: OBJECT DETECTION
+══════════════════════════════════════ -->
+<section id="detect">
+<div class="wrap reveal">
+  <div class="sec-label">Section 06</div>
+  <h2>Object <span class="acc">Detection</span></h2>
+  <p class="sec-lead">Localise <em>and</em> classify multiple objects in an image. Output: bounding boxes + class labels + confidence scores.</p>
+
+  <h3>Detection Paradigms</h3>
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Paradigm</th><th>Models</th><th>Speed</th><th>Accuracy</th></tr>
+      <tr><td><strong>Two-stage</strong></td><td>R-CNN, Fast R-CNN, Faster R-CNN</td><td class="bd">Slow</td><td class="gd">High</td></tr>
+      <tr><td><strong>One-stage</strong></td><td>YOLO, SSD, RetinaNet</td><td class="gd">Fast</td><td>Good</td></tr>
+      <tr><td><strong>Anchor-free</strong></td><td>FCOS, CenterNet, DETR</td><td class="gd">Fast</td><td class="gd">High</td></tr>
+    </table>
+  </div>
+
+  <h3>IoU — Intersection over Union</h3>
+  <div class="math">
+    <div class="math-lbl">IoU — core detection metric</div>
+    <div class="math-eq">IoU = Area(Pred ∩ GT) / Area(Pred ∪ GT)</div>
+    <div class="math-eq">Good detection: IoU ≥ 0.5 (PASCAL) or 0.75 (COCO)</div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 400 160" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>IoU diagram showing ground truth box in blue, predicted box in red, and overlapping intersection region with formula</title>
+      <!-- GT box -->
+      <rect x="50" y="30" width="180" height="110" rx="3" fill="rgba(37,99,235,.12)" stroke="#2563eb" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="60" y="24" font-family="JetBrains Mono,monospace" font-size="10" fill="#2563eb">Ground Truth</text>
+      <!-- Pred box -->
+      <rect x="120" y="60" width="180" height="90" rx="3" fill="rgba(220,38,38,.12)" stroke="#dc2626" stroke-width="2"/>
+      <text x="240" y="165" font-family="JetBrains Mono,monospace" font-size="10" fill="#dc2626">Predicted</text>
+      <!-- Intersection -->
+      <rect x="120" y="60" width="110" height="80" rx="2" fill="rgba(234,88,12,.3)"/>
+      <text x="175" y="104" font-family="JetBrains Mono,monospace" font-size="10" fill="#ea580c" text-anchor="middle">∩</text>
+      <text x="175" y="116" font-family="JetBrains Mono,monospace" font-size="9" fill="#ea580c" text-anchor="middle">intersection</text>
+    </svg>
+    <div class="diag-cap">IoU = orange overlap / total area of both boxes. Used in NMS and mAP computation.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — YOLO with ultralytics</span></div>
+    <pre><span class="kw">from</span> ultralytics <span class="kw">import</span> YOLO
+<span class="kw">import</span> cv2
+
+<span class="cm"># ─── Load pretrained YOLOv8 ───</span>
+model <span class="op">=</span> <span class="fn">YOLO</span>(<span class="st">'yolov8n.pt'</span>)   <span class="cm"># n=nano, s=small, m=medium, l=large, x=xlarge</span>
+
+<span class="cm"># ─── Inference ───</span>
+results <span class="op">=</span> model.<span class="fn">predict</span>(<span class="st">'image.jpg'</span>, conf<span class="op">=</span><span class="nm">0.25</span>, iou<span class="op">=</span><span class="nm">0.45</span>)
+<span class="kw">for</span> r <span class="kw">in</span> results:
+    boxes  <span class="op">=</span> r.boxes.xyxy     <span class="cm"># (N,4) bounding boxes [x1,y1,x2,y2]</span>
+    scores <span class="op">=</span> r.boxes.conf     <span class="cm"># (N,) confidence scores</span>
+    labels <span class="op">=</span> r.boxes.cls      <span class="cm"># (N,) class indices</span>
+
+<span class="cm"># ─── Fine-tune on custom dataset ───</span>
+<span class="cm"># data.yaml:</span>
+<span class="cm">#   path: /dataset</span>
+<span class="cm">#   train: images/train</span>
+<span class="cm">#   val:   images/val</span>
+<span class="cm">#   names: {0: cat, 1: dog}</span>
+model.<span class="fn">train</span>(data<span class="op">=</span><span class="st">'data.yaml'</span>, epochs<span class="op">=</span><span class="nm">100</span>,
+            imgsz<span class="op">=</span><span class="nm">640</span>, batch<span class="op">=</span><span class="nm">16</span>, device<span class="op">=</span><span class="nm">0</span>)
+
+<span class="cm"># ─── mAP evaluation ───</span>
+metrics <span class="op">=</span> model.<span class="fn">val</span>()
+<span class="fn">print</span>(<span class="st">f"mAP@50: {metrics.box.map50:.4f}"</span>)
+<span class="fn">print</span>(<span class="st">f"mAP@50-95: {metrics.box.map:.4f}"</span>)
+
+<span class="cm"># ─── IoU from scratch ───</span>
+<span class="kw">def</span> <span class="fn">compute_iou</span>(boxA, boxB):
+    <span class="cm"># boxes: [x1, y1, x2, y2]</span>
+    xA <span class="op">=</span> max(boxA[<span class="nm">0</span>], boxB[<span class="nm">0</span>]); yA <span class="op">=</span> max(boxA[<span class="nm">1</span>], boxB[<span class="nm">1</span>])
+    xB <span class="op">=</span> min(boxA[<span class="nm">2</span>], boxB[<span class="nm">2</span>]); yB <span class="op">=</span> min(boxA[<span class="nm">3</span>], boxB[<span class="nm">3</span>])
+    inter <span class="op">=</span> max(<span class="nm">0</span>, xB<span class="op">-</span>xA) <span class="op">*</span> max(<span class="nm">0</span>, yB<span class="op">-</span>yA)
+    aA <span class="op">=</span> (boxA[<span class="nm">2</span>]<span class="op">-</span>boxA[<span class="nm">0</span>]) <span class="op">*</span> (boxA[<span class="nm">3</span>]<span class="op">-</span>boxA[<span class="nm">1</span>])
+    aB <span class="op">=</span> (boxB[<span class="nm">2</span>]<span class="op">-</span>boxB[<span class="nm">0</span>]) <span class="op">*</span> (boxB[<span class="nm">3</span>]<span class="op">-</span>boxB[<span class="nm">1</span>])
+    <span class="kw">return</span> inter <span class="op">/</span> (aA <span class="op">+</span> aB <span class="op">-</span> inter <span class="op">+</span> <span class="nm">1e-6</span>)</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S7: SEGMENTATION
+══════════════════════════════════════ -->
+<section id="segment">
+<div class="wrap reveal">
+  <div class="sec-label">Section 07</div>
+  <h2>Image <span class="acc">Segmentation</span></h2>
+  <p class="sec-lead">Assign a class label to every single pixel. Used in medical imaging, autonomous driving, and satellite imagery.</p>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Type</th><th>Output</th><th>Model examples</th></tr>
+      <tr><td><strong>Semantic</strong></td><td>Class per pixel (no instance distinction)</td><td>FCN, DeepLab, SegFormer</td></tr>
+      <tr><td><strong>Instance</strong></td><td>Separate mask per object instance</td><td>Mask R-CNN, YOLACT</td></tr>
+      <tr><td><strong>Panoptic</strong></td><td>Semantic + instance combined</td><td>PanopticFPN, MaskFormer</td></tr>
+    </table>
+  </div>
+
+  <h3>U-Net — The Encoder-Decoder Architecture</h3>
+  <div class="diagram">
+    <svg viewBox="0 0 540 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <title>U-Net architecture diagram: encoder path downsamples through 4 stages with skip connections to decoder upsampling path</title>
+      <!-- Encoder -->
+      <rect x="10"  y="20"  width="60" height="140" rx="3" fill="rgba(220,38,38,.15)" stroke="#dc2626" stroke-width="1"/>
+      <text x="40"  y="92"  font-family="JetBrains Mono,monospace" font-size="9" fill="#dc2626" text-anchor="middle" transform="rotate(-90,40,92)">224×224×64</text>
+      <rect x="82"  y="38"  width="54" height="104" rx="3" fill="rgba(220,38,38,.12)" stroke="#dc2626" stroke-width="1"/>
+      <text x="109" y="92"  font-family="JetBrains Mono,monospace" font-size="9" fill="#dc2626" text-anchor="middle" transform="rotate(-90,109,92)">112×112×128</text>
+      <rect x="148" y="55"  width="48" height="70" rx="3" fill="rgba(220,38,38,.1)" stroke="#dc2626" stroke-width="1"/>
+      <text x="172" y="92"  font-family="JetBrains Mono,monospace" font-size="9" fill="#dc2626" text-anchor="middle" transform="rotate(-90,172,92)">56×56×256</text>
+      <rect x="208" y="70"  width="42" height="40" rx="3" fill="rgba(220,38,38,.08)" stroke="#dc2626" stroke-width="1"/>
+      <!-- Bottleneck -->
+      <rect x="262" y="80"  width="36" height="20" rx="3" fill="#dc2626"/>
+      <text x="280" y="93"  font-family="JetBrains Mono,monospace" font-size="8" fill="white" text-anchor="middle">bottleneck</text>
+      <!-- Decoder (mirror) -->
+      <rect x="310" y="70"  width="42" height="40" rx="3" fill="rgba(37,99,235,.08)" stroke="#2563eb" stroke-width="1"/>
+      <rect x="364" y="55"  width="48" height="70" rx="3" fill="rgba(37,99,235,.1)" stroke="#2563eb" stroke-width="1"/>
+      <rect x="424" y="38"  width="54" height="104" rx="3" fill="rgba(37,99,235,.12)" stroke="#2563eb" stroke-width="1"/>
+      <rect x="490" y="20"  width="40" height="140" rx="3" fill="rgba(37,99,235,.15)" stroke="#2563eb" stroke-width="1"/>
+      <text x="510" y="92"  font-family="JetBrains Mono,monospace" font-size="9" fill="#2563eb" text-anchor="middle" transform="rotate(-90,510,92)">224×224×C</text>
+      <!-- Skip connections -->
+      <line x1="70" y1="35" x2="490" y2="35" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4,3" opacity=".8"/>
+      <line x1="136" y1="50" x2="424" y2="50" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4,3" opacity=".8"/>
+      <line x1="196" y1="65" x2="364" y2="65" stroke="#10b981" stroke-width="1.2" stroke-dasharray="4,3" opacity=".8"/>
+      <!-- Labels -->
+      <text x="280" y="170" font-family="JetBrains Mono,monospace" font-size="9" fill="#10b981" text-anchor="middle">— skip connections</text>
+      <text x="130" y="172" font-family="Inter,sans-serif" font-size="10" fill="#dc2626" text-anchor="middle">Encoder ↓</text>
+      <text x="430" y="172" font-family="Inter,sans-serif" font-size="10" fill="#2563eb" text-anchor="middle">Decoder ↑</text>
+    </svg>
+    <div class="diag-cap">U-Net: encoder downsamples (red), decoder upsamples (blue), skip connections (green) preserve spatial detail lost during pooling.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Simple UNet block</span></div>
+    <pre><span class="kw">class</span> <span class="tp">UNetBlock</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, c_in, c_out):
+        <span class="fn">super</span>().__init__()
+        self.double_conv <span class="op">=</span> nn.<span class="fn">Sequential</span>(
+            <span class="fn">ConvBNReLU</span>(c_in,  c_out),
+            <span class="fn">ConvBNReLU</span>(c_out, c_out)
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.double_conv(x)
+
+<span class="kw">class</span> <span class="tp">UNet</span>(nn.<span class="tp">Module</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n_classes<span class="op">=</span><span class="nm">2</span>):
+        <span class="fn">super</span>().__init__()
+        self.enc1 <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">3</span>,   <span class="nm">64</span>)
+        self.enc2 <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">64</span>,  <span class="nm">128</span>)
+        self.enc3 <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">128</span>, <span class="nm">256</span>)
+        self.pool <span class="op">=</span> nn.<span class="fn">MaxPool2d</span>(<span class="nm">2</span>)
+        self.bottleneck <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">256</span>, <span class="nm">512</span>)
+        self.up2   <span class="op">=</span> nn.<span class="fn">ConvTranspose2d</span>(<span class="nm">512</span>, <span class="nm">256</span>, <span class="nm">2</span>, stride<span class="op">=</span><span class="nm">2</span>)
+        self.dec2  <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">512</span>, <span class="nm">256</span>)  <span class="cm"># 256 + 256 skip</span>
+        self.up3   <span class="op">=</span> nn.<span class="fn">ConvTranspose2d</span>(<span class="nm">256</span>, <span class="nm">128</span>, <span class="nm">2</span>, stride<span class="op">=</span><span class="nm">2</span>)
+        self.dec3  <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">256</span>, <span class="nm">128</span>)
+        self.up4   <span class="op">=</span> nn.<span class="fn">ConvTranspose2d</span>(<span class="nm">128</span>, <span class="nm">64</span>,  <span class="nm">2</span>, stride<span class="op">=</span><span class="nm">2</span>)
+        self.dec4  <span class="op">=</span> <span class="fn">UNetBlock</span>(<span class="nm">128</span>, <span class="nm">64</span>)
+        self.head  <span class="op">=</span> nn.<span class="fn">Conv2d</span>(<span class="nm">64</span>, n_classes, <span class="nm">1</span>)  <span class="cm"># 1×1 final</span>
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        e1 <span class="op">=</span> self.enc1(x)
+        e2 <span class="op">=</span> self.enc2(self.pool(e1))
+        e3 <span class="op">=</span> self.enc3(self.pool(e2))
+        b  <span class="op">=</span> self.bottleneck(self.pool(e3))
+        d  <span class="op">=</span> self.dec2(torch.<span class="fn">cat</span>([self.up2(b), e3], dim<span class="op">=</span><span class="nm">1</span>))
+        d  <span class="op">=</span> self.dec3(torch.<span class="fn">cat</span>([self.up3(d), e2], dim<span class="op">=</span><span class="nm">1</span>))
+        d  <span class="op">=</span> self.dec4(torch.<span class="fn">cat</span>([self.up4(d), e1], dim<span class="op">=</span><span class="nm">1</span>))
+        <span class="kw">return</span> self.head(d)        <span class="cm"># (B, n_classes, H, W)</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S8: AUGMENTATION
+══════════════════════════════════════ -->
+<section id="aug">
+<div class="wrap reveal">
+  <div class="sec-label">Section 08</div>
+  <h2>Data <span class="acc">Augmentation</span></h2>
+  <p class="sec-lead">The cheapest regulariser. Augmentation creates synthetic training variation — teaching the model that a cat rotated 30° is still a cat.</p>
+
+  <!-- Interactive Augmentation Visualiser -->
+  <h3>Interactive: Augmentation Visualiser</h3>
+  <div class="demo">
+    <div class="demo-title">// See how each augmentation transforms a sample image</div>
+    <div class="demo-ctrl">
+      <button class="dbtn active" onclick="setAug('original',this)">Original</button>
+      <button class="dbtn" onclick="setAug('flip',this)">H. Flip</button>
+      <button class="dbtn" onclick="setAug('rotate',this)">Rotate</button>
+      <button class="dbtn" onclick="setAug('brightness',this)">Brightness</button>
+      <button class="dbtn" onclick="setAug('crop',this)">Rand. Crop</button>
+      <button class="dbtn" onclick="setAug('cutout',this)">Cutout</button>
+      <button class="dbtn" onclick="setAug('noise',this)">Noise</button>
+    </div>
+    <canvas class="demo-canvas" id="augCanvas" height="220"></canvas>
+    <div class="demo-info" id="augInfo">Select an augmentation above</div>
+  </div>
+
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Augmentation</th><th>torchvision call</th><th>Good for</th></tr>
+      <tr><td><strong>Random Horizontal Flip</strong></td><td class="mono">RandomHorizontalFlip(p=0.5)</td><td>Classification, detection (not text)</td></tr>
+      <tr><td><strong>Random Crop</strong></td><td class="mono">RandomResizedCrop(224)</td><td>Always. Forces the model to see partial objects</td></tr>
+      <tr><td><strong>Color Jitter</strong></td><td class="mono">ColorJitter(0.4,0.4,0.4,0.1)</td><td>Handles lighting variation</td></tr>
+      <tr><td><strong>Random Rotation</strong></td><td class="mono">RandomRotation(degrees=30)</td><td>When orientation is irrelevant</td></tr>
+      <tr><td><strong>GaussianBlur</strong></td><td class="mono">GaussianBlur(kernel_size=23)</td><td>Self-supervised learning (SimCLR)</td></tr>
+      <tr><td><strong>MixUp</strong></td><td class="mono">timm.data.Mixup</td><td>Blends two images + labels linearly</td></tr>
+      <tr><td><strong>CutMix</strong></td><td class="mono">timm.data.Mixup(cutmix_alpha=1)</td><td>Pastes patch of one image onto another</td></tr>
+      <tr><td><strong>RandAugment</strong></td><td class="mono">RandAugment(num_ops=2, magnitude=9)</td><td>AutoAugment alternative — just works</td></tr>
+    </table>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Training augmentation pipeline</span></div>
+    <pre><span class="kw">from</span> torchvision <span class="kw">import</span> transforms
+
+<span class="cm"># Training transforms — heavy augmentation</span>
+train_transform <span class="op">=</span> transforms.<span class="fn">Compose</span>([
+    transforms.<span class="fn">RandomResizedCrop</span>(<span class="nm">224</span>, scale<span class="op">=</span>(<span class="nm">0.5</span>, <span class="nm">1.0</span>)),
+    transforms.<span class="fn">RandomHorizontalFlip</span>(),
+    transforms.<span class="fn">ColorJitter</span>(brightness<span class="op">=</span><span class="nm">0.4</span>, contrast<span class="op">=</span><span class="nm">0.4</span>,
+                            saturation<span class="op">=</span><span class="nm">0.4</span>, hue<span class="op">=</span><span class="nm">0.1</span>),
+    transforms.<span class="fn">RandomGrayscale</span>(p<span class="op">=</span><span class="nm">0.2</span>),
+    transforms.<span class="fn">GaussianBlur</span>(kernel_size<span class="op">=</span><span class="nm">23</span>),
+    transforms.<span class="fn">RandomErasing</span>(p<span class="op">=</span><span class="nm">0.3</span>),  <span class="cm"># Cutout</span>
+    transforms.<span class="fn">ToTensor</span>(),
+    transforms.<span class="fn">Normalize</span>(mean<span class="op">=</span>[<span class="nm">0.485</span>,<span class="nm">0.456</span>,<span class="nm">0.406</span>],
+                         std<span class="op">=</span>[<span class="nm">0.229</span>,<span class="nm">0.224</span>,<span class="nm">0.225</span>]),
+])
+
+<span class="cm"># Validation transforms — ONLY resize + normalise (no augmentation!)</span>
+val_transform <span class="op">=</span> transforms.<span class="fn">Compose</span>([
+    transforms.<span class="fn">Resize</span>(<span class="nm">256</span>),
+    transforms.<span class="fn">CenterCrop</span>(<span class="nm">224</span>),
+    transforms.<span class="fn">ToTensor</span>(),
+    transforms.<span class="fn">Normalize</span>(mean<span class="op">=</span>[<span class="nm">0.485</span>,<span class="nm">0.456</span>,<span class="nm">0.406</span>],
+                         std<span class="op">=</span>[<span class="nm">0.229</span>,<span class="nm">0.224</span>,<span class="nm">0.225</span>]),
+])</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     S9: TIPS + EVAL
+══════════════════════════════════════ -->
+<section id="tips">
+<div class="wrap reveal">
+  <div class="sec-label">Section 09 + 10</div>
+  <h2>Practical Tips <span class="acc">&amp; Evaluation</span></h2>
+  <p class="sec-lead">Hard-won lessons from production CV systems.</p>
+
+  <h3>Evaluation Metrics</h3>
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Task</th><th>Metric</th><th>Meaning</th></tr>
+      <tr><td>Classification</td><td>Top-1 / Top-5 Accuracy</td><td>% correct / correct within top 5 predictions</td></tr>
+      <tr><td>Detection</td><td>mAP@50, mAP@50-95</td><td>Mean avg precision at IoU thresholds</td></tr>
+      <tr><td>Segmentation</td><td>mIoU, Dice</td><td>Mean IoU per class; Dice=2TP/(2TP+FP+FN)</td></tr>
+      <tr><td>All</td><td>FPS / Latency</td><td>Inference speed (production constraint)</td></tr>
+    </table>
+  </div>
+
+  <h3>Training Checklist</h3>
+  <div class="box box-g">
+    <div class="box-title">✓ Production CNN training checklist</div>
+    <p>
+      ✅ Start with pretrained weights (ImageNet) — always better than random init.<br>
+      ✅ Use <code class="ic">RandAugment</code> or <code class="ic">AugMix</code> for augmentation — avoids manual tuning.<br>
+      ✅ <code class="ic">AdamW</code> + cosine LR schedule with warmup (5–10% of total steps).<br>
+      ✅ Mixed precision (<code class="ic">torch.cuda.amp</code>) — 2× speed, half memory, same accuracy.<br>
+      ✅ <code class="ic">timm</code> library: 500+ pretrained models with consistent API.<br>
+      ✅ Monitor train vs val loss — first sign of overfitting = add augmentation or reduce model.<br>
+      ✅ Test Time Augmentation (TTA): average predictions on flipped/cropped versions at inference.
+    </p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-bar"><div class="cdots"><span class="cdr"></span><span class="cdy"></span><span class="cdg"></span></div><span class="clang">Python — Mixed precision + complete CV pipeline</span></div>
+    <pre><span class="kw">import</span> torch
+<span class="kw">from</span> torch.cuda.amp <span class="kw">import</span> GradScaler, autocast
+<span class="kw">import</span> timm
+
+<span class="cm"># ─── timm: 500+ models, consistent API ───</span>
+model <span class="op">=</span> timm.<span class="fn">create_model</span>(
+    <span class="st">'efficientnet_b0'</span>, pretrained<span class="op">=</span><span class="kw">True</span>,
+    num_classes<span class="op">=</span>NUM_CLASSES, drop_rate<span class="op">=</span><span class="nm">0.2</span>
+).<span class="fn">to</span>(device)
+
+<span class="cm"># ─── Mixed precision training ───</span>
+scaler <span class="op">=</span> <span class="fn">GradScaler</span>()
+optimizer <span class="op">=</span> torch.optim.<span class="fn">AdamW</span>(model.parameters(), lr<span class="op">=</span><span class="nm">3e-4</span>)
+
+<span class="kw">for</span> xb, yb <span class="kw">in</span> train_loader:
+    xb, yb <span class="op">=</span> xb.<span class="fn">to</span>(device), yb.<span class="fn">to</span>(device)
+    optimizer.<span class="fn">zero_grad</span>()
+
+    <span class="kw">with</span> <span class="fn">autocast</span>():         <span class="cm"># compute in float16</span>
+        logits <span class="op">=</span> <span class="fn">model</span>(xb)
+        loss   <span class="op">=</span> <span class="fn">criterion</span>(logits, yb)
+
+    scaler.<span class="fn">scale</span>(loss).<span class="fn">backward</span>()   <span class="cm"># scaled backprop</span>
+    scaler.<span class="fn">unscale_</span>(optimizer)
+    torch.nn.utils.<span class="fn">clip_grad_norm_</span>(model.parameters(), <span class="nm">1.0</span>)
+    scaler.<span class="fn">step</span>(optimizer)         <span class="cm"># update in float32</span>
+    scaler.<span class="fn">update</span>()
+
+<span class="cm"># ─── Test Time Augmentation (TTA) ───</span>
+<span class="kw">def</span> <span class="fn">tta_predict</span>(model, image):
+    model.<span class="fn">eval</span>()
+    augments <span class="op">=</span> [image, image.<span class="fn">flip</span>(<span class="nm">-1</span>)]   <span class="cm"># orig + h-flip</span>
+    <span class="kw">with</span> torch.<span class="fn">no_grad</span>():
+        preds <span class="op">=</span> torch.<span class="fn">stack</span>([<span class="fn">model</span>(a.unsqueeze(<span class="nm">0</span>)) <span class="kw">for</span> a <span class="kw">in</span> augments])
+    <span class="kw">return</span> preds.<span class="fn">mean</span>(dim<span class="op">=</span><span class="nm">0</span>)   <span class="cm"># average logits</span></pre>
+  </div>
+
+  <h3>Quick Reference</h3>
+  <div class="tbl">
+    <table class="t">
+      <tr><th>Task</th><th>Go-to model</th><th>Pretrained weights</th></tr>
+      <tr><td>Image classification</td><td class="mono">efficientnet_b0 / convnext_tiny</td><td>ImageNet-1K / 21K</td></tr>
+      <tr><td>Object detection</td><td class="mono">YOLOv8n / v8s</td><td>COCO</td></tr>
+      <tr><td>Semantic segmentation</td><td class="mono">SegFormer-B2 / DeepLab</td><td>ADE20K</td></tr>
+      <tr><td>Instance segmentation</td><td class="mono">Mask R-CNN / YOLOv8-seg</td><td>COCO</td></tr>
+      <tr><td>Medical imaging</td><td class="mono">UNet / SwinUNETR</td><td>Domain-specific</td></tr>
+      <tr><td>Mobile / edge</td><td class="mono">MobileNetV3 / EfficientNet-lite</td><td>ImageNet</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>CNNs &amp; Computer Vision — Comprehensive Notes &nbsp;·&nbsp; Module 06 of the <a href="#">3-Month ML Plan</a></p>
+    <p style="margin-top:6px;">← <a href="#">Module 05: Deep Learning</a> &nbsp;&nbsp; <a href="#">Module 07: NLP &amp; Transformers →</a></p>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// CONVOLUTION VISUALISER
+// ═══════════════════════════════════════════
+const kernels = {
+  'edge-h':  [[-1,-2,-1],[0,0,0],[1,2,1]],
+  'edge-v':  [[-1,0,1],[-2,0,2],[-1,0,1]],
+  'sharpen': [[0,-1,0],[-1,5,-1],[0,-1,0]],
+  'blur':    [[1/9,1/9,1/9],[1/9,1/9,1/9],[1/9,1/9,1/9]],
+  'sobel':   [[-1,-2,-1],[0,0,0],[1,2,1]]
+};
+const kernelInfo = {
+  'edge-h':'Horizontal edge detector — responds to horizontal intensity changes',
+  'edge-v':'Vertical edge detector — responds to vertical intensity changes',
+  'sharpen':'Sharpening filter — enhances edges and fine detail',
+  'blur':'Box blur (averaging) — smooths noise, reduces detail',
+  'sobel':'Sobel filter — gradient-based edge detection (used in Canny)'
+};
+
+// Fixed 7x7 input image (simulated grayscale values)
+const input7 = [
+  [30,30,30,30,200,200,200],
+  [30,30,30,30,200,200,200],
+  [30,30,30,30,200,200,200],
+  [50,50,80,120,180,200,200],
+  [200,200,200,200,30,30,30],
+  [200,200,200,200,30,30,30],
+  [200,200,200,200,30,30,30]
+];
+
+let currentKernel = kernels['edge-h'];
+let convAnimTimer = null;
+let convStep = 0;
+let outputMap = Array.from({length:5},()=>Array(5).fill(0));
+
+function setFilter(name, btn) {
+  document.querySelector('#inputCanvas').closest('.demo').querySelectorAll('.dbtn')
+    .forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentKernel = kernels[name];
+  document.getElementById('convInfo').textContent = kernelInfo[name];
+  resetConv();
+}
+
+function computeConvFull() {
+  for(let i=0;i<5;i++) for(let j=0;j<5;j++) {
+    let s=0;
+    for(let m=0;m<3;m++) for(let n=0;n<3;n++)
+      s += input7[i+m][j+n] * currentKernel[m][n];
+    outputMap[i][j] = s;
+  }
+}
+
+function drawInput(hi=-1, hj=-1) {
+  const c = document.getElementById('inputCanvas');
+  const ctx = c.getContext('2d');
+  const cs = 34;
+  ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0,0,238,238);
+  for(let i=0;i<7;i++) for(let j=0;j<7;j++) {
+    const v = input7[i][j];
+    const inFilter = hi>=0 && i>=hi && i<hi+3 && j>=hj && j<hj+3;
+    ctx.fillStyle = inFilter ? `rgba(220,38,38,0.6)` : `rgb(${v},${v},${v})`;
+    ctx.fillRect(j*cs+2, i*cs+2, cs-2, cs-2);
+    ctx.fillStyle = inFilter ? '#fff' : (v>128 ? '#000' : '#fff');
+    ctx.font = '10px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(v, j*cs+cs/2+2, i*cs+cs/2+5);
+  }
+}
+
+function drawKernel() {
+  const c = document.getElementById('kernelCanvas');
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0,0,96,96);
+  const cs = 30;
+  for(let i=0;i<3;i++) for(let j=0;j<3;j++) {
+    const v = currentKernel[i][j];
+    const norm = (v/5+1)/2;
+    const r=Math.round(norm*220), g=Math.round(norm*38), b=Math.round(38+norm*180);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(j*cs+2, i*cs+2, cs-2, cs-2);
+    ctx.fillStyle = '#fff'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(typeof v==='number'&&v<1&&v>0?v.toFixed(2):v, j*cs+cs/2+2, i*cs+cs/2+4);
+  }
+}
+
+function drawOutput(step=-1) {
+  const c = document.getElementById('outputCanvas');
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0,0,170,170);
+  const cs = 32;
+  const vmin = Math.min(...outputMap.flat()), vmax = Math.max(...outputMap.flat());
+  for(let i=0;i<5;i++) for(let j=0;j<5;j++) {
+    const idx = i*5+j;
+    if(step>=0 && idx>step) {ctx.fillStyle='#181818';ctx.fillRect(j*cs+2,i*cs+2,cs-2,cs-2);continue;}
+    const v = outputMap[i][j];
+    const norm = vmax===vmin ? 0.5 : (v-vmin)/(vmax-vmin);
+    const bright = Math.round(norm*220);
+    ctx.fillStyle = `rgb(${Math.round(norm*220)},${Math.round(norm*38+20)},${Math.round(20)})`;
+    ctx.fillRect(j*cs+2, i*cs+2, cs-2, cs-2);
+    if(idx===step){ctx.strokeStyle='#dc2626';ctx.lineWidth=2;ctx.strokeRect(j*cs+2,i*cs+2,cs-2,cs-2);}
+    ctx.fillStyle='#fff'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(Math.round(v), j*cs+cs/2+2, i*cs+cs/2+4);
+  }
+}
+
+function resetConv() {
+  clearInterval(convAnimTimer); convAnimTimer=null; convStep=0;
+  computeConvFull();
+  drawInput(); drawKernel(); drawOutput(-1);
+}
+
+function animConv() {
+  if(convAnimTimer){clearInterval(convAnimTimer);convAnimTimer=null;return;}
+  computeConvFull(); convStep=0;
+  convAnimTimer = setInterval(()=>{
+    const i=Math.floor(convStep/5), j=convStep%5;
+    drawInput(i,j); drawKernel(); drawOutput(convStep);
+    document.getElementById('convInfo').textContent=
+      `Step (${i+1},${j+1}): output=${Math.round(outputMap[i][j])}`;
+    convStep++;
+    if(convStep>=25){clearInterval(convAnimTimer);convAnimTimer=null;
+      document.getElementById('convInfo').textContent='Convolution complete — 25 positions computed';}
+  },200);
+}
+
+// ═══════════════════════════════════════════
+// ARCHITECTURE SCATTER PLOT
+// ═══════════════════════════════════════════
+const archData = [
+  {name:'AlexNet',  year:2012, params:61,  acc:63.3, col:'#dc2626'},
+  {name:'VGG-16',   year:2014, params:138, acc:71.6, col:'#ea580c'},
+  {name:'GoogLeNet',year:2014, params:7,   acc:74.9, col:'#7c3aed'},
+  {name:'ResNet-50',year:2015, params:25,  acc:76.1, col:'#2563eb'},
+  {name:'ResNet-101',year:2015,params:44,  acc:77.4, col:'#2563eb'},
+  {name:'DenseNet-121',year:2017,params:8, acc:74.9, col:'#16a34a'},
+  {name:'MobileNetV2',year:2018,params:3.4,acc:72.0, col:'#16a34a'},
+  {name:'EfficientNet-B0',year:2019,params:5.3,acc:77.1, col:'#f59e0b'},
+  {name:'EfficientNet-B4',year:2019,params:19, acc:82.9, col:'#f59e0b'},
+  {name:'EfficientNet-B7',year:2019,params:66, acc:84.4, col:'#f59e0b'},
+  {name:'ConvNeXt-T',year:2022,params:28,  acc:82.1, col:'#dc2626'},
+];
+
+function drawArchPlot() {
+  const c = document.getElementById('archCanvas');
+  const W = c.clientWidth; c.width=W; c.height=260;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,260);
+  const px=60, py=20, pw=W-80, ph=200;
+  const maxP=150, minA=60, maxA=87;
+
+  // Grid
+  ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=0.7;
+  [0,50,100,150].forEach(v=>{
+    const x=px+v/maxP*pw;
+    ctx.beginPath();ctx.moveTo(x,py);ctx.lineTo(x,py+ph);ctx.stroke();
+    ctx.fillStyle='#333';ctx.font='9px JetBrains Mono';ctx.textAlign='center';
+    ctx.fillText(v+'M',x,py+ph+14);
+  });
+  [65,70,75,80,85].forEach(v=>{
+    const y=py+ph-(v-minA)/(maxA-minA)*ph;
+    ctx.beginPath();ctx.moveTo(px,y);ctx.lineTo(px+pw,y);ctx.stroke();
+    ctx.fillStyle='#333';ctx.font='9px JetBrains Mono';ctx.textAlign='right';
+    ctx.fillText(v+'%',px-4,y+3);
+  });
+
+  // Axis labels
+  ctx.fillStyle='#555';ctx.font='10px JetBrains Mono';ctx.textAlign='center';
+  ctx.fillText('Parameters (M)',px+pw/2,py+ph+30);
+  ctx.save();ctx.translate(14,py+ph/2);ctx.rotate(-Math.PI/2);
+  ctx.fillText('Top-1 Acc%',0,0);ctx.restore();
+
+  // Points
+  archData.forEach(d=>{
+    const x=px+Math.min(d.params,maxP)/maxP*pw;
+    const y=py+ph-(d.acc-minA)/(maxA-minA)*ph;
+    ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);
+    ctx.fillStyle=d.col+'cc';ctx.fill();
+    ctx.strokeStyle=d.col;ctx.lineWidth=1.5;ctx.stroke();
+    ctx.fillStyle='#888';ctx.font='8px Inter';ctx.textAlign='center';
+    ctx.fillText(d.name,x,y-10);
+  });
+}
+
+document.getElementById('archCanvas').addEventListener('mousemove',e=>{
+  const c=document.getElementById('archCanvas');
+  const rect=c.getBoundingClientRect();
+  const mx=(e.clientX-rect.left)*(c.width/rect.width);
+  const my=(e.clientY-rect.top)*(c.height/rect.height);
+  const W=c.width; const px=60,py=20,pw=W-80,ph=200,maxP=150,minA=60,maxA=87;
+  let found=null;
+  archData.forEach(d=>{
+    const x=px+Math.min(d.params,maxP)/maxP*pw;
+    const y=py+ph-(d.acc-minA)/(maxA-minA)*ph;
+    if(Math.sqrt((mx-x)**2+(my-y)**2)<12) found=d;
+  });
+  if(found) document.getElementById('archInfo').textContent=
+    `${found.name} (${found.year}) — Params: ${found.params}M — Top-1: ${found.acc}%`;
+  else document.getElementById('archInfo').textContent='Hover over a point to see details';
+});
+
+// ═══════════════════════════════════════════
+// AUGMENTATION VISUALISER
+// ═══════════════════════════════════════════
+let currentAugType = 'original';
+
+function setAug(type, btn) {
+  currentAugType = type;
+  document.getElementById('augCanvas').closest('.demo').querySelectorAll('.dbtn')
+    .forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawAug();
+}
+
+function drawAug() {
+  const c = document.getElementById('augCanvas');
+  const W = c.clientWidth; c.width=W; c.height=220;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,220);
+  const size=180, ox=(W-size)/2, oy=20;
+  ctx.save();
+
+  // Draw a simple synthetic "image" (house/landscape)
+  function drawScene(ctx, w, h, ox=0, oy=0) {
+    // Sky
+    ctx.fillStyle='#1a2e4a'; ctx.fillRect(ox,oy,w,h*0.6);
+    // Ground
+    ctx.fillStyle='#1a3a1a'; ctx.fillRect(ox,oy+h*0.6,w,h*0.4);
+    // House body
+    ctx.fillStyle='#8b6914'; ctx.fillRect(ox+w*0.3,oy+h*0.3,w*0.4,h*0.35);
+    // Roof
+    ctx.fillStyle='#7c1d1d';
+    ctx.beginPath();ctx.moveTo(ox+w*0.25,oy+h*0.3);
+    ctx.lineTo(ox+w*0.5,oy+h*0.1);ctx.lineTo(ox+w*0.75,oy+h*0.3);ctx.closePath();ctx.fill();
+    // Door
+    ctx.fillStyle='#5b3a1a'; ctx.fillRect(ox+w*0.45,oy+h*0.45,w*0.1,w*0.2);
+    // Window
+    ctx.fillStyle='#fbbf24'; ctx.fillRect(ox+w*0.33,oy+h*0.35,w*0.1,w*0.1);
+    ctx.fillRect(ox+w*0.57,oy+h*0.35,w*0.1,w*0.1);
+    // Sun
+    ctx.fillStyle='#fcd34d'; ctx.beginPath();ctx.arc(ox+w*0.8,oy+h*0.15,w*0.07,0,Math.PI*2);ctx.fill();
+    // Tree
+    ctx.fillStyle='#166534'; ctx.beginPath();
+    ctx.moveTo(ox+w*0.1,oy+h*0.6);ctx.lineTo(ox+w*0.05,oy+h*0.3);ctx.lineTo(ox+w*0.15,oy+h*0.3);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#7c5200';ctx.fillRect(ox+w*0.09,oy+h*0.6,w*0.02,h*0.15);
+  }
+
+  function applyAug(type) {
+    switch(type) {
+      case 'original':
+        drawScene(ctx,size,size,ox,oy);
+        document.getElementById('augInfo').textContent='Original image — no augmentation applied';
+        break;
+      case 'flip':
+        ctx.translate(ox+size,oy); ctx.scale(-1,1); ctx.translate(-ox,0);
+        drawScene(ctx,size,size,ox,oy);
+        document.getElementById('augInfo').textContent='RandomHorizontalFlip(p=0.5) — mirrors the image left↔right';
+        break;
+      case 'rotate':
+        ctx.translate(ox+size/2,oy+size/2); ctx.rotate(20*Math.PI/180); ctx.translate(-(ox+size/2),-(oy+size/2));
+        drawScene(ctx,size,size,ox,oy);
+        document.getElementById('augInfo').textContent='RandomRotation(20°) — rotates image by random angle';
+        break;
+      case 'brightness':
+        drawScene(ctx,size,size,ox,oy);
+        ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.fillRect(ox,oy,size,size);
+        document.getElementById('augInfo').textContent='ColorJitter(brightness=0.6) — simulates different lighting conditions';
+        break;
+      case 'crop':
+        ctx.beginPath();ctx.rect(ox+20,oy+20,size-40,size-30);ctx.clip();
+        ctx.translate(-15,-10);
+        drawScene(ctx,size,size,ox,oy);
+        document.getElementById('augInfo').textContent='RandomResizedCrop — crops a random region and resizes to target';
+        break;
+      case 'cutout':
+        drawScene(ctx,size,size,ox,oy);
+        ctx.fillStyle='#0a0a0a'; ctx.fillRect(ox+50,oy+50,60,60);
+        ctx.strokeStyle='#dc2626';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+        ctx.strokeRect(ox+50,oy+50,60,60); ctx.setLineDash([]);
+        document.getElementById('augInfo').textContent='RandomErasing/Cutout — masks a random patch to prevent over-reliance on local features';
+        break;
+      case 'noise':
+        drawScene(ctx,size,size,ox,oy);
+        const imgData=ctx.getImageData(ox,oy,size,size);
+        for(let i=0;i<imgData.data.length;i+=4){
+          const n=(Math.random()-0.5)*50;
+          imgData.data[i]+=n;imgData.data[i+1]+=n;imgData.data[i+2]+=n;
+        }
+        ctx.putImageData(imgData,ox,oy);
+        document.getElementById('augInfo').textContent='GaussianNoise — adds random noise to simulate sensor variation';
+        break;
+    }
+  }
+  applyAug(currentAugType);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+// SCROLL REVEAL + NAV
+// ═══════════════════════════════════════════
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const secs=document.querySelectorAll('section[id],.hero[id]');
+const navLinks=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.addEventListener('load',()=>{
+  resetConv();
+  drawArchPlot();
+  drawAug();
+});
+window.addEventListener('resize',()=>{
+  drawArchPlot(); drawAug();
+});
+</script>
+</body>
+</html>
