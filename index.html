@@ -1,182 +1,980 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ML Portfolio Tracker</title>
-    <meta
-      name="description"
-      content="A focused hub for ML study artifacts, notes, and a 3-month learning plan."
-    />
-    <meta property="og:title" content="ML Portfolio Tracker" />
-    <meta
-      property="og:description"
-      content="Explore ML notes, track learning progress, and follow a 3-month plan."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://your-domain.com/" />
-    <meta property="og:image" content="https://your-domain.com/og-image.svg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ML Portfolio Tracker" />
-    <meta
-      name="twitter:description"
-      content="Explore ML notes, track learning progress, and follow a 3-month plan."
-    />
-    <meta name="twitter:image" content="https://your-domain.com/og-image.svg" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="page">
-      <header class="hero">
-        <div class="hero__content">
-          <p class="eyebrow">Machine Learning</p>
-          <h1 class="hero__title">Portfolio Tracker</h1>
-          <p class="hero__subtitle">
-            A focused hub for my ML study artifacts, experiments, and notes.
-          </p>
-          <div class="hero__actions">
-            <a class="button button--primary" href="3month_ml_plan.pdf">
-              Open ML Plan
-            </a>
-            <a class="button button--ghost" href="#artifacts">Browse Artifacts</a>
-          </div>
-        </div>
-        <div class="hero__stats">
-          <div class="stat">
-            <span class="stat__label">Tracks</span>
-            <span class="stat__value">5</span>
-          </div>
-          <div class="stat">
-            <span class="stat__label">Sections</span>
-            <span class="stat__value">48</span>
-          </div>
-          <div class="stat">
-            <span class="stat__label">Plan</span>
-            <span class="stat__value">3 Months</span>
-          </div>
-        </div>
-      </header>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Portfolio Tracker</title>
+<meta name="description" content="A focused hub for ML study artifacts, notes, and a 3-month plan.">
+<meta property="og:title" content="ML Portfolio Tracker">
+<meta property="og:description" content="Explore ML notes, track learning progress, and follow a 3-month plan.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://your-domain.com/">
+<meta property="og:image" content="https://your-domain.com/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ML Portfolio Tracker">
+<meta name="twitter:description" content="Explore ML notes, track learning progress, and follow a 3-month plan.">
+<meta name="twitter:image" content="https://your-domain.com/og-image.svg">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --ink-2: #3a3a3a;
+    --ink-3: #7a7a7a;
+    --paper: #f9f7f4;
+    --paper-2: #f0ede8;
+    --paper-3: #e5e1da;
+    --accent: #c84b31;
+    --accent-2: #e8a87c;
+    --gold: #b89b5e;
+    --blue: #2d4a6e;
+    --green: #3a6351;
+    --rule: rgba(15,15,15,0.12);
+  }
 
-      <main>
-        <section class="section" id="artifacts">
-          <div class="section__heading">
-            <h2>Learning Artifacts</h2>
-            <p>Structured notes and deep dives across ML foundations.</p>
-          </div>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-          <div class="grid">
-            <article class="card">
-              <div class="card__top">
-                <h3>Classical ML Algorithms</h3>
-                <span class="chip">Core</span>
-              </div>
-              <p>Models, metrics, and intuition for classical ML workflows.</p>
-              <div class="card__meta">
-                <span>Coverage: 10 topics</span>
-                <span class="dot"></span>
-                <span>Status: Ongoing</span>
-              </div>
-              <a class="card__link" href="classical-ml/">Open Notes</a>
-            </article>
+  html { scroll-behavior: smooth; }
 
-            <article class="card">
-              <div class="card__top">
-                <h3>Deep Learning Notes</h3>
-                <span class="chip chip--accent">Advanced</span>
-              </div>
-              <p>Neural networks, architectures, and training intuition.</p>
-              <div class="card__meta">
-                <span>Coverage: 10 modules</span>
-                <span class="dot"></span>
-                <span>Status: Building</span>
-              </div>
-              <a class="card__link" href="deep-learning/">Open Notes</a>
-            </article>
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: default;
+  }
 
-            <article class="card">
-              <div class="card__top">
-                <h3>Linear Algebra + Probability</h3>
-                <span class="chip">Foundation</span>
-              </div>
-              <p>Core math refreshers powering ML and DL understanding.</p>
-              <div class="card__meta">
-                <span>Coverage: 9 units</span>
-                <span class="dot"></span>
-                <span>Status: Solidifying</span>
-              </div>
-              <a class="card__link" href="linear-algebra/">Open Notes</a>
-            </article>
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
 
-            <article class="card">
-              <div class="card__top">
-                <h3>Pandas + EDA Notes</h3>
-                <span class="chip">Workflow</span>
-              </div>
-              <p>Data cleaning, visualization, and exploratory playbooks.</p>
-              <div class="card__meta">
-                <span>Coverage: 10 recipes</span>
-                <span class="dot"></span>
-                <span>Status: Iterating</span>
-              </div>
-              <a class="card__link" href="pandas-eda/">Open Notes</a>
-            </article>
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--paper-2); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
 
-            <article class="card">
-              <div class="card__top">
-                <h3>Python + NumPy Notes</h3>
-                <span class="chip">Baseline</span>
-              </div>
-              <p>Core Python tools, arrays, and performance tips.</p>
-              <div class="card__meta">
-                <span>Coverage: 9 lessons</span>
-                <span class="dot"></span>
-                <span>Status: Maintained</span>
-              </div>
-              <a class="card__link" href="python-numpy/">Open Notes</a>
-            </article>
-          </div>
-        </section>
+  /* ── PAGE LOADER ── */
+  .loader {
+    position: fixed; inset: 0;
+    background: var(--ink);
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    animation: loaderOut 0.5s ease 1.6s forwards;
+  }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.4em;
+    color: var(--paper);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: loaderTextIn 0.6s ease 0.3s forwards, loaderTextOut 0.4s ease 1.2s forwards;
+  }
+  @keyframes loaderTextIn { to { opacity: 1; } }
+  @keyframes loaderTextOut { to { opacity: 0; } }
+  @keyframes loaderOut { to { opacity: 0; visibility: hidden; } }
 
-        <section class="section section--plan" id="plan">
-          <div class="section__heading">
-            <h2>ML Plan</h2>
-            <p>A tactical roadmap to pace the next 90 days of learning.</p>
-          </div>
-          <div class="plan">
-            <div class="plan__text">
-              <h3>3-Month ML Plan</h3>
-              <p>
-                Use this plan to track milestones, weekly goals, and review
-                checkpoints. Keep it open while you study to stay aligned.
-              </p>
-              <div class="plan__actions">
-                <a class="button button--primary" href="3month_ml_plan.pdf">
-                  Open PDF
-                </a>
-              </div>
-            </div>
-            <div class="plan__card">
-              <div class="plan__badge">Updated</div>
-              <p class="plan__date">May 2026</p>
-              <p class="plan__detail">Weekly checkpoints</p>
-              <p class="plan__detail">Monthly review prompts</p>
-              <p class="plan__detail">Skill consolidation map</p>
-            </div>
-          </div>
-        </section>
-      </main>
+  /* ── NAVIGATION ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(249,247,244,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--rule);
+    transform: translateY(-100%);
+    animation: navIn 0.6s cubic-bezier(0.22,1,0.36,1) 1.8s forwards;
+  }
+  @keyframes navIn { to { transform: translateY(0); } }
 
-      <footer class="footer">
-        <p>Built for focus. Updated as the portfolio evolves.</p>
-      </footer>
+  .nav-brand {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .nav-brand-mark {
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    display: grid; place-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+  .nav-brand-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0; right: 100%;
+    height: 1px; background: var(--accent);
+    transition: right 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a:hover::after { right: 0; }
+
+  .nav-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.25rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none; border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 9rem 3rem 5rem;
+    max-width: 1400px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 4rem;
+    align-items: end;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.6s ease 2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.2rem, 5vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s ease 2.1s forwards;
+  }
+
+  .hero-title .accent-word {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.6s ease 2.25s forwards;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 2.4s forwards;
+  }
+
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none; border-radius: 3px;
+    cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+
+  /* ── HERO STATS ── */
+  .hero-stats {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s ease 2.3s forwards;
+  }
+
+  .stats-card {
+    background: var(--ink);
+    border-radius: 8px;
+    padding: 2.5rem;
+    color: var(--paper);
+    position: relative; overflow: hidden;
+  }
+  .stats-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(200,75,49,0.15);
+    pointer-events: none;
+  }
+
+  .stats-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(249,247,244,0.4);
+    margin-bottom: 2rem;
+  }
+
+  .stats-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-bottom: 2rem;
+  }
+
+  .stat-item {
+    padding: 1rem 0;
+    border-right: 1px solid rgba(249,247,244,0.1);
+    padding-right: 1.5rem;
+    margin-right: 1.5rem;
+  }
+  .stat-item:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--paper);
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(249,247,244,0.45);
+  }
+
+  .stats-progress-wrap { margin-top: 1.5rem; }
+  .progress-label-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(249,247,244,0.5);
+  }
+  .progress-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent-2);
+  }
+  .progress-bar {
+    height: 2px;
+    background: rgba(249,247,244,0.1);
+    border-radius: 1px;
+    overflow: hidden;
+    margin-bottom: 0.85rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border-radius: 1px;
+    width: 0;
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-wrap {
+    max-width: 1400px; margin: 0 auto;
+    padding: 5rem 3rem;
+  }
+
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 3.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .section-desc {
+    font-size: 0.85rem;
+    color: var(--ink-3);
+    text-align: right;
+    max-width: 280px;
+    line-height: 1.65;
+  }
+
+  /* ── ARTIFACT GRID ── */
+  .artifact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.5px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .artifact-card {
+    background: var(--paper);
+    padding: 2.25rem;
+    position: relative;
+    transition: background 0.25s;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .artifact-card.visible {
+    animation: cardReveal 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+
+  @keyframes cardReveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .artifact-card:hover { background: var(--paper-2); }
+  .artifact-card:hover .card-arrow { transform: translate(3px, -3px); }
+  .artifact-card:hover .card-index { color: var(--accent); }
+
+  .card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+  .card-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .badge-core { background: #e8e3da; color: var(--ink-2); }
+  .badge-advanced { background: #fde8e3; color: var(--accent); }
+  .badge-foundation { background: #dce8f0; color: var(--blue); }
+  .badge-workflow { background: #deeae5; color: var(--green); }
+
+  .card-index {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    transition: color 0.2s;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--ink-3);
+    margin-bottom: 1.75rem;
+  }
+
+  .card-meta {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    margin-bottom: 1.75rem;
+  }
+  .meta-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+  }
+  .meta-line span { color: var(--ink-2); }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+  .card-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .card-arrow {
+    width: 18px; height: 18px;
+    transition: transform 0.2s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  /* ── FEATURED CARD (wide) ── */
+  .artifact-card.featured {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .artifact-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+  }
+
+  .featured-visual {
+    height: 200px;
+    border-radius: 4px;
+    background: var(--ink);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .featured-visual svg { opacity: 0.18; }
+  .featured-visual-label {
+    position: absolute; bottom: 1rem; left: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(249,247,244,0.5);
+  }
+
+  /* ── TIMELINE SECTION ── */
+  .timeline-section {
+    background: var(--ink);
+    padding: 5rem 0;
+  }
+  .timeline-inner {
+    max-width: 1400px; margin: 0 auto;
+    padding: 0 3rem;
+  }
+  .timeline-header { margin-bottom: 3.5rem; }
+  .timeline-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(200,75,49,0.8);
+    margin-bottom: 0.6rem;
+  }
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--paper);
+  }
+
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(249,247,244,0.1);
+  }
+  .timeline-item {
+    padding: 2.5rem 2.5rem 2.5rem 0;
+    border-right: 1px solid rgba(249,247,244,0.08);
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .timeline-item.visible {
+    animation: fadeUp 0.55s ease forwards;
+  }
+  .timeline-item:last-child { border-right: none; padding-right: 0; }
+  .timeline-item + .timeline-item { padding-left: 2.5rem; }
+
+  .timeline-month {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(249,247,244,0.3);
+    margin-bottom: 1rem;
+  }
+  .timeline-milestone {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--paper);
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  .timeline-detail {
+    font-size: 0.8rem;
+    color: rgba(249,247,244,0.45);
+    line-height: 1.65;
+  }
+  .timeline-dot {
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateY(-3px);
+  }
+  .timeline-item + .timeline-item .timeline-dot { left: 2.5rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2.5rem 3rem;
+    max-width: 1400px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .footer-note {
+    font-size: 0.75rem;
+    color: var(--ink-3);
+  }
+
+  /* ── UTILITIES ── */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .line-rule {
+    display: inline-block;
+    width: 24px; height: 1.5px;
+    background: var(--accent);
+    vertical-align: middle;
+    margin-right: 0.75rem;
+  }
+
+  /* Card stagger */
+  .artifact-card:nth-child(1) { animation-delay: 0s; }
+  .artifact-card:nth-child(2) { animation-delay: 0.07s; }
+  .artifact-card:nth-child(3) { animation-delay: 0.14s; }
+  .artifact-card:nth-child(4) { animation-delay: 0.21s; }
+  .artifact-card:nth-child(5) { animation-delay: 0.28s; }
+
+  /* Timeline stagger */
+  .timeline-item:nth-child(1) { animation-delay: 0s; }
+  .timeline-item:nth-child(2) { animation-delay: 0.1s; }
+  .timeline-item:nth-child(3) { animation-delay: 0.2s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 8rem 1.5rem 4rem; }
+    .section-wrap { padding: 4rem 1.5rem; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .section-desc { text-align: left; }
+    .timeline-inner { padding: 0 1.5rem; }
+    .timeline-grid { grid-template-columns: 1fr; }
+    .timeline-item { padding-right: 0; border-right: none; border-bottom: 1px solid rgba(249,247,244,0.08); }
+    .timeline-item + .timeline-item { padding-left: 0; }
+    .timeline-item + .timeline-item .timeline-dot { left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="loader">
+  <span class="loader-text">ML Portfolio</span>
+</div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-brand-mark">ML</div>
+    <span class="nav-brand-name">Portfolio Tracker</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#artifacts">Artifacts</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+  </ul>
+  <a class="nav-cta" href="3month_ml_plan.pdf">Open ML Plan</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow"><span class="line-rule"></span>Machine Learning · 2026</p>
+    <h1 class="hero-title">Portfolio<br><span class="accent-word">Tracker</span></h1>
+    <p class="hero-desc">A focused hub for ML study artifacts, experiments, and structured notes — documenting the full journey from foundations to production-grade models.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="3month_ml_plan.pdf"><span>Open ML Plan</span></a>
+      <a class="btn-ghost" href="#artifacts">Browse Artifacts</a>
     </div>
-  </body>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stats-card">
+      <p class="stats-card-label">Progress Overview</p>
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-value" data-target="5">0</span>
+          <span class="stat-label">Tracks</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" data-target="48">0</span>
+          <span class="stat-label">Sections</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">3<small style="font-size:1rem">mo</small></span>
+          <span class="stat-label">Plan</span>
+        </div>
+      </div>
+
+      <div class="stats-progress-wrap">
+        <div class="progress-label-row">
+          <span class="progress-label">Classical Models</span>
+          <span class="progress-pct">78%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" data-width="78"></div></div>
+
+        <div class="progress-label-row">
+          <span class="progress-label">Deep Learning</span>
+          <span class="progress-pct">52%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" data-width="52"></div></div>
+
+        <div class="progress-label-row">
+          <span class="progress-label">Math Foundations</span>
+          <span class="progress-pct">65%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" data-width="65"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Artifacts Section -->
+<section id="artifacts" class="section-wrap">
+  <div class="section-header">
+    <div class="section-title-group">
+      <p class="section-eyebrow"><span class="line-rule"></span>01 / Learning Artifacts</p>
+      <h2 class="section-title">Structured Notes &<br>Deep Dives</h2>
+    </div>
+    <p class="section-desc">Across ML foundations — from math to production-grade architecture patterns.</p>
+  </div>
+
+  <div class="artifact-grid">
+
+    <!-- Featured card -->
+    <div class="artifact-card featured">
+      <div>
+        <div class="card-top">
+          <span class="card-badge badge-advanced">Advanced</span>
+          <span class="card-index">01</span>
+        </div>
+        <h3 class="card-title">Deep Learning Notes</h3>
+        <p class="card-desc">Neural networks, architectures, and training intuition — from vanilla MLPs through transformers, with implementation notes and experiment logs.</p>
+        <div class="card-meta">
+          <p class="meta-line">Coverage: <span>10 modules</span></p>
+          <p class="meta-line">Status: <span>Building</span></p>
+        </div>
+        <div class="card-footer">
+          <a href="deep-learning/" class="card-link">Open Notes →</a>
+        </div>
+      </div>
+      <div class="featured-visual">
+        <svg width="180" height="120" viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="30" r="6" fill="white"/>
+          <circle cx="20" cy="60" r="6" fill="white"/>
+          <circle cx="20" cy="90" r="6" fill="white"/>
+          <circle cx="70" cy="20" r="6" fill="white"/>
+          <circle cx="70" cy="45" r="6" fill="white"/>
+          <circle cx="70" cy="70" r="6" fill="white"/>
+          <circle cx="70" cy="95" r="6" fill="white"/>
+          <circle cx="120" cy="30" r="6" fill="white"/>
+          <circle cx="120" cy="60" r="6" fill="white"/>
+          <circle cx="120" cy="90" r="6" fill="white"/>
+          <circle cx="160" cy="60" r="6" fill="white"/>
+          <line x1="26" y1="30" x2="64" y2="20" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="30" x2="64" y2="45" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="30" x2="64" y2="70" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="30" x2="64" y2="95" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="60" x2="64" y2="20" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="60" x2="64" y2="45" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="60" x2="64" y2="70" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="60" x2="64" y2="95" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="90" x2="64" y2="20" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="90" x2="64" y2="45" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="90" x2="64" y2="70" stroke="white" stroke-width="0.8"/>
+          <line x1="26" y1="90" x2="64" y2="95" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="20" x2="114" y2="30" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="20" x2="114" y2="60" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="20" x2="114" y2="90" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="45" x2="114" y2="30" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="45" x2="114" y2="60" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="45" x2="114" y2="90" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="70" x2="114" y2="30" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="70" x2="114" y2="60" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="70" x2="114" y2="90" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="95" x2="114" y2="30" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="95" x2="114" y2="60" stroke="white" stroke-width="0.8"/>
+          <line x1="76" y1="95" x2="114" y2="90" stroke="white" stroke-width="0.8"/>
+          <line x1="126" y1="30" x2="154" y2="60" stroke="white" stroke-width="0.8"/>
+          <line x1="126" y1="60" x2="154" y2="60" stroke="white" stroke-width="0.8"/>
+          <line x1="126" y1="90" x2="154" y2="60" stroke="white" stroke-width="0.8"/>
+        </svg>
+        <span class="featured-visual-label">Neural Architecture</span>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="artifact-card">
+      <div class="card-top">
+        <span class="card-badge badge-core">Core</span>
+        <span class="card-index">02</span>
+      </div>
+      <h3 class="card-title">Classical ML Algorithms</h3>
+      <p class="card-desc">Models, metrics, and intuition for classical ML workflows.</p>
+      <div class="card-meta">
+        <p class="meta-line">Coverage: <span>10 topics</span></p>
+        <p class="meta-line">Status: <span>Ongoing</span></p>
+      </div>
+      <div class="card-footer">
+        <a href="classical-ml/" class="card-link">Open Notes</a>
+        <svg class="card-arrow" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 14L14 4M14 4H6M14 4V12" stroke="#0f0f0f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="artifact-card">
+      <div class="card-top">
+        <span class="card-badge badge-foundation">Foundation</span>
+        <span class="card-index">03</span>
+      </div>
+      <h3 class="card-title">Linear Algebra + Probability</h3>
+      <p class="card-desc">Core math refreshers powering ML and DL understanding.</p>
+      <div class="card-meta">
+        <p class="meta-line">Coverage: <span>9 units</span></p>
+        <p class="meta-line">Status: <span>Solidifying</span></p>
+      </div>
+      <div class="card-footer">
+        <a href="linear-algebra/" class="card-link">Open Notes</a>
+        <svg class="card-arrow" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 14L14 4M14 4H6M14 4V12" stroke="#0f0f0f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="artifact-card">
+      <div class="card-top">
+        <span class="card-badge badge-workflow">Workflow</span>
+        <span class="card-index">04</span>
+      </div>
+      <h3 class="card-title">Pandas + EDA Notes</h3>
+      <p class="card-desc">Data cleaning, visualization, and exploratory playbooks.</p>
+      <div class="card-meta">
+        <p class="meta-line">Coverage: <span>10 recipes</span></p>
+        <p class="meta-line">Status: <span>Iterating</span></p>
+      </div>
+      <div class="card-footer">
+        <a href="pandas-eda/" class="card-link">Open Notes</a>
+        <svg class="card-arrow" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 14L14 4M14 4H6M14 4V12" stroke="#0f0f0f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="artifact-card">
+      <div class="card-top">
+        <span class="card-badge badge-core">Core</span>
+        <span class="card-index">05</span>
+      </div>
+      <h3 class="card-title">Python + NumPy Notes</h3>
+      <p class="card-desc">Core Python tools, arrays, and performance tips.</p>
+      <div class="card-meta">
+        <p class="meta-line">Coverage: <span>9 lessons</span></p>
+        <p class="meta-line">Status: <span>Maintained</span></p>
+      </div>
+      <div class="card-footer">
+        <a href="python-numpy/" class="card-link">Open Notes</a>
+        <svg class="card-arrow" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 14L14 4M14 4H6M14 4V12" stroke="#0f0f0f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Timeline -->
+<section id="timeline" class="timeline-section">
+  <div class="timeline-inner">
+    <div class="timeline-header">
+      <p class="timeline-eyebrow"><span class="line-rule" style="background:rgba(200,75,49,0.7)"></span>02 / Study Timeline</p>
+      <h2 class="timeline-title">3-Month<br>Learning Plan</h2>
+    </div>
+    <div class="timeline-grid">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <p class="timeline-month">Month 01</p>
+        <h3 class="timeline-milestone">Foundations & Classical ML</h3>
+        <p class="timeline-detail">Linear algebra, probability, statistics refreshers. Scikit-learn pipeline mastery. Classical models from scratch.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <p class="timeline-month">Month 02</p>
+        <h3 class="timeline-milestone">Deep Learning Core</h3>
+        <p class="timeline-detail">PyTorch fundamentals, CNNs, RNNs, attention mechanisms. First end-to-end project: time series forecasting.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <p class="timeline-month">Month 03</p>
+        <h3 class="timeline-milestone">Advanced Architectures</h3>
+        <p class="timeline-detail">Transformers, PatchTST, quantile regression. MLOps basics, model deployment, ablation studies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span class="footer-brand">ML · Portfolio Tracker · 2026</span>
+  <span class="footer-note">Updated continuously as experiments conclude.</span>
+</footer>
+
+<script>
+  // ── Counter animation ──
+  function animateCounter(el, target, duration = 1400) {
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(ease * target);
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // ── Progress bar animation ──
+  function animateProgress() {
+    document.querySelectorAll('.progress-fill').forEach(bar => {
+      const target = bar.dataset.width;
+      setTimeout(() => { bar.style.width = target + '%'; }, 300);
+    });
+  }
+
+  // ── Intersection Observer for scroll animations ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.artifact-card, .timeline-item').forEach(el => observer.observe(el));
+
+  // ── Fire counters and progress after loader ──
+  setTimeout(() => {
+    document.querySelectorAll('[data-target]').forEach(el => {
+      animateCounter(el, parseInt(el.dataset.target));
+    });
+    animateProgress();
+  }, 2200);
+
+  // ── Subtle parallax on hero title ──
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const title = document.querySelector('.hero-title');
+    if (title && y < 600) {
+      title.style.transform = `translateY(${y * 0.06}px)`;
+    }
+  }, { passive: true });
+
+  // ── Cursor magnetic effect on cards ──
+  document.querySelectorAll('.artifact-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      card.style.transform = `translate(${x * 0.012}px, ${y * 0.012}px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+</script>
+</body>
 </html>
